@@ -13,12 +13,14 @@ void setup() {
   background(255);
   size(480, 480);
   side = min(width, height);
-  radiusW = 0.021*PI;
+  
 
-  centerRW = 0.027 * PI;
-  centerW = 0.01 * PI;
-  shiftXW = 0.0018 * PI;
-  shiftYW = 0.0028 * PI;
+  centerRW = random(0.017, 0.023)*PI; // 0.027
+  centerW = random(0.008, 0.012)*PI; // 0.01
+  radiusW = random(0.019, 0.023)*PI; // 0.021
+  shiftXW = random(0.0016, 0.0020)*PI; // 0.0018
+  shiftYW = random(0.0026, 0.0030)*PI; // 0.0028
+
 
   for (t = 0; t <= maxT; t++) {
     step(t);
