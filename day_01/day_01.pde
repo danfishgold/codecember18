@@ -3,6 +3,7 @@
 
 int t = 0;
 int maxT = 10000;
+int penultimate = 100;
 int side;
 
 float centerRW, centerW, radiusW, shiftXW, shiftYW;
@@ -64,8 +65,14 @@ float radius(int t) {
 void step(int t) {
 
   float f = (float)(maxT - t) / (float)maxT;
+  float factor;
+  if (t < maxT - penultimate) {
+    factor = pow(f, 0.25);
+  } else {
+    factor = pow((float)penultimate / (float)maxT, 0.25) * (float)(maxT-t)/(float)penultimate;
+  }
   float r = radius(t);
-  ellipse(width/2 + pow(f, 0.25)*dx(t), height/2 + pow(f, 0.25)*dy(t), r, r);
+  ellipse(width/2 + factor*dx(t), height/2 + factor*dy(t), r, r);
 }
 
 void draw() {
