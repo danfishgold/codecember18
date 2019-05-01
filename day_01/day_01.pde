@@ -13,8 +13,9 @@ float centerRP, centerP, radiusP, shiftXP, shiftYP;
 
 void setup() {
   fill(255);
+  strokeWeight(4);
   background(255);
-  size(480, 480);
+  size(4000, 4000);
   side = min(width, height);
   
   randomSeed(4);
@@ -36,6 +37,7 @@ void setup() {
   for (t = 0; t <= t2; t++) {
     step(t);
   }
+  save("../day_01.png");
   noLoop();
 }
 
