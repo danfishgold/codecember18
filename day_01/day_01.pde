@@ -36,24 +36,36 @@ void setup() {
   noLoop();
 }
 
+
+float centerR(int t) {
+  return side/5 + 20*sin(t*centerRW + centerRP);
+}
+
+float shiftR(int t) {
+  return side/6;
+}
+
+float dx(int t) {
+  float centerX = centerR(t) * cos(t*centerW + centerP);
+  float shiftX = shiftR(t) * cos(t*shiftXW + shiftXP);
+  return centerX + shiftX;
+}
+
+float dy(int t) {
+  float centerY = centerR(t) * sin(t*centerW + centerP);
+  float shiftY = shiftR(t) * sin(t*shiftYW + shiftYP);
+  return centerY + shiftY;
+}
+
+float radius(int t) {
+  return side/7 + 10*cos(t*radiusW + radiusP);
+}
+
 void step(int t) {
 
   float f = (float)(maxT - t) / (float)maxT;
-
-  float radius = side/7 + 10*cos(t*radiusW + radiusP);
-
-  float centerR = side/5 + 20*sin(t*centerRW + centerRP);
-  float centerX = centerR * cos(t*centerW + centerP);
-  float centerY = centerR * sin(t*centerW + centerP);
-
-  float shiftR = side/6;
-  float shiftX = shiftR * cos(t*shiftXW + shiftXP);
-  float shiftY = shiftR * sin(t*shiftYW + shiftYP);
-  
-  float x = centerX + shiftX;
-  float y = centerY + shiftY;
-  
-  ellipse(width/2 + pow(f, 0.25)*x, height/2 + pow(f, 0.25)*y, radius, radius);
+  float r = radius(t);
+  ellipse(width/2 + pow(f, 0.25)*dx(t), height/2 + pow(f, 0.25)*dy(t), r, r);
 }
 
 void draw() {
