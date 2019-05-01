@@ -2,8 +2,9 @@
 // https://processing.org/tutorials/gettingstarted/
 
 int t = 0;
-int maxT = 10000;
-int penultimate = 100;
+int t1 = 10000; // movement with t^0.25 zoom
+int t2 = t1 + 100; // movement with t^1 zoom
+
 int side;
 
 float centerRW, centerW, radiusW, shiftXW, shiftYW;
@@ -31,7 +32,7 @@ void setup() {
 
 
 
-  for (t = 0; t <= maxT; t++) {
+  for (t = 0; t <= t2; t++) {
     step(t);
   }
   noLoop();
@@ -64,15 +65,18 @@ float radius(int t) {
 
 void step(int t) {
 
-  float f = (float)(maxT - t) / (float)maxT;
+  float f = (float)(t2 - t) / (float)t2;
+  
   float factor;
-  if (t < maxT - penultimate) {
+  if (t < t1) {
     factor = pow(f, 0.25);
   } else {
-    factor = pow((float)penultimate / (float)maxT, 0.25) * (float)(maxT-t)/(float)penultimate;
+    factor = pow((float)(t2-t1) / (float)t2, 0.25) * (float)(t2-t)/(float)(t2-t1);
   }
+
   float r = radius(t);
   ellipse(width/2 + factor*dx(t), height/2 + factor*dy(t), r, r);
+
 }
 
 void draw() {
