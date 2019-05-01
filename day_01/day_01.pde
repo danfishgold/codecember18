@@ -17,8 +17,9 @@ void setup() {
   size(480, 480);
   side = min(width, height);
   
+  randomSeed(4);
 
-  centerRW = random(0.017, 0.023)*PI; // 0.027
+  centerRW = random(0.025, 0.029)*PI; // 0.027
   centerW = random(0.008, 0.012)*PI; // 0.01
   radiusW = random(0.019, 0.023)*PI; // 0.021
   shiftXW = random(0.0016, 0.0020)*PI; // 0.0018
