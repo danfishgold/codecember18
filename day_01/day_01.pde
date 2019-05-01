@@ -6,6 +6,7 @@ int maxT = 10000;
 int side;
 
 float centerRW, centerW, radiusW, shiftXW, shiftYW;
+float centerRP, centerP, radiusP, shiftXP, shiftYP;
 
 
 void setup() {
@@ -20,6 +21,13 @@ void setup() {
   radiusW = random(0.019, 0.023)*PI; // 0.021
   shiftXW = random(0.0016, 0.0020)*PI; // 0.0018
   shiftYW = random(0.0026, 0.0030)*PI; // 0.0028
+  
+  centerRP = random(0, 2)*PI;
+  centerP = random(0, 2)*PI;
+  radiusP = random(0, 2)*PI;
+  shiftXP = random(0, 2)*PI;
+  shiftYP = random(0, 2)*PI;
+
 
 
   for (t = 0; t <= maxT; t++) {
@@ -30,15 +38,15 @@ void setup() {
 
 void step(int t) {
 
-  float radius = side/7 + 10*cos(t*radiusW);
+  float radius = side/7 + 10*cos(t*radiusW + radiusP);
 
-  float centerR = side/5 + 20*sin(t*centerRW);
-  float centerX = centerR * cos(t*centerW);
-  float centerY = centerR * sin(t*centerW);
+  float centerR = side/5 + 20*sin(t*centerRW + centerRP);
+  float centerX = centerR * cos(t*centerW + centerP);
+  float centerY = centerR * sin(t*centerW + centerP);
 
   float shiftR = side/6;
-  float shiftX = shiftR * cos(t*shiftXW);
-  float shiftY = shiftR * sin(t*shiftYW);
+  float shiftX = shiftR * cos(t*shiftXW + shiftXP);
+  float shiftY = shiftR * sin(t*shiftYW + shiftYP);
   
   float x = centerX + shiftX;
   float y = centerY + shiftY;
