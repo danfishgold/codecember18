@@ -1,3 +1,5 @@
+// Day 01: Air Conditioner
+// It looks like an air conditioning tube...
 // Inspired by the example here:
 // https://processing.org/tutorials/gettingstarted/
 
