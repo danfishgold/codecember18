@@ -1,3 +1,6 @@
+// Inspired by the example here:
+// https://processing.org/tutorials/gettingstarted/
+
 int t = 0;
 int maxT = 10000;
 
