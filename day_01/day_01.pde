@@ -5,12 +5,20 @@ int t = 0;
 int maxT = 10000;
 int side;
 
+float centerRW, centerW, circleRW, shiftXW, shiftYW;
+
 
 void setup() {
   fill(255);
   background(255);
   size(480, 480);
   side = min(width, height);
+
+  centerRW = 0.027 * PI;
+  centerW = 0.01 * PI;
+  circleRW = 0.021 * PI;
+  shiftXW = 0.0018 * PI;
+  shiftYW = 0.0028 * PI;
 
   for (t = 0; t <= maxT; t++) {
     step(t);
@@ -19,12 +27,19 @@ void setup() {
 }
 
 void step(int t) {
-  float centerR = side/5 + 20*sin(t*0.027*PI);
-  float circleR = side/7 + 10*cos(t*0.021*PI);
-  float shiftR = side/6;
 
-  float x = shiftR*cos(t*0.0018*PI + 0.8) + centerR * cos(t * 0.01 * PI);
-  float y = shiftR*cos(t*0.0028*PI - 0.5) + centerR * sin(t * 0.01 * PI);
+  float circleR = side/7 + 10*cos(t*circleRW);
+
+  float centerR = side/5 + 20*sin(t*centerRW);
+  float centerX = centerR * cos(t*centerW);
+  float centerY = centerR * sin(t*centerW);
+
+  float shiftR = side/6;
+  float shiftX = shiftR * cos(t*shiftXW);
+  float shiftY = shiftR * sin(t*shiftYW);
+  
+  float x = centerX + shiftX;
+  float y = centerY + shiftY;
   
   ellipse(width/2 + x, height/2 + y, circleR, circleR);
 }
