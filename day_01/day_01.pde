@@ -1,4 +1,6 @@
 int t = 0;
+int maxT = 10000;
+
 float theta = 0;
 float centerR = 100;
 float circleR = 80;
@@ -7,6 +9,11 @@ void setup() {
   size(480, 480);
   fill(255);
   background(255);
+
+  for (t = 0; t <= maxT; t++) {
+    step(t);
+  }
+  noLoop();
 }
 
 void step(int t) {
