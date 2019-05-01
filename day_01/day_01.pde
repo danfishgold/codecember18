@@ -38,6 +38,8 @@ void setup() {
 
 void step(int t) {
 
+  float f = (float)(maxT - t) / (float)maxT;
+
   float radius = side/7 + 10*cos(t*radiusW + radiusP);
 
   float centerR = side/5 + 20*sin(t*centerRW + centerRP);
@@ -51,7 +53,7 @@ void step(int t) {
   float x = centerX + shiftX;
   float y = centerY + shiftY;
   
-  ellipse(width/2 + x, height/2 + y, radius, radius);
+  ellipse(width/2 + pow(f, 0.25)*x, height/2 + pow(f, 0.25)*y, radius, radius);
 }
 
 void draw() {
