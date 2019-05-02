@@ -17,7 +17,10 @@ def keyPressed():
             matches = [
                 match(f, r'{}_(\d+).*\.{}'.format(base_filename, extension)) for f in files]
             indexes = [int(m[1]) for m in matches if m is not None]
-            index = max(indexes) + 1
+            if indexes:
+                index = max(indexes) + 1
+            else:
+                index = 1
 
             if filename_description:
                 modifier = '_{}'.format(filename_description.replace(' ', '_'))
