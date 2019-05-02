@@ -1,5 +1,37 @@
 # Day 03
 from __future__ import division
+import os
+
+base_filename = 'day_03'
+extension = 'png'
+filename_description = ''
+
+
+def keyPressed():
+    global filename_description
+    if isinstance(key, unicode):
+        if key == '\n':
+            files = os.listdir('.')
+            matches = [
+                match(f, r'{}_(\d+).*\.{}'.format(base_filename, extension)) for f in files]
+            indexes = [int(m[1]) for m in matches if m is not None]
+            index = max(indexes) + 1
+
+            if filename_description:
+                modifier = '_{}'.format(filename_description)
+            else:
+                modifier = ''
+            filename = '{}_{:03d}{}.{}'.format(
+                base_filename, index, modifier, extension)
+
+            save(filename)
+            print 'saved', filename
+            filename_description = ''
+        else:
+            if key == BACKSPACE:
+                filename_description = filename_description[:-1]
+            else:
+                filename_description = filename_description + key
 
 
 def draw_circle(r, theta, length):
