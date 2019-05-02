@@ -1,4 +1,5 @@
-# Day 03
+# Day 03: Circles
+# Like yesterday, but with a few cool improvements
 from __future__ import division
 import os
 
@@ -18,10 +19,10 @@ def keyPressed():
             index = max(indexes) + 1
 
             if filename_description:
-                modifier = '_{}'.format(filename_description)
+                modifier = '_{}'.format(filename_description.replace(' ', '_'))
             else:
                 modifier = ''
-            filename = '{}_{:03d}{}.{}'.format(
+            filename = '{}_{:02d}{}.{}'.format(
                 base_filename, index, modifier, extension)
 
             save(filename)
@@ -47,15 +48,17 @@ w = TWO_PI / phi / batches
 count = 800
 power = 5
 
+
 def setup():
 
     size(side, side)
     strokeWeight(ceil(side/800))
     background(255)
-    
+
     for batch in range(batches):
         draw_points(count/batches, TWO_PI*batch/batches, power)
     noLoop()
+
 
 def draw_points(count, phase, power):
     for i in range(ceil(count)):
@@ -65,6 +68,7 @@ def draw_points(count, phase, power):
         length = side/70*(1 - exp(-4*f))
         theta = w * i + phase
         draw_circle(r, theta, length)
+
 
 def draw():
     pass
