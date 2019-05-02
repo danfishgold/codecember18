@@ -2,16 +2,8 @@
 from __future__ import division
 
 
-def draw_triangle(r, theta, length):
-    resetMatrix()
-    translate(width/2 + r*cos(theta), height/2 + r*sin(theta))
-    rotate(theta - HALF_PI)
-    fill(255)
-    stroke(255)
-    triangle(-length/2, 0, 0, length, length/2, 0)
-    stroke(0)
-    line(-length/2, 0, 0, length)
-    line(length/2, 0, 0, length)
+def draw_circle(r, theta, length):
+    circle(width/2 + r*cos(theta), height/2 + r*sin(theta), length)
 
 
 side = 2000
@@ -34,7 +26,7 @@ def setup():
         r = side*sqrt(lerp(maxR*maxR, minR*minR, f))
         length = lerp(side/90, side/70, f)
         theta = w * i
-        draw_triangle(r, theta, length)
+        draw_circle(r, theta, length)
 
     save("../day_03.png")
     noLoop()
