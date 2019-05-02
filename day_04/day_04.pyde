@@ -6,6 +6,8 @@ base_filename = 'day_04'
 extension = 'png'
 filename_description = ''
 
+phi = (1 + sqrt(5)) / 2
+
 
 def keyPressed():
     global filename_description
@@ -54,8 +56,14 @@ def ellipse_petal(theta, length, width):
 
 
 def flower_petals(petal, length, width, count):
+    if count > 20:
+        dtheta = TWO_PI/phi
+    else:
+        dtheta = TWO_PI/count
+    theta = 0
     for i in range(count):
-        petal(TWO_PI*i/count, length, width)
+        petal(theta, length, width)
+        theta += dtheta
 
 
 def flower(petal, length, width, center_radius, count):
@@ -73,7 +81,7 @@ def setup():
     stroke(0)
 
     translate(width/2, height/2)
-    flower(balloon_petal, length=100, width=40, center_radius=20, count=7)
+    flower(balloon_petal, length=100, width=40, center_radius=20, count=21)
 
     noLoop()
 
