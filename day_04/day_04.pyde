@@ -40,6 +40,8 @@ def keyPressed():
 
 
 side = 1000
+# https://www.gardenia.net/rendition.slider_detail/uploads/plant/1523279216-de1e281688b782541/Garden_Mum_Cheryl_Pink_Bloom_13449Optimized.jpg
+base_color = color(182, 72, 138)
 
 
 def balloon_petal(theta, length, width):
@@ -58,21 +60,21 @@ def ellipse_petal(theta, length, width):
     popMatrix()
 
 
-def flower_petals(petal, length, width, count):
+def flower_petals(petal, base_color, length, width, count):
     if count > 20:
         dtheta = TWO_PI/phi
     else:
         dtheta = TWO_PI/count
     theta = 0
     for i in range(count):
+        fill(base_color)
         petal(theta, length, width)
         theta += dtheta
 
 
-def flower(petal, length, width, center_radius, count):
-    fill(255, 120, 20)
+def flower(petal, base_color, length, width, center_radius, count):
     stroke(0)
-    flower_petals(petal, length, width, count)
+    flower_petals(petal, base_color, length, width, count)
     ellipse(0, 0, center_radius, center_radius)
 
 
@@ -84,7 +86,8 @@ def setup():
     stroke(0)
 
     translate(width/2, height/2)
-    flower(balloon_petal, length=100, width=40, center_radius=20, count=21)
+    flower(balloon_petal, base_color=base_color, length=120,
+           width=30, center_radius=20, count=31)
 
     noLoop()
 
