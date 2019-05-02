@@ -39,11 +39,11 @@ def draw_circle(r, theta, length):
 
 
 side = 2000
-minR = 0.003
+minR = 0
 maxR = 0.4
 phi = (1+sqrt(5)) / 2
 w = TWO_PI / phi
-count = 1500
+count = 800
 
 
 def setup():
@@ -52,10 +52,11 @@ def setup():
     strokeWeight(ceil(side/800))
     background(255)
 
+    power = 5
     for i in range(count):
         f = i / count
         # rdr/dt = const = > r = sqrt(c1 + c2t)
-        r = side*sqrt(lerp(maxR*maxR, minR*minR, f))
+        r = side*pow(lerp(pow(maxR, power), pow(minR, power), f), 1/power)
         length = side/70*(1 - exp(-4*f))
         theta = w * i
         draw_circle(r, theta, length)
