@@ -50,10 +50,7 @@ def flower_petals(petal, length, width, count):
 def flower(petal, length, width, center_radius, count):
     fill(255, 120, 20)
     stroke(0)
-    ellipse(0, 0, center_radius, center_radius)
     flower_petals(petal, length, width, count)
-    noStroke()
-    fill(255, 120, 20)
     ellipse(0, 0, center_radius, center_radius)
 
 
