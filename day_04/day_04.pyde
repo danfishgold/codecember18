@@ -37,15 +37,26 @@ def keyPressed():
 side = 1000
 
 
+def balloon_petal(theta, length, width):
+    pushMatrix()
+    rotate(theta)
+    wd = 1.6*width
+    ht = 1.3*length
+    bezier(0, 0, -wd, ht, wd, ht, 0, 0)
+    popMatrix()
+
+
 def ellipse_petal(theta, length, width):
     pushMatrix()
     rotate(theta)
     ellipse(0, length/2, width, length)
     popMatrix()
 
+
 def flower_petals(petal, length, width, count):
     for i in range(count):
         petal(TWO_PI*i/count, length, width)
+
 
 def flower(petal, length, width, center_radius, count):
     fill(255, 120, 20)
@@ -62,7 +73,7 @@ def setup():
     stroke(0)
 
     translate(width/2, height/2)
-    flower(ellipse_petal, 100, 10, 20, 21)
+    flower(balloon_petal, length=100, width=40, center_radius=20, count=7)
 
     noLoop()
 
