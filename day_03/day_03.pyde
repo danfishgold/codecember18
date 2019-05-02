@@ -42,7 +42,8 @@ side = 2000
 minR = 0
 maxR = 0.4
 phi = (1+sqrt(5)) / 2
-w = TWO_PI / phi
+batches = 5
+w = TWO_PI / phi / batches
 count = 800
 power = 5
 
@@ -52,11 +53,12 @@ def setup():
     strokeWeight(ceil(side/800))
     background(255)
     
-    draw_points(count, 0, power)
+    for batch in range(batches):
+        draw_points(count/batches, TWO_PI*batch/batches, power)
     noLoop()
 
 def draw_points(count, phase, power):
-    for i in range(int(count)):
+    for i in range(ceil(count)):
         f = i / count
         # rdr/dt = const = > r = sqrt(c1 + c2t)
         r = side*pow(lerp(pow(maxR, power), pow(minR, power), f), 1/power)
