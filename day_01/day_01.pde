@@ -6,7 +6,10 @@
 float t = 0;
 float t1 = 10000; // movement with t^0.25 zoom
 float t2 = t1 + 100; // movement with t^1 zoom
+float dt = 0.1; // the minimum time difference to add
+float minDist; // the minimum distance between consecutive circle centers
 
+float prevDx, prevDy;
 int side;
 
 float centerRW, centerW, radiusW, shiftXW, shiftYW;
@@ -15,10 +18,11 @@ float centerRP, centerP, radiusP, shiftXP, shiftYP;
 
 void setup() {
   fill(255);
-  strokeWeight(4);
   background(255);
-  size(4000, 4000);
+  size(2000, 2000);
   side = min(width, height);
+  minDist = side / 180;
+  strokeWeight(ceil(side/700));
   
   randomSeed(4);
 
@@ -34,13 +38,24 @@ void setup() {
   shiftXP = random(0, 2)*PI;
   shiftYP = random(0, 2)*PI;
 
+  prevDx = dx(0);
+  prevDy = dy(0);
+  float newDx = prevDx;
+  float newDy = prevDy;
 
+  while (t < t2) {
 
-  while (t <= t2) {
+    while (dist(prevDx, prevDy, newDx, newDy) < minDist) { // while the new circle is too close to the previous one
+      t += dt; // increase t and try again
+      float fac = factor(t);
+      newDx = fac*dx(t);
+      newDy = fac*dy(t);
+    }
     step(t);
-  save("../day_01.png");
-    t += 1;
-  }  
+    prevDx = newDx;
+    prevDy = newDy;
+  }
+   save("../day_01.png");
   noLoop();
 }
 
