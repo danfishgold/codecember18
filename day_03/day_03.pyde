@@ -11,7 +11,7 @@ minR = 0.003
 maxR = 0.4
 phi = (1+sqrt(5)) / 2
 w = TWO_PI / phi
-count = 1200
+count = 1500
 
 
 def setup():
@@ -24,7 +24,7 @@ def setup():
         f = i / count
         # rdr/dt = const = > r = sqrt(c1 + c2t)
         r = side*sqrt(lerp(maxR*maxR, minR*minR, f))
-        length = lerp(side/90, side/70, f)
+        length = lerp(0, side/70, f)
         theta = w * i
         draw_circle(r, theta, length)
 
