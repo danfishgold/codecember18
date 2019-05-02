@@ -77,14 +77,22 @@ def poly_decay_color(c1, c2, pow, f):
     return lerpColor(c1, c2, poly_decay(0, 1, pow, f))
 
 
+def serp(a, b, f):
+    return lerp(a, b, (1 - cos(PI*f))/2)
+
+
+def serp_color(c1, c2, f):
+    return lerpColor(c1, c2, serp(0, 1, f))
+
+
 def flower_petals(petal, base_color, base_length, base_width, count):
     dtheta = TWO_PI/phi
     for i in range(count)[::-1]:
         f = i/count
         theta = i*dtheta
-        color = poly_decay_color(base_color, white, 0.5, f)
-        length = base_length * poly_decay(0, 1, 0.5, f)
-        width = base_width * poly_decay(0.2, 1, 0.5, f)
+        color = serp_color(base_color, white, lerp(0, 0.8, f))
+        length = base_length * serp(0.15, 1, f)
+        width = base_width * serp(0.1, 1, f)
         fill(color)
         petal(theta, length, width)
 
