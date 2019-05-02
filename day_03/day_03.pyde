@@ -49,7 +49,7 @@ count = 1500
 def setup():
 
     size(side, side)
-    strokeWeight(side/800)
+    strokeWeight(ceil(side/800))
     background(255)
 
     for i in range(count):
@@ -60,7 +60,6 @@ def setup():
         theta = w * i
         draw_circle(r, theta, length)
 
-    save("../day_03.png")
     noLoop()
 
 
