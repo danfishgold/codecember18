@@ -14,7 +14,8 @@ void draw_triangle(float r, float theta, float length) {
 float side;
 float minR = 0.01;
 float maxR = 0.4;
-float w = TWO_PI / 1.618;
+float phi = (1+sqrt(5)) / 2;
+float w = TWO_PI / phi;
 int count = 300;
 
 void setup() {
