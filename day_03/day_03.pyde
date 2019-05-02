@@ -24,7 +24,7 @@ def setup():
         f = i / count
         # rdr/dt = const = > r = sqrt(c1 + c2t)
         r = side*sqrt(lerp(maxR*maxR, minR*minR, f))
-        length = lerp(0, side/70, f)
+        length = side/70*(1 - exp(-4*f))
         theta = w * i
         draw_circle(r, theta, length)
 
