@@ -111,8 +111,8 @@ def setup():
     stroke(0)
 
     translate(width/2, height/2)
-    flower(balloon_petal, base_color=base_color, length=120,
-           width=50, center_radius=20, count=120)
+    flower(balloon_petal, base_color=base_color, length=side/4,
+           width=side/10, center_radius=side/25, count=120)
 
     noLoop()
 
