@@ -42,6 +42,7 @@ def keyPressed():
 side = 1000
 # https://www.gardenia.net/rendition.slider_detail/uploads/plant/1523279216-de1e281688b782541/Garden_Mum_Cheryl_Pink_Bloom_13449Optimized.jpg
 base_color = color(182, 72, 138)
+white = color(255)
 
 
 def balloon_petal(theta, length, width):
@@ -60,16 +61,32 @@ def ellipse_petal(theta, length, width):
     popMatrix()
 
 
-def flower_petals(petal, base_color, length, width, count):
-    if count > 20:
-        dtheta = TWO_PI/phi
-    else:
-        dtheta = TWO_PI/count
-    theta = 0
-    for i in range(count):
-        fill(base_color)
+def exp_decay(f):
+    return 1-exp(-4.5*f)
+
+
+def poly_decay(a, b, pow, f):
+    return lerp(a, b, f**pow)
+
+
+def exp_decay_color(c1, c2, f):
+    return lerpColor(c1, c2, exp_decay(f))
+
+
+def poly_decay_color(c1, c2, pow, f):
+    return lerpColor(c1, c2, poly_decay(0, 1, pow, f))
+
+
+def flower_petals(petal, base_color, base_length, base_width, count):
+    dtheta = TWO_PI/phi
+    for i in range(count)[::-1]:
+        f = i/count
+        theta = i*dtheta
+        color = poly_decay_color(base_color, white, 0.5, f)
+        length = base_length * poly_decay(0, 1, 0.5, f)
+        width = base_width * poly_decay(0.2, 1, 0.5, f)
+        fill(color)
         petal(theta, length, width)
-        theta += dtheta
 
 
 def flower(petal, base_color, length, width, center_radius, count):
@@ -87,7 +104,7 @@ def setup():
 
     translate(width/2, height/2)
     flower(balloon_petal, base_color=base_color, length=120,
-           width=30, center_radius=20, count=31)
+           width=50, center_radius=20, count=120)
 
     noLoop()
 
