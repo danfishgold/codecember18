@@ -16,7 +16,7 @@ float minR = 0.003;
 float maxR = 0.4;
 float phi = (1+sqrt(5)) / 2;
 float w = TWO_PI / phi;
-int count = 300;
+int count = 800;
 
 void setup() {
   size(800, 800);
@@ -26,10 +26,11 @@ void setup() {
     float f = (float)i / (float)count;
     // rdr/dt = const => r = sqrt(c1 + c2t)
     float r = side*sqrt(lerp(maxR*maxR, minR*minR, f));
-    float len = lerp(1, 0.8, f) * side/45;
+    float len = side/65;
     float theta = w * i;
     draw_triangle(r, theta, len);
   }
+  save("../day_02.png");
 }
 
 
