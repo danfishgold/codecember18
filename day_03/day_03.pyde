@@ -44,25 +44,25 @@ maxR = 0.4
 phi = (1+sqrt(5)) / 2
 w = TWO_PI / phi
 count = 800
-
+power = 5
 
 def setup():
 
     size(side, side)
     strokeWeight(ceil(side/800))
     background(255)
+    
+    draw_points(count, 0, power)
+    noLoop()
 
-    power = 5
-    for i in range(count):
+def draw_points(count, phase, power):
+    for i in range(int(count)):
         f = i / count
         # rdr/dt = const = > r = sqrt(c1 + c2t)
         r = side*pow(lerp(pow(maxR, power), pow(minR, power), f), 1/power)
         length = side/70*(1 - exp(-4*f))
-        theta = w * i
+        theta = w * i + phase
         draw_circle(r, theta, length)
-
-    noLoop()
-
 
 def draw():
     pass
