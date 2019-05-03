@@ -92,8 +92,8 @@ def flower_petals(petal, base_color, base_length, base_width, count):
         f = i/count
         theta = i*dtheta
         color = serp_color(base_color, white, lerp(0, 0.8, f))
-        length = base_length * serp(0.15, 1, f)
-        width = base_width * serp(0.1, 1, f)
+        length = base_length * serp(0.13, 1, f)
+        width = base_width * serp(0.2, 1, f)
         fill(color)
         petal(theta, length, width)
 
