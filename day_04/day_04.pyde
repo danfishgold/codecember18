@@ -40,9 +40,8 @@ def keyPressed():
 
 
 side = 1000
-# https://www.gardenia.net/rendition.slider_detail/uploads/plant/1523279216-de1e281688b782541/Garden_Mum_Cheryl_Pink_Bloom_13449Optimized.jpg
-petal_color = color(182, 72, 138)
-pollen_color = color(190, 120, 90)
+petal_color = color(165, 0, 119)
+pollen_color = color(209, 167, 0)
 white = color(255)
 
 randomSeed(1)
@@ -90,9 +89,9 @@ def serp_color(c1, c2, f):
 
 def flower_petals(petal, base_color, base_length, base_width, count):
     dtheta = TWO_PI/phi
-    inner_stroke = white
-    outer_stroke = white
-    inner_fill = base_color
+    inner_stroke = lerpColor(base_color, white, 0.6)
+    outer_stroke = lerpColor(base_color, white, 0.95)
+    inner_fill = lerpColor(base_color, white, 0)
     outer_fill = lerpColor(base_color, white, 0.8)
     for i in range(count)[::-1]:
         f = i/count
