@@ -47,6 +47,7 @@ white = color(255)
 
 randomSeed(1)
 
+
 def balloon_petal(theta, length, width):
     pushMatrix()
     rotate(theta)
@@ -89,20 +90,28 @@ def serp_color(c1, c2, f):
 
 def flower_petals(petal, base_color, base_length, base_width, count):
     dtheta = TWO_PI/phi
+    inner_stroke = white
+    outer_stroke = white
+    inner_fill = base_color
+    outer_fill = lerpColor(base_color, white, 0.8)
     for i in range(count)[::-1]:
         f = i/count
         theta = i*dtheta
-        color = serp_color(base_color, white, lerp(
-            0, 0.8, f+randomGaussian()*0.03))
+        fill_color = serp_color(inner_fill, outer_fill,
+                                f + randomGaussian()*0.03)
+        stroke_color = serp_color(inner_stroke, outer_stroke,
+                                  f + randomGaussian()*0.03)
         length = base_length * serp(0.13, 1, f+randomGaussian()*0.01)
         width = base_width * serp(0.2, 1, f+randomGaussian()*0.03)
-        fill(color)
+        fill(fill_color)
+        stroke(stroke_color)
+        strokeWeight(serp(2, base_length/20, f))
         petal(theta, length, width)
 
 
 def pollen(color, center_radius, pollen_radius, count):
     fill(color)
-    stroke(0)
+    stroke(255)
     strokeWeight(1)
     for _ in range(count):
         r = random(0, center_radius/2)
