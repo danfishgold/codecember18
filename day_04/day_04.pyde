@@ -108,20 +108,23 @@ def flower_petals(petal, base_color, base_length, base_width, count):
         petal(theta, length, width)
 
 
-def pollen(color, center_radius, pollen_radius, count):
+def pollen(color, center_radius, count):
     fill(color)
     stroke(255)
     strokeWeight(1)
     for _ in range(count):
         r = random(0, center_radius/2)
         theta = random(0, TWO_PI)
-        ellipse(r*cos(theta), r*sin(theta), pollen_radius, pollen_radius)
+        ellipse(r*cos(theta), r*sin(theta), center_radius/4, center_radius/4)
 
 
-def flower(petal, petal_color, pollen_color, length, width, center_radius, count):
+def flower(petal, petal_color, pollen_color, radius, count):
+    length = radius
+    width = 0.4*radius
+    center_radius = 0.1*radius
     stroke(0)
     flower_petals(petal, petal_color, length, width, count)
-    pollen(pollen_color, center_radius, center_radius/4, 80)
+    pollen(pollen_color, center_radius, 80)
 
 
 def setup():
@@ -132,8 +135,8 @@ def setup():
     stroke(0)
 
     translate(width/2, height/2)
-    flower(balloon_petal, petal_color=petal_color, pollen_color=pollen_color,
-           length=side/4, width=side/10, center_radius=side/40, count=120)
+    flower(balloon_petal, petal_color=petal_color,
+           pollen_color=pollen_color, radius=0.25*side, count=120)
 
     noLoop()
 
