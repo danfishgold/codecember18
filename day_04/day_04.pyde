@@ -97,10 +97,10 @@ def flower_petals(petal, base_color, base_length, base_width, count):
         f = i/count
         theta = i*dtheta
         fill_color = serp_color(inner_fill, outer_fill,
-                                f + randomGaussian()*0.03)
+                                f + randomGaussian()*0.04)
         stroke_color = serp_color(inner_stroke, outer_stroke,
-                                  f + randomGaussian()*0.03)
-        length = base_length * serp(0.13, 1, f+randomGaussian()*0.01)
+                                  f + randomGaussian()*0.04)
+        length = base_length * serp(0.13, 1, f+randomGaussian()*0.015)
         width = base_width * serp(0.2, 1, f+randomGaussian()*0.03)
         fill(fill_color)
         stroke(stroke_color)
