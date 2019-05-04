@@ -158,8 +158,8 @@ def setup():
             cy = height/2 + radius*sin(phase)
         translate(cx, cy)
         colorMode(HSB, 360, 100, 100)
-        petal_color = color(317+randomGaussian()*5, 100, 65)
-        pollen_color = color(48, 100, 82)
+        petal_color = color(317+randomGaussian()*5, 100, 75)
+        pollen_color = color(48, 80, 70)
         colorMode(RGB, 255, 255, 255)
         new_petal_commands, new_pollen_commands = flower(radius=flower_radius, count=120,
                                                          petal=balloon_petal, petal_color=petal_color, pollen_color=pollen_color)
