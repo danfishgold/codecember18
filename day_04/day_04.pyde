@@ -131,14 +131,23 @@ def setup():
     colorMode(RGB, 255, 255, 255)
 
     size(side, side)
-    strokeWeight(ceil(side/800))
     background(255)
-    stroke(0)
 
-    translate(width/2, height/2)
-    flower(radius=0.25*side, count=120,
-           petal=balloon_petal, petal_color=petal_color, pollen_color=pollen_color)
+    count = 8
+    flower_radius = 0.16*side
 
+    for i in range(count):
+        resetMatrix()
+        if i == count-1:
+            translate(width/2, height/2)
+        else:
+            phase = TWO_PI*i/(count-1)
+            # I want to have an outer ring of radius 0.4*side
+            radius = 0.4*side - flower_radius
+            translate(width/2 + radius*cos(phase),
+                      height/2 + radius*sin(phase))
+        flower(radius=flower_radius, count=120,
+               petal=balloon_petal, petal_color=petal_color, pollen_color=pollen_color)
     noLoop()
 
 
