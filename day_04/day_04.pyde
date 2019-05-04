@@ -108,7 +108,7 @@ def flower_petals(base_length, base_width, count, petal, base_color):
 def pollen(color, center_radius, count):
     fill(color)
     stroke(255)
-    strokeWeight(1)
+    strokeWeight(center_radius/30)
     for _ in range(count):
         r = random(0, center_radius/2)
         theta = random(0, TWO_PI)
