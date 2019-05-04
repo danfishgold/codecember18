@@ -41,14 +41,21 @@ side = 1000
 
 
 def setup():
-
     size(side, side)
     strokeWeight(ceil(side/800))
     background(255)
     stroke(0)
 
-    noLoop()
+
+def mouseClicked():
+    redraw()
 
 
 def draw():
-    pass
+    background(255)
+    draw_()
+    noLoop()
+
+
+def draw_():
+    ellipse(width/2, height/2, random(100, 200), random(100, 200))
