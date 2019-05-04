@@ -40,9 +40,6 @@ def keyPressed():
 
 
 side = 1000
-petal_color = color(165, 0, 119)
-pollen_color = color(209, 167, 0)
-white = color(255)
 
 randomSeed(1)
 
@@ -89,10 +86,10 @@ def serp_color(c1, c2, f):
 
 def flower_petals(petal, base_color, base_length, base_width, count):
     dtheta = TWO_PI/phi
-    inner_stroke = lerpColor(base_color, white, 0.6)
-    outer_stroke = lerpColor(base_color, white, 0.95)
-    inner_fill = lerpColor(base_color, white, 0)
-    outer_fill = lerpColor(base_color, white, 0.8)
+    inner_stroke = lerpColor(base_color, color(255), 0.6)
+    outer_stroke = lerpColor(base_color, color(255), 0.95)
+    inner_fill = lerpColor(base_color, color(255), 0)
+    outer_fill = lerpColor(base_color, color(255), 0.8)
     for i in range(count)[::-1]:
         f = i/count
         theta = i*dtheta
@@ -128,6 +125,10 @@ def flower(petal, petal_color, pollen_color, radius, count):
 
 
 def setup():
+    colorMode(HSB, 360, 100, 100)
+    petal_color = color(317, 100, 65)
+    pollen_color = color(48, 100, 82)
+    colorMode(RGB, 255, 255, 255)
 
     size(side, side)
     strokeWeight(ceil(side/800))
