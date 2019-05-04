@@ -125,10 +125,6 @@ def flower(radius, count, petal, petal_color, pollen_color):
 
 
 def setup():
-    colorMode(HSB, 360, 100, 100)
-    petal_color = color(317, 100, 65)
-    pollen_color = color(48, 100, 82)
-    colorMode(RGB, 255, 255, 255)
 
     size(side, side)
     background(255)
@@ -146,6 +142,10 @@ def setup():
             radius = 0.4*side - flower_radius
             translate(width/2 + radius*cos(phase),
                       height/2 + radius*sin(phase))
+        colorMode(HSB, 360, 100, 100)
+        petal_color = color(317+randomGaussian()*5, 100, 65)
+        pollen_color = color(48, 100, 82)
+        colorMode(RGB, 255, 255, 255)
         flower(radius=flower_radius, count=120,
                petal=balloon_petal, petal_color=petal_color, pollen_color=pollen_color)
     noLoop()
