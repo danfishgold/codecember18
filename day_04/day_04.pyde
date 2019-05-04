@@ -1,4 +1,4 @@
-# Day 04
+# Day 04: Bouquet
 from __future__ import division
 import os
 
@@ -39,7 +39,7 @@ def keyPressed():
                 filename_description = filename_description + key
 
 
-side = 1000
+side = 2000
 
 randomSeed(1)
 
