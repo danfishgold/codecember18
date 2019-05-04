@@ -84,7 +84,7 @@ def serp_color(c1, c2, f):
     return lerpColor(c1, c2, serp(0, 1, f))
 
 
-def flower_petals(petal, base_color, base_length, base_width, count):
+def flower_petals(base_length, base_width, count, petal, base_color):
     dtheta = TWO_PI/phi
     inner_stroke = lerpColor(base_color, color(255), 0.6)
     outer_stroke = lerpColor(base_color, color(255), 0.95)
@@ -115,12 +115,12 @@ def pollen(color, center_radius, count):
         ellipse(r*cos(theta), r*sin(theta), center_radius/4, center_radius/4)
 
 
-def flower(petal, petal_color, pollen_color, radius, count):
+def flower(radius, count, petal, petal_color, pollen_color):
     length = radius
     width = 0.4*radius
     center_radius = 0.1*radius
     stroke(0)
-    flower_petals(petal, petal_color, length, width, count)
+    flower_petals(length, width, count, petal, petal_color)
     pollen(pollen_color, center_radius, 80)
 
 
@@ -136,8 +136,8 @@ def setup():
     stroke(0)
 
     translate(width/2, height/2)
-    flower(balloon_petal, petal_color=petal_color,
-           pollen_color=pollen_color, radius=0.25*side, count=120)
+    flower(radius=0.25*side, count=120,
+           petal=balloon_petal, petal_color=petal_color, pollen_color=pollen_color)
 
     noLoop()
 
