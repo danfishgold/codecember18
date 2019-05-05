@@ -38,42 +38,49 @@ def keyPressed():
                 filename_description = filename_description + key
 
 
-side = 500
-
-
-def prim_step(maze_points, wall_list, passage_set):
+def prim_step(maze_points, wall_list, passage_set, wd, ht):
     wall_index = random.randint(0, len(wall_list)-1)
     wall = wall_list.pop(wall_index)
     pt1, pt2 = wall
-    if pt1 in maze_points and not pt2 in maze_points:
+    pt1_visited = pt1 in maze_points
+    pt2_visited = pt2 in maze_points
+    if pt1_visited and not pt2_visited:
         new_pt = pt2
-    elif pt1 not in maze_points and pt2 in maze_points:
+    elif not pt1_visited and pt2_visited:
         new_pt = pt1
     else:
-        return (maze_points, wall_list, passage_set)
+        return None
 
     maze_points.add(new_pt)
     passage_set.add(wall)
-    wall_list.extend(neighboring_walls(new_pt, passage_set))
-    return (maze_points, wall_list, passage_set)
+    wall_list.extend(neighboring_walls(new_pt, passage_set, wd, ht))
+    return wall
 
 
-def neighboring_walls(pt, passage_set):
+def neighboring_walls(pt, passage_set, wd, ht):
     x, y = pt
     walls = []
     if x >= 1:
         walls.append(((x-1, y), (x, y)))
     if y >= 1:
         walls.append(((x, y-1), (x, y)))
-    if x < 50:
+    if x < wd-1:
         walls.append(((x, y), (x+1, y)))
-    if y < 50:
+    if y < ht-1:
         walls.append(((x, y), (x, y+1)))
     return list(filter(lambda wall: wall not in passage_set, walls))
 
 
-maze_points, wall_list, passage_set = {
-    (0, 0)}, [((0, 0), (0, 1)), ((0, 0), (1, 0))], set()
+side = 500
+wd = side/10
+ht = side/10
+center = (wd//2, ht//2)
+corners = [(0, 0), (0, ht-1), (wd-1, 0), (wd-1, ht-1)]
+maze_points = {center}
+passage_set = set()
+wall_list = [wall
+             for pt in maze_points
+             for wall in neighboring_walls(pt, passage_set, wd, ht)]
 
 
 def setup():
@@ -82,20 +89,20 @@ def setup():
     background(255)
     stroke(0)
 
-    while wall_list:
-        prim_step(maze_points, wall_list, passage_set)
-
 
 def mouseClicked():
     redraw()
 
 
 def draw():
-    background(255)
     draw_()
-    noLoop()
 
 
 def draw_():
-    for ((x1, y1), (x2, y2)) in passage_set:
-        line(8*(x1+1), 8*(y1+1), 8*(x2+1), 8*(y2+1))
+    if wall_list:
+        new_passage = prim_step(maze_points, wall_list, passage_set, wd, ht)
+        if new_passage:
+            ((x1, y1), (x2, y2)) = new_passage
+            line(8*(x1+1), 8*(y1+1), 8*(x2+1), 8*(y2+1))
+    else:
+        noLoop()
