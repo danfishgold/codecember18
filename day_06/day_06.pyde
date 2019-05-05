@@ -38,7 +38,7 @@ def keyPressed():
                 filename_description = filename_description + key
 
 
-def prim_step(maze_points, wall_set, passage_set, wd, ht):
+def prim_step(maze_points, wall_set, passage_set, maze_side):
     wall = random.sample(wall_set, 1)[0]
     wall_set.remove(wall)
     # wall = wall_set.pop() # This isn't truly random
@@ -54,39 +54,40 @@ def prim_step(maze_points, wall_set, passage_set, wd, ht):
 
     maze_points.add(new_pt)
     passage_set.add(wall)
-    wall_set.update(neighboring_walls(new_pt, passage_set, wd, ht))
+    wall_set.update(neighboring_walls(new_pt, passage_set, maze_side))
     return wall
 
 
-def neighboring_walls(pt, passage_set, wd, ht):
+def neighboring_walls(pt, passage_set, maze_side):
     x, y = pt
     walls = []
     if x >= 1:
         walls.append(((x-1, y), (x, y)))
     if y >= 1:
         walls.append(((x, y-1), (x, y)))
-    if x < wd-1:
+    if x < maze_side-1:
         walls.append(((x, y), (x+1, y)))
-    if y < ht-1:
+    if y < maze_side-1:
         walls.append(((x, y), (x, y+1)))
     return list(filter(lambda wall: wall not in passage_set, walls))
 
 
 side = 500
-wd = side/10
-ht = side/10
-center = (wd//2, ht//2)
-corners = [(0, 0), (0, ht-1), (wd-1, 0), (wd-1, ht-1)]
+maze_side = 50
+maze_scale = side / maze_side
+center = (maze_side//2, maze_side//2)
+corners = [(0, 0), (0, maze_side-1), (maze_side-1, 0),
+           (maze_side-1, maze_side-1)]
 maze_points = {center}
 passage_set = set()
 wall_set = {wall
             for pt in maze_points
-            for wall in neighboring_walls(pt, passage_set, wd, ht)}
+            for wall in neighboring_walls(pt, passage_set, maze_side)}
 
 
 def setup():
     size(side, side)
-    strokeWeight(5)
+    strokeWeight(maze_scale/2)
     background(255)
     stroke(0)
 
@@ -101,9 +102,14 @@ def draw():
 
 def draw_():
     if wall_set:
-        new_passage = prim_step(maze_points, wall_set, passage_set, wd, ht)
+        new_passage = prim_step(maze_points, wall_set, passage_set, maze_side)
         if new_passage:
             ((x1, y1), (x2, y2)) = new_passage
-            line(5+10*x1, 5+10*y1, 5+10*x2, 5+10*y2)
+            line(
+                maze_scale*(0.5 + x1),
+                maze_scale*(0.5 + y1),
+                maze_scale*(0.5 + x2),
+                maze_scale*(0.5 + y2)
+            )
     else:
         noLoop()
