@@ -53,25 +53,21 @@ def mouseClicked():
 
 def draw():
     background(255)
-    draw_()
+    draw_(branch_count=7, n1=1, n2=-1, phase1=0, phase2=0)
     noLoop()
 
 
-def draw_():
-
-    branch_count = 7
-    n1 = 1
-    n2 = n1
+def draw_(branch_count, n1, n2, phase1, phase2):
     point_count = 200
     radius = 0.4*side
     for branch in range(branch_count):
         phase = TWO_PI * branch/branch_count
-        for vel in (TWO_PI*n1, -TWO_PI*n2):
+        for (n, time_phase) in [(n1, phase1), (n2, phase2)]:
             noFill()
             beginShape()
             for i in range(point_count+1):
-                t = i / point_count
-                r = pow(t, 4) * radius
-                theta = vel*t + phase
+                f = i / point_count
+                r = pow(f, 4) * radius
+                theta = TWO_PI*n*f + phase + time_phase
                 vertex(width/2+r*cos(theta), height/2+r*sin(theta))
             endShape()
