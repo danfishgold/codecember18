@@ -51,10 +51,18 @@ def mouseClicked():
     redraw()
 
 
+t = 0
+
+
 def draw():
+    global t
     background(255)
-    draw_(branch_count=7, n1=1, n2=-1, phase1=0, phase2=0)
-    noLoop()
+    draw_(branch_count=7,
+          n1=1,
+          n2=-1,
+          phase1=TWO_PI*t*(-0.1+0.03),
+          phase2=TWO_PI*t*(0.1+0.03))
+    t += 0.016
 
 
 def draw_(branch_count, n1, n2, phase1, phase2):
