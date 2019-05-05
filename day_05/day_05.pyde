@@ -76,6 +76,7 @@ def draw():
               phase1=TWO_PI*t*(-v0+dv),
               phase2=TWO_PI*t*(v0+dv))
         t += 0.016
+        saveFrame('gif/{}_###.{}'.format(base_filename, extension))
 
 
 def draw_(branch_count, n1, n2, phase1, phase2):
