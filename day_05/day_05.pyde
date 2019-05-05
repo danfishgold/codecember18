@@ -37,11 +37,12 @@ def keyPressed():
                 filename_description = filename_description + key
 
 
-side = 1000
+side = 2000
 
 
 def setup():
     size(side, side)
+    smooth(8)
     strokeWeight(ceil(side/500))
     background(255)
     stroke(0)
@@ -64,6 +65,8 @@ def dv_and_t_final(di1, di2, branch_count, v0):
 branch_count = 7
 v0 = 0.175
 (dv, t_final) = dv_and_t_final(2, -1, branch_count, v0)
+time_steps = 50
+dt = t_final / time_steps
 
 
 def draw():
@@ -75,7 +78,7 @@ def draw():
               n2=-1,
               phase1=TWO_PI*t*(-v0+dv),
               phase2=TWO_PI*t*(v0+dv))
-        t += 0.016
+        t += dt
         saveFrame('gif/{}_###.{}'.format(base_filename, extension))
 
 
