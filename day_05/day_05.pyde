@@ -48,21 +48,34 @@ def setup():
 
 
 def mouseClicked():
-    redraw()
+    global t
+    t = 0
 
 
 t = 0
 
 
+def dv_and_t_final(di1, di2, branch_count, v0):
+    # This calculation is in my notebook. It's complicated. But not very complicated
+    return ((di1+di2)/(di1-di2)*v0,
+            (di1-di2)/(2*branch_count*v0))
+
+
+branch_count = 7
+v0 = 0.175
+(dv, t_final) = dv_and_t_final(2, -1, branch_count, v0)
+
+
 def draw():
     global t
-    background(255)
-    draw_(branch_count=7,
-          n1=1,
-          n2=-1,
-          phase1=TWO_PI*t*(-0.1+0.03),
-          phase2=TWO_PI*t*(0.1+0.03))
-    t += 0.016
+    if t < t_final:
+        background(255)
+        draw_(branch_count=branch_count,
+              n1=1,
+              n2=-1,
+              phase1=TWO_PI*t*(-v0+dv),
+              phase2=TWO_PI*t*(v0+dv))
+        t += 0.016
 
 
 def draw_(branch_count, n1, n2, phase1, phase2):
