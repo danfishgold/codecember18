@@ -1,4 +1,4 @@
-# Day 05
+# Day 05: Spirals
 from __future__ import division
 import os
 
