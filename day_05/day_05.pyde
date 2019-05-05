@@ -42,7 +42,7 @@ side = 1000
 
 def setup():
     size(side, side)
-    strokeWeight(ceil(side/800))
+    strokeWeight(ceil(side/500))
     background(255)
     stroke(0)
 
@@ -60,10 +60,10 @@ def draw():
 def draw_(branch_count, n1, n2, phase1, phase2):
     point_count = 200
     radius = 0.4*side
+    noFill()
     for branch in range(branch_count):
         phase = TWO_PI * branch/branch_count
         for (n, time_phase) in [(n1, phase1), (n2, phase2)]:
-            noFill()
             beginShape()
             for i in range(point_count+1):
                 f = i / point_count
