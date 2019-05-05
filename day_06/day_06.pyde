@@ -85,7 +85,7 @@ wall_list = [wall
 
 def setup():
     size(side, side)
-    strokeWeight(ceil(side/500))
+    strokeWeight(5)
     background(255)
     stroke(0)
 
@@ -103,6 +103,6 @@ def draw_():
         new_passage = prim_step(maze_points, wall_list, passage_set, wd, ht)
         if new_passage:
             ((x1, y1), (x2, y2)) = new_passage
-            line(8*(x1+1), 8*(y1+1), 8*(x2+1), 8*(y2+1))
+            line(5+10*x1, 5+10*y1, 5+10*x2, 5+10*y2)
     else:
         noLoop()
