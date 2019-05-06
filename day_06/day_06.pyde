@@ -60,6 +60,8 @@ def prim_step(maze_points, wall_set, passage_set, maze_side):
 
 def neighboring_walls(pt, passage_set, maze_side):
     x, y = pt
+    if sqrt((x-maze_side/2)**2 + (y-maze_side/2)**2) >= 0.4*maze_side:
+        return []
     walls = []
     if x >= 1:
         walls.append(((x-1, y), (x, y)))
