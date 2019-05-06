@@ -125,8 +125,8 @@ def draw_():
     background(255)
     for ((x1, y1), (x2, y2)) in walls:
         line(
-            maze_scale*(0.5 + x1),
-            maze_scale*(0.5 + y1),
-            maze_scale*(0.5 + x2),
-            maze_scale*(0.5 + y2)
+            maze_scale*x1,
+            maze_scale*y1,
+            maze_scale*x2,
+            maze_scale*y2
         )
