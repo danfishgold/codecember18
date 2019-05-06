@@ -7,6 +7,8 @@ base_filename = 'day_06'
 extension = 'png'
 filename_description = ''
 
+random.seed(2)
+
 
 def keyPressed():
     global filename_description
