@@ -1,4 +1,4 @@
-# Day 06
+# Day 06: Maze Complement
 from __future__ import division
 import os
 import random
