@@ -40,11 +40,11 @@ def keyPressed():
                 filename_description = filename_description + key
 
 
-def prim_step(maze_points, wall_set, passage_set, maze_side):
-    wall = random.sample(wall_set, 1)[0]
-    wall_set.remove(wall)
-    # wall = wall_set.pop() # This isn't truly random
-    pt1, pt2 = wall
+def prim_step(maze_points, passage_set, wall_set, maze_side):
+    potential_wall = random.sample(passage_set, 1)[0]
+    passage_set.remove(potential_wall)
+    # potential_wall = passage_set.pop() # This isn't truly random
+    pt1, pt2 = potential_wall
     pt1_visited = pt1 in maze_points
     pt2_visited = pt2 in maze_points
     if pt1_visited and not pt2_visited:
@@ -55,12 +55,11 @@ def prim_step(maze_points, wall_set, passage_set, maze_side):
         return None
 
     maze_points.add(new_pt)
-    passage_set.add(wall)
-    wall_set.update(neighboring_walls(new_pt, passage_set, maze_side))
-    return wall
+    wall_set.add(potential_wall)
+    passage_set.update(neighboring_passages(new_pt, wall_set, maze_side))
 
 
-def neighboring_walls(pt, passage_set, maze_side):
+def neighboring_passages(pt, wall_set, maze_side):
     x, y = pt
     if sqrt((x-maze_side/2)**2 + (y-maze_side/2)**2) >= 0.4*maze_side:
         return []
@@ -73,7 +72,7 @@ def neighboring_walls(pt, passage_set, maze_side):
         walls.append(((x, y), (x+1, y)))
     if y < maze_side-1:
         walls.append(((x, y), (x, y+1)))
-    return list(filter(lambda wall: wall not in passage_set, walls))
+    return list(filter(lambda wall: wall not in wall_set, walls))
 
 
 def all_walls(maze_side):
@@ -118,19 +117,19 @@ def draw():
 
 
 maze_points = {center}
-passage_set = set()
-wall_set = {wall
-            for pt in maze_points
-            for wall in neighboring_walls(pt, passage_set, maze_side)}
+wall_set = set()
+passage_set = {wall
+               for pt in maze_points
+               for wall in neighboring_passages(pt, wall_set, maze_side)}
 
-while wall_set:
-    prim_step(maze_points, wall_set, passage_set, maze_side)
+while passage_set:
+    prim_step(maze_points, passage_set, wall_set, maze_side)
 
-walls = all_walls(maze_side).difference(passage_set)
+passages = all_walls(maze_side).difference(wall_set)
 
 
 def draw_():
-    lines = passage_set if show_walls else walls
+    lines = wall_set if show_walls else passages
     background(255)
     for ((x1, y1), (x2, y2)) in lines:
         line(
