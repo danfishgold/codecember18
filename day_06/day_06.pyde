@@ -74,17 +74,24 @@ def neighboring_walls(pt, passage_set, maze_side):
     return list(filter(lambda wall: wall not in passage_set, walls))
 
 
+def all_walls(maze_side):
+    walls = set()
+    for x in range(0, maze_side-1):
+        for y in range(0, maze_side-1):
+            if sqrt((x-maze_side/2)**2 + (y-maze_side/2)**2) >= 0.4*maze_side:
+                continue
+            else:
+                walls.add(((x, y), (x, y+1)))
+                walls.add(((x, y), (x+1, y)))
+    return walls
+
+
 side = 500
 maze_side = 50
 maze_scale = side / maze_side
 center = (maze_side//2, maze_side//2)
 corners = [(0, 0), (0, maze_side-1), (maze_side-1, 0),
            (maze_side-1, maze_side-1)]
-maze_points = {center}
-passage_set = set()
-wall_set = {wall
-            for pt in maze_points
-            for wall in neighboring_walls(pt, passage_set, maze_side)}
 
 
 def setup():
@@ -100,18 +107,26 @@ def mouseClicked():
 
 def draw():
     draw_()
+    noLoop()
 
 
 def draw_():
-    if wall_set:
-        new_passage = prim_step(maze_points, wall_set, passage_set, maze_side)
-        if new_passage:
-            ((x1, y1), (x2, y2)) = new_passage
-            line(
-                maze_scale*(0.5 + x1),
-                maze_scale*(0.5 + y1),
-                maze_scale*(0.5 + x2),
-                maze_scale*(0.5 + y2)
-            )
-    else:
-        noLoop()
+    maze_points = {center}
+    passage_set = set()
+    wall_set = {wall
+                for pt in maze_points
+                for wall in neighboring_walls(pt, passage_set, maze_side)}
+
+    while wall_set:
+        prim_step(maze_points, wall_set, passage_set, maze_side)
+
+    walls = all_walls(maze_side).difference(passage_set)
+
+    background(255)
+    for ((x1, y1), (x2, y2)) in walls:
+        line(
+            maze_scale*(0.5 + x1),
+            maze_scale*(0.5 + y1),
+            maze_scale*(0.5 + x2),
+            maze_scale*(0.5 + y2)
+        )
