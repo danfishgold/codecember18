@@ -96,7 +96,7 @@ corners = [(0, 0), (0, maze_side-1), (maze_side-1, 0),
 
 def setup():
     size(side, side)
-    strokeWeight(maze_scale/2)
+    strokeWeight(maze_scale//4*2+1)
     background(255)
     stroke(0)
 
