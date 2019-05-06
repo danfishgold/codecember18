@@ -88,8 +88,8 @@ def all_walls(maze_side):
     return walls
 
 
-side = 500
-maze_side = 50
+side = 2000
+maze_side = 77
 maze_scale = side / maze_side
 center = (maze_side//2, maze_side//2)
 corners = [(0, 0), (0, maze_side-1), (maze_side-1, 0),
