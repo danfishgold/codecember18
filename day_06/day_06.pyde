@@ -101,7 +101,12 @@ def setup():
     stroke(0)
 
 
+show_walls = False
+
+
 def mouseClicked():
+    global show_walls
+    show_walls = not show_walls
     redraw()
 
 
@@ -110,20 +115,22 @@ def draw():
     noLoop()
 
 
+maze_points = {center}
+passage_set = set()
+wall_set = {wall
+            for pt in maze_points
+            for wall in neighboring_walls(pt, passage_set, maze_side)}
+
+while wall_set:
+    prim_step(maze_points, wall_set, passage_set, maze_side)
+
+walls = all_walls(maze_side).difference(passage_set)
+
+
 def draw_():
-    maze_points = {center}
-    passage_set = set()
-    wall_set = {wall
-                for pt in maze_points
-                for wall in neighboring_walls(pt, passage_set, maze_side)}
-
-    while wall_set:
-        prim_step(maze_points, wall_set, passage_set, maze_side)
-
-    walls = all_walls(maze_side).difference(passage_set)
-
+    lines = passage_set if show_walls else walls
     background(255)
-    for ((x1, y1), (x2, y2)) in walls:
+    for ((x1, y1), (x2, y2)) in lines:
         line(
             maze_scale*x1,
             maze_scale*y1,
