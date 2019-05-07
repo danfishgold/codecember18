@@ -57,13 +57,17 @@ side = 500
 maze_side = 50
 maze_scale = side / maze_side
 
+# http://collection.mam.org/details.php?id=8007
+red = color(183, 19, 0)
+yellow = color(250, 209, 0)
+blue = color(30, 63, 177)
+
 
 def setup():
     size(side, side)
     strokeWeight(maze_scale//4*2+1)
     strokeCap(PROJECT)
     background(255)
-    stroke(0)
 
 
 def mouseClicked():
@@ -79,13 +83,15 @@ def draw():
 def draw_():
     lines = list(all_walls(maze_side))
     random.shuffle(lines)
-    for ((x1, y1), (x2, y2)) in lines[:floor(len(lines)*0.4)]:
+    for ((x1, y1), (x2, y2)) in lines[:floor(len(lines)*0.35)]:
+        stroke(random.choice([red, yellow, blue]))
         line(
             maze_scale*(x1+0.5),
             maze_scale*(y1+0.5),
             maze_scale*(x2+0.5),
             maze_scale*(y2+0.5)
         )
+    stroke(0)
     for x in range(maze_side):
         for y in range(maze_side):
             point(maze_scale*(x+0.5), maze_scale*(y+0.5))
