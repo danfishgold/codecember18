@@ -37,7 +37,7 @@ def keyPressed():
                 filename_description = filename_description + key
 
 
-side = 2000
+side = 750
 
 
 def setup():
@@ -64,10 +64,9 @@ def dv_and_t_final(di1, di2, branch_count, v0):
 
 branch_count = 7
 v0 = 0.175
-(dv, t_final) = dv_and_t_final(2, -1, branch_count, v0)
-time_steps = 50
-dt = t_final / time_steps
-
+(dv, t_final) = dv_and_t_final(4, -3, branch_count, v0)
+dt = 0.025
+time_steps = t_final // dt 
 
 def draw():
     global t
