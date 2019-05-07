@@ -38,24 +38,22 @@ def keyPressed():
                 filename_description = filename_description + key
 
 
-def all_walls(maze_side):
-    walls = set()
-    for x in range(0, maze_side-1):
-        for y in range(0, maze_side-1):
-            if sqrt((x-maze_side/2)**2 + (y-maze_side/2)**2) >= 0.4*maze_side:
-                continue
-            else:
-                walls.add(((x, y), (x, y+1)))
-                walls.add(((x, y), (x+1, y)))
-    return walls
+def is_point_ok(x, y, grid_side):
+    inside_circle = sqrt(x**2 + y**2) < 0.4*grid_side
+    even = (x+y) % 2 == 0
+    return inside_circle and not even
 
 
 random.seed(2)
 
 
 side = 500
-maze_side = 50
-maze_scale = side / maze_side
+grid_scale = 11
+grid_side = (side // grid_scale)//2 * 2 + 1
+all_points = [(x, y)
+              for x in range(-grid_side//2+1, grid_side//2+1)
+              for y in range(-grid_side//2+1, grid_side//2+1)
+              if is_point_ok(x, y, grid_side)]
 
 # http://collection.mam.org/details.php?id=8007
 red = color(183, 19, 0)
@@ -65,7 +63,7 @@ blue = color(30, 63, 177)
 
 def setup():
     size(side, side)
-    strokeWeight(maze_scale//4*2+1)
+    strokeWeight(grid_scale)
     strokeCap(PROJECT)
     background(255)
 
@@ -81,17 +79,8 @@ def draw():
 
 
 def draw_():
-    lines = list(all_walls(maze_side))
-    random.shuffle(lines)
-    for ((x1, y1), (x2, y2)) in lines[:floor(len(lines)*0.35)]:
+
+    random.shuffle(all_points)
+    for (x, y) in all_points[:floor(len(all_points)*1)]:
         stroke(random.choice([red, yellow, blue]))
-        line(
-            maze_scale*(x1+0.5),
-            maze_scale*(y1+0.5),
-            maze_scale*(x2+0.5),
-            maze_scale*(y2+0.5)
-        )
-    stroke(255)
-    for x in range(maze_side):
-        for y in range(maze_side):
-            point(maze_scale*(x+0.5), maze_scale*(y+0.5))
+        point(width/2 + grid_scale*x, height/2 + grid_scale*y)
