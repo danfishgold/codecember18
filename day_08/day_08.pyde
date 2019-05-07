@@ -38,20 +38,19 @@ def keyPressed():
                 filename_description = filename_description + key
 
 
-random.seed(1)
-
 # https://coolors.co/29335c-ed7d3a-dee7e7-dee7e7-dee7e7
 colors = [
     color(41, 51, 92),
     color(237, 125, 58),
     color(222, 231, 231)
 ]
-side = 500
-stroke_weight = (9 * (side//500)) // 2 * 2+1
-max_inset = 2
+side = 1000
+stroke_weight = (5 * (side//500)) // 2 * 2 + 1
+max_inset = 3
 square_side = (max_inset+1) * 2 * stroke_weight
 num_squares = side // square_side
 side = square_side * num_squares
+stroke_middle = (stroke_weight // 4)*2 + 1
 
 
 def setup():
@@ -70,15 +69,20 @@ def draw():
     noLoop()
 
 
+random.seed(1)
+
+
 def draw_():
+    seed = random.randint(0, 10000)
+    print "seed:", seed
+    random.seed(seed)
     strokeWeight(stroke_weight)
-    stroke_middle = (stroke_weight // 4)*2
 
     for x in range(num_squares):
         for y in range(num_squares):
-            inset = random.randint(-1, max_inset)
-            if inset == -1:
+            if random.random() < 0.2:
                 continue
+            inset = random.randint(0, max_inset)
             color = random.choice(colors)
             stroke(color)
             if random.random() < 0.3:
