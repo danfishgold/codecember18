@@ -91,7 +91,7 @@ def draw_():
             maze_scale*(x2+0.5),
             maze_scale*(y2+0.5)
         )
-    stroke(0)
+    stroke(255)
     for x in range(maze_side):
         for y in range(maze_side):
             point(maze_scale*(x+0.5), maze_scale*(y+0.5))
