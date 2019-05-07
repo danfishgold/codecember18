@@ -47,9 +47,11 @@ colors = [
     color(222, 231, 231)
 ]
 side = 500
-num_squares = 10
-stroke_weight = 15
-square_side = side / num_squares
+stroke_weight = (9 * (side//500)) // 2 * 2+1
+max_inset = 2
+square_side = (max_inset+1) * 2 * stroke_weight
+num_squares = side // square_side
+side = square_side * num_squares
 
 
 def setup():
@@ -70,12 +72,20 @@ def draw():
 
 def draw_():
     strokeWeight(stroke_weight)
-    stroke_middle = (stroke_weight // 4)*2+1
+    stroke_middle = (stroke_weight // 4)*2
 
     for x in range(num_squares):
         for y in range(num_squares):
-            stroke(random.choice(colors))
-            rect(stroke_middle + x*square_side,
-                 stroke_middle + y*square_side,
-                 square_side - stroke_weight,
-                 square_side - stroke_weight)
+            inset = random.randint(-1, max_inset)
+            if inset == -1:
+                continue
+            color = random.choice(colors)
+            stroke(color)
+            if random.random() < 0.3:
+                fill(color)
+            else:
+                noFill()
+            rect(stroke_middle + inset*stroke_weight + x*square_side,
+                 stroke_middle + inset*stroke_weight + y*square_side,
+                 square_side - stroke_weight*(2*inset+1),
+                 square_side - stroke_weight*(2*inset+1))
