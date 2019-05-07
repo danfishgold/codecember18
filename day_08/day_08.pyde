@@ -1,4 +1,4 @@
-# Day 08
+# Day 08: Squares
 from __future__ import division
 import os
 import random
@@ -44,7 +44,7 @@ colors = [
     color(237, 125, 58),
     color(222, 231, 231)
 ]
-side = 1000
+side = 2000
 stroke_weight = (5 * (side//500)) // 2 * 2 + 1
 max_inset = 3
 square_side = (max_inset+1) * 2 * stroke_weight
