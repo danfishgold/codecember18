@@ -1,4 +1,4 @@
-# Day 07
+# Day 07: Points
 from __future__ import division
 import os
 import random
@@ -47,9 +47,9 @@ def is_point_ok(x, y, grid_side):
 random.seed(5)
 
 
-side = 500
-grid_scale = 11
-grid_side = (side // grid_scale)//2 * 2 + 1
+side = 2000
+grid_scale = (side/50)//2 * 2 + 1
+grid_side = int(side / grid_scale)//2 * 2 + 1
 all_points = [(x, y)
               for x in range(-grid_side//2+1, grid_side//2+1)
               for y in range(-grid_side//2+1, grid_side//2+1)
