@@ -44,7 +44,7 @@ def is_point_ok(x, y, grid_side):
     return inside_circle and not even
 
 
-random.seed(2)
+random.seed(5)
 
 
 side = 500
@@ -81,6 +81,6 @@ def draw():
 def draw_():
 
     random.shuffle(all_points)
-    for (x, y) in all_points[:floor(len(all_points)*1)]:
+    for (x, y) in all_points[:floor(len(all_points)*0.65)]:
         stroke(random.choice([red, yellow, blue]))
         point(width/2 + grid_scale*x, height/2 + grid_scale*y)
