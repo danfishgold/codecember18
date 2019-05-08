@@ -1,6 +1,7 @@
 # Day 10: Tsuro
 from __future__ import division
 import os
+import random
 
 base_filename = 'day_10'
 extension = 'png'
@@ -127,6 +128,12 @@ def tile(xc, yc, tile_side, path_pairs):
     # rect(x0, y0, tile_side, tile_side)
 
 
+def randomized_paths(indexes):
+    random.shuffle(indexes)
+    half = len(indexes) // 2
+    pairs = zip(indexes[:half], indexes[half:])
+    return pairs
+
 
 side = 1000
 
@@ -147,6 +154,25 @@ def draw():
 
 
 def draw_():
-    tile_side = 100
-    for i2 in range(7):
-        tile(1.05*tile_side*(i2+2), side/2, 100, [(7, i2)])
+    tile_count = 8
+    tile_side = side / tile_count
+    for row in range(tile_count):
+        for col in range(tile_count):
+            indexes = range(8)
+            if col == 0:
+                indexes.remove(0)
+                indexes.remove(1)
+            elif col == tile_count-1:
+                indexes.remove(4)
+                indexes.remove(5)
+            if row == 0:
+                indexes.remove(6)
+                indexes.remove(7)
+            elif row == tile_count-1:
+                indexes.remove(2)
+                indexes.remove(3)
+            tile(
+                tile_side/2 + tile_side*col,
+                tile_side/2 + tile_side*row,
+                tile_side,
+                randomized_paths(indexes))
