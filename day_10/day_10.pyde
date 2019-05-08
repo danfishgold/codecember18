@@ -101,7 +101,7 @@ def multipliers(i1, i2):
         raise ValueError("Bad indexes {} and {}".format(i1, i2))
 
 
-def path(x0, y0, tile_side, i1, i2):
+def path(x0, y0, tile_side, i1, i2, stroke_color):
     p1 = point_from_index(x0, y0, tile_side, i1)
     p2 = point_from_index(x0, y0, tile_side, i2)
     m1, m2 = multipliers(i1, i2)
@@ -112,27 +112,27 @@ def path(x0, y0, tile_side, i1, i2):
     strokeCap(SQUARE)
     relative_bezier(p1, n1, p2, n2)
     strokeWeight(3)
-    stroke(0)
+    stroke(stroke_color)
     strokeCap(PROJECT)
     relative_bezier(p1, n1, p2, n2)
 
 
-def tile(xc, yc, tile_side, path_pairs):
+def tile(xc, yc, tile_side, paths):
     third = tile_side/3
     x0, y0 = xc - tile_side/2, yc - tile_side/2
     stroke(0)
     strokeWeight(2)
     noFill()
-    for (i1, i2) in path_pairs:
-        path(x0, y0, tile_side, i1, i2)
+    for (i1, i2, stroke_color) in paths:
+        path(x0, y0, tile_side, i1, i2, stroke_color)
     # rect(x0, y0, tile_side, tile_side)
 
 
-def randomized_paths(indexes):
+def randomized_paths(indexes, stroke_color=color(0)):
     random.shuffle(indexes)
     half = len(indexes) // 2
-    pairs = zip(indexes[:half], indexes[half:])
-    return pairs
+    paths = zip(indexes[:half], indexes[half:], [stroke_color]*half)
+    return paths
 
 
 side = 1000
