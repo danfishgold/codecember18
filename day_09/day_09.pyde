@@ -130,7 +130,7 @@ def draw_():
         else:
             new_triangle = random.choice(open_neighbors)
             new_color = (color_fractions[exposed_triangle]
-                         + 0.05*random.choice((-1, 1)))
+                         + 0.05*random.choice((-1, 0,  1)))
             color_fractions[new_triangle] = min(1, max(0, new_color))
             still_exposed.add(new_triangle)
 
