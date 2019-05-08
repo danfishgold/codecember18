@@ -113,18 +113,28 @@ random.seed(1)
 
 
 def draw_():
-    seed = random.randint(0, 10000)
-    print "seed:", seed
-    random.seed(seed)
+
+    still_exposed = {(0, 0)}
+    color_fractions = {(0, 0): 0.5}
+
+    while still_exposed:
+        print len(still_exposed)
+        exposed_triangle = random.sample(still_exposed, 1)[0]
+        open_neighbors = filter(lambda tr: tr not in color_fractions,
+                                neighbors(*exposed_triangle))
+        if not open_neighbors:
+            still_exposed.remove(exposed_triangle)
+        else:
+            new_triangle = random.choice(open_neighbors)
+            color_fractions[new_triangle] = (
+                color_fractions[exposed_triangle] + 0.05*random.choice((-1, 1))
+            )
+            still_exposed.add(new_triangle)
 
     noStroke()
-    fill(0)
 
-    for (x, y) in all_triangles:
-        if x % 2 == 0:
-            fill(0)
-        else:
-            fill(120)
+    for (x, y), color_fraction in color_fractions.items():
+        triangle_color = color_fraction * 255
+        fill(triangle_color)
+        stroke(triangle_color)
         tri(x, y)
-    fill(255)
-    tri(0, 0)
