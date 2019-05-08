@@ -82,7 +82,7 @@ def neighbors(x, y):
     return {pt for pt in potentials if is_triangle_in_center(*pt)}
 
 
-side = 500
+side = 2000
 triangle_side = side // 500 * 17
 
 x_radius = side // triangle_side + 5
@@ -115,7 +115,7 @@ random.seed(1)
 
 def draw_():
 
-    seed = random.randint(1, 10000)
+    seed = 4261  # random.randint(1, 10000)
     random.seed(seed)
     print "seed", seed
 
