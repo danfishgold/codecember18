@@ -82,9 +82,8 @@ def neighbors(x, y):
     return {pt for pt in potentials if is_triangle_in_center(*pt)}
 
 
-green = color(101, 155, 94)
 side = 500
-triangle_side = side // 500 * 19
+triangle_side = side // 500 * 17
 
 x_radius = side // triangle_side + 5
 y_radius = int((side/2) / (triangle_side * sqrt(3)/2)) + 5
@@ -97,6 +96,8 @@ all_triangles = {(x, y)
 def setup():
     size(side, side)
     background(255)
+    strokeWeight(ceil(side/1000))
+    strokeJoin(BEVEL)
 
 
 def mouseClicked():
@@ -133,8 +134,6 @@ def draw_():
                          + 0.05*random.choice((-1, -1, -1, 0, 0, 1, 1, 1)))
             color_fractions[new_triangle] = min(1, max(0, new_color))
             still_exposed.add(new_triangle)
-
-    noStroke()
 
     # Sort the color dictionary because otherwise the triangle strokes will look weird
     color_fraction_pairs = sorted(
