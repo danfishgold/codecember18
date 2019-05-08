@@ -114,11 +114,14 @@ random.seed(1)
 
 def draw_():
 
+    seed = random.randint(1, 10000)
+    random.seed(seed)
+    print "seed", seed
+
     still_exposed = {(0, 0)}
     color_fractions = {(0, 0): 0.5}
 
     while still_exposed:
-        print len(still_exposed)
         exposed_triangle = random.sample(still_exposed, 1)[0]
         open_neighbors = filter(lambda tr: tr not in color_fractions,
                                 neighbors(*exposed_triangle))
