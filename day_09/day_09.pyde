@@ -126,14 +126,19 @@ def draw_():
             still_exposed.remove(exposed_triangle)
         else:
             new_triangle = random.choice(open_neighbors)
-            color_fractions[new_triangle] = (
-                color_fractions[exposed_triangle] + 0.05*random.choice((-1, 1))
-            )
+            new_color = (color_fractions[exposed_triangle]
+                         + 0.05*random.choice((-1, 1)))
+            color_fractions[new_triangle] = min(1, max(0, new_color))
             still_exposed.add(new_triangle)
 
     noStroke()
 
-    for (x, y), color_fraction in color_fractions.items():
+    # Sort the color dictionary because otherwise the triangle strokes will look weird
+    color_fraction_pairs = sorted(
+        color_fractions.items(),
+        key=lambda ((x, y), color): 10000*y+x)
+
+    for (x, y), color_fraction in color_fraction_pairs:
         triangle_color = color_fraction * 255
         fill(triangle_color)
         stroke(triangle_color)
