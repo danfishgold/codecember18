@@ -70,8 +70,6 @@ def normal_at_index(idx, multiplier=1):
 
 
 def relative_bezier(p1, n1, p2, n2):
-    print "n1", n1
-    print "n2", n2
     x1, y1 = p1
     x2, y2 = x1 + n1[0], y1 + n1[1]
     x4, y4 = p2
@@ -108,7 +106,7 @@ def path(x0, y0, tile_side, i1, i2, stroke_color):
     n1 = normal_at_index(i1, m1*tile_side)
     n2 = normal_at_index(i2, m2*tile_side)
     strokeWeight(9)
-    stroke(255)
+    stroke(0, 0, 1)
     strokeCap(SQUARE)
     relative_bezier(p1, n1, p2, n2)
     strokeWeight(3)
@@ -160,7 +158,8 @@ side = 1000
 
 def setup():
     size(side, side)
-    background(255)
+    colorMode(HSB, 1)
+    background(0, 0, 1)
 
 
 def mouseClicked():
@@ -168,13 +167,15 @@ def mouseClicked():
 
 
 def draw():
-    background(255)
+    background(0, 0, 1)
     draw_()
     noLoop()
 
 
+random.seed(1)
+
+
 def draw_():
-    random.seed(1)
     tile_count = 8
     tile_side = side / tile_count
 
@@ -214,10 +215,16 @@ def draw_():
                     opposite(row, col, j)])
                 loop_paths.append((row, col, i, j))
         loops.append(loop_paths)
-    for paths in loops:
+
+    all_paths = []
+    for index, paths in enumerate(loops):
+        c = color((random.random() + index/len(loops)) % 1, 0.5, 0.8)
         for (row, col, i, j) in paths:
-            tile(
-                tile_side/2 + tile_side*col,
-                tile_side/2 + tile_side*row,
-                tile_side,
-                [(i, j, color(0))])
+            all_paths.append((row, col, i, j, c))
+    random.shuffle(all_paths)
+    for (row, col, i, j, c) in all_paths:
+        tile(
+            tile_side/2 + tile_side*col,
+            tile_side/2 + tile_side*row,
+            tile_side,
+            [(i, j, c)])
