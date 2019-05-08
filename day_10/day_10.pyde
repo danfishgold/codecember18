@@ -135,6 +135,26 @@ def randomized_paths(indexes, stroke_color=color(0)):
     return paths
 
 
+def opposite(row, col, idx):
+    # adjecent tiles share points. This gives the index of the point in the other tile
+    if idx == 0:
+        return (row, col-1, 5)
+    elif idx == 1:
+        return (row, col-1, 4)
+    elif idx == 2:
+        return (row+1, col, 7)
+    elif idx == 3:
+        return (row+1, col, 6)
+    elif idx == 4:
+        return (row, col+1, 1)
+    elif idx == 5:
+        return (row, col+1, 0)
+    elif idx == 6:
+        return (row-1, col, 3)
+    elif idx == 7:
+        return (row-1, col, 2)
+
+
 side = 1000
 
 
@@ -154,11 +174,14 @@ def draw():
 
 
 def draw_():
+    random.seed(1)
     tile_count = 8
     tile_side = side / tile_count
+
+    point_paths = dict()
     for row in range(tile_count):
         for col in range(tile_count):
-            indexes = range(8)
+            indexes = list(range(8))
             if col == 0:
                 indexes.remove(0)
                 indexes.remove(1)
@@ -171,8 +194,30 @@ def draw_():
             elif row == tile_count-1:
                 indexes.remove(2)
                 indexes.remove(3)
+            for (i1, i2, _) in randomized_paths(indexes):
+                point_paths[(row, col, i1)] = (row, col, i1, i2)
+                point_paths[(row, col, i2)] = (row, col, i2, i1)
+
+    loops = []
+    while point_paths:
+        og_pt = list(point_paths.keys())[0]
+        unvisited_loop_points = {og_pt}
+        loop_paths = []
+        while unvisited_loop_points:
+            pt = unvisited_loop_points.pop()
+            if pt in point_paths:
+                row, col, i, j = point_paths.pop(pt)
+                point_paths.pop((row, col, j))
+                unvisited_loop_points.update([
+                    opposite(row, col, i),
+                    (row, col, j),
+                    opposite(row, col, j)])
+                loop_paths.append((row, col, i, j))
+        loops.append(loop_paths)
+    for paths in loops:
+        for (row, col, i, j) in paths:
             tile(
                 tile_side/2 + tile_side*col,
                 tile_side/2 + tile_side*row,
                 tile_side,
-                randomized_paths(indexes))
+                [(i, j, color(0))])
