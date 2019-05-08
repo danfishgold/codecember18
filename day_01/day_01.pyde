@@ -59,11 +59,11 @@ def setup():
 
 
 def centerR(t):
-    return side/5 + side/25*sin(t*centerRW + centerRP)
+    return 0.18*side + 0.04*side*sin(t*centerRW + centerRP)
 
 
 def shiftR(t):
-    return side/6
+    return 0.12*side
 
 
 def dx(t):
@@ -79,7 +79,7 @@ def dy(t):
 
 
 def radius(t):
-    return side/7 + side/50*cos(t*radiusW + radiusP)
+    return 0.14*side + 0.02*side*cos(t*radiusW + radiusP)
 
 
 def factor(t):
