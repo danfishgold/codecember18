@@ -226,6 +226,11 @@ def draw_():
                 loop_paths.append((row, col, i, j))
         loops.append(loop_paths)
 
+    num_paths = 4*tile_count*(tile_count-1)
+    if max(map(len, loops)) > 0.3*num_paths:
+        draw_()
+        return
+
     all_paths = []
     for index, paths in enumerate(loops):
         c = color((random.random() + index/len(loops)) % 1, 0.95, 0.65)
