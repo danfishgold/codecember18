@@ -183,7 +183,7 @@ random.seed(1)
 
 
 def draw_():
-    seed = random.randint(1, 10000)
+    seed = random.randint(1, 100000)
     random.seed(seed)
     print 'seed', seed
     tile_count = 7
