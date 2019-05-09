@@ -107,11 +107,11 @@ def path(x0, y0, tile_side, i1, i2, stroke_color):
     m1, m2 = multipliers(i1, i2)
     n1 = normal_at_index(i1, m1*tile_side)
     n2 = normal_at_index(i2, m2*tile_side)
-    strokeWeight(11)
+    strokeWeight(11*side//1000)
     stroke(0, 0, 1)
     strokeCap(SQUARE)
     relative_bezier(p1, n1, p2, n2)
-    strokeWeight(5)
+    strokeWeight(5*side//1000)
     stroke(stroke_color)
     strokeCap(PROJECT)
     relative_bezier(p1, n1, p2, n2)
@@ -120,7 +120,7 @@ def path(x0, y0, tile_side, i1, i2, stroke_color):
 def tile(xc, yc, tile_side, paths):
     third = tile_side/3
     x0, y0 = xc - tile_side/2, yc - tile_side/2
-    strokeWeight(2)
+    strokeWeight(2*side//1000)
     noFill()
     for (i1, i2, stroke_color) in paths:
         path(x0, y0, tile_side, i1, i2, stroke_color)
@@ -155,7 +155,7 @@ def opposite(row, col, idx):
         return (row-1, col, 2)
 
 
-side = 1000
+side = 2000
 
 
 def rgb_from_hex(string):
