@@ -83,16 +83,18 @@ def multipliers(i1, i2):
     else:
         diff = (i1 - i2) % 8
 
-    if diff in [2, 6]:
-        return (1/3, 1/3)
-    elif diff == 5:
-        return (1/2.5, 1/2.5)
-    elif diff == 1:
+    if diff == 1:
         return (1/6, 1/6)
+    elif diff == 2:
+        return (1/3, 1/3)
     elif diff == 3:
         return (0, 0)
     elif diff == 4:
         return (1/2, 1/2)
+    elif diff == 5:
+        return (1/2.5, 1/2.5)
+    elif diff == 6:
+        return (1/3, 1/3)
     elif diff == 7:
         return (1/4.5, 1/4.5)
     else:
@@ -105,11 +107,11 @@ def path(x0, y0, tile_side, i1, i2, stroke_color):
     m1, m2 = multipliers(i1, i2)
     n1 = normal_at_index(i1, m1*tile_side)
     n2 = normal_at_index(i2, m2*tile_side)
-    strokeWeight(9)
+    strokeWeight(11)
     stroke(0, 0, 1)
     strokeCap(SQUARE)
     relative_bezier(p1, n1, p2, n2)
-    strokeWeight(3)
+    strokeWeight(5)
     stroke(stroke_color)
     strokeCap(PROJECT)
     relative_bezier(p1, n1, p2, n2)
@@ -118,11 +120,11 @@ def path(x0, y0, tile_side, i1, i2, stroke_color):
 def tile(xc, yc, tile_side, paths):
     third = tile_side/3
     x0, y0 = xc - tile_side/2, yc - tile_side/2
-    stroke(0)
     strokeWeight(2)
     noFill()
     for (i1, i2, stroke_color) in paths:
         path(x0, y0, tile_side, i1, i2, stroke_color)
+    # stroke(0, 0, 0)
     # rect(x0, y0, tile_side, tile_side)
 
 
@@ -156,6 +158,11 @@ def opposite(row, col, idx):
 side = 1000
 
 
+def rgb_from_hex(string):
+    h = string.lstrip('#')
+    return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+
+
 def setup():
     size(side, side)
     colorMode(HSB, 1)
@@ -176,7 +183,10 @@ random.seed(1)
 
 
 def draw_():
-    tile_count = 8
+    seed = random.randint(1, 10000)
+    random.seed(seed)
+    print 'seed', seed
+    tile_count = 7
     tile_side = side / tile_count
 
     point_paths = dict()
@@ -218,9 +228,10 @@ def draw_():
 
     all_paths = []
     for index, paths in enumerate(loops):
-        c = color((random.random() + index/len(loops)) % 1, 0.5, 0.8)
+        c = color((random.random() + index/len(loops)) % 1, 0.95, 0.65)
         for (row, col, i, j) in paths:
             all_paths.append((row, col, i, j, c))
+
     random.shuffle(all_paths)
     for (row, col, i, j, c) in all_paths:
         tile(
