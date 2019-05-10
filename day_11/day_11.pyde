@@ -36,11 +36,11 @@ def rotate(points, n, new_origin=(0, 0)):
 
 
 def rotation_direction(n):
-    return rotate({(1, 1)}, n).pop()
+    return rotate({(1, 1)}, -n).pop()
 
 
 def corners_at_direction(points, n):
-    dx, dy = rotation_direction(-n)
+    dx, dy = rotation_direction(n)
     shiftx = {(x+dx, y) for (x, y) in points}
     shifty = {(x, y+dy) for (x, y) in points}
     shiftxy = {(x+dx, y+dy) for (x, y) in points}
@@ -89,6 +89,11 @@ shapes = [square1, square2,
           corner22, corner23, corner24, corner33,
           plus23, plus33]
 
+all_shapes_rotatations = {0: [], 1: [], 2: [], 3: []}
+for shape in shapes:
+    for n in range(4):
+        all_shapes_rotatations[n].extend(all_corner_arrangements(shape, n))
+
 
 def draw_shape(shape, color):
     fill(color)
@@ -108,7 +113,13 @@ def setup():
     size(side, side)
 
 
+n = 0
+
+
 def mouseClicked():
+    global n
+    n += 1
+    n %= 4
     redraw()
 
 
@@ -118,22 +129,12 @@ def draw():
     noLoop()
 
 
-weird_shape = {(0, 0), (0, 1), (0, 2), (1, 0), (1, 2), (2, 0), (2, 1)}
-square = [(x, y) for x in range(10) for y in range(10)]
-weird_shape = set(random.sample(square, len(square) * 3//5))
-
-
 def draw_():
     draw_board()
-    x0, y0 = square_count//2, square_count//2
-    shifted_weird_shape = shift(weird_shape, x0, y0)
-    forbidden = forbidden_points(shifted_weird_shape)
-
-    draw_shape(shifted_weird_shape, color(0, 255, 0))
-    draw_shape(forbidden, color(255, 0, 0, 50))
-
-    for n, pts in all_corners(shifted_weird_shape).items():
+    print n
+    dx, dy = rotation_direction(n-2)
+    for idx, pts in enumerate(all_shapes_rotatations[n]):
+        col, row = idx % 7, idx // 7
         for (x, y) in pts:
-            dx, dy = rotation_direction(2-n)
-            if (x+dx, y+dy) not in forbidden:
-                draw_shape({(x+dx, y+dy)}, color(0, 0, 255, 100))
+            draw_shape({(6+6*col+x, 6+6*row+y)}, color(0, 255, 0))
+            draw_shape({(6+6*col+dx, 6+6*row+dy)}, color(0, 0, 255))
