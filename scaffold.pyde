@@ -1,50 +1,21 @@
 # Day ##
 from __future__ import division
-import os
-
-base_filename = 'day_##'
-extension = 'png'
-filename_description = ''
+import scaffold
 
 
 def keyPressed():
-    global filename_description
-    if isinstance(key, unicode):
-        if key == '\n':
-            files = os.listdir('.')
-            matches = [
-                match(f, r'{}_(\d+).*\.{}'.format(base_filename, extension)) for f in files]
-            indexes = [int(m[1]) for m in matches if m is not None]
-            if indexes:
-                index = max(indexes) + 1
-            else:
-                index = 1
-
-            if filename_description:
-                modifier = '_{}'.format(filename_description.replace(' ', '_'))
-            else:
-                modifier = ''
-            filename = '{}_{:02d}{}.{}'.format(
-                base_filename, index, modifier, extension)
-
-            save(filename)
-            print 'saved', filename
-            filename_description = ''
-        else:
-            if key == BACKSPACE:
-                filename_description = filename_description[:-1]
-            else:
-                filename_description = filename_description + key
+    scaffold.image_saving_key_event_handler(
+        base_filename='day_##',
+        extension='png'
+    )
 
 
-side = 1000
+side = 500
 
 
 def setup():
     size(side, side)
-    strokeWeight(ceil(side/800))
-    background(255)
-    stroke(0)
+    strokeWeight(ceil(side/500))
 
 
 def mouseClicked():
@@ -58,4 +29,4 @@ def draw():
 
 
 def draw_():
-    ellipse(width/2, height/2, random(100, 200), random(100, 200))
+    ellipse(width/2, height/2, side*0.8, side*0.8)
