@@ -11,11 +11,6 @@ def keyPressed():
     )
 
 
-side = 500
-square_count = 50
-square_side = side/square_count
-
-
 def shift(points, dx, dy):
     return {(dx+x, dy+y) for (x, y) in points}
 
@@ -71,6 +66,34 @@ def forbidden_points(points):
             .union(shift(points, 0, -1)))
 
 
+def draw_shape(shape, color):
+    fill(color)
+    for (x, y) in shape:
+        rect(x*square_side, y*square_side, square_side, square_side)
+
+
+def draw_board():
+    strokeWeight(side // 500 // 2 * 2 + 1)
+    stroke(0)
+    for rowcol in range(square_count+1):
+        line(0, square_side*rowcol, side, square_side*rowcol)
+        line(square_side*rowcol, 0, square_side*rowcol, side)
+
+
+def is_point_valid(x, y, taken_points, square_count):
+    return ((0 <= x < square_count)
+            and (0 <= y < square_count)
+            and (x, y) not in forbidden_points(taken_points))
+
+
+def is_shape_valid(shape, taken_points, square_count):
+    return all((is_point_valid(x, y, taken_points, square_count) for (x, y) in shape))
+
+
+side = 500
+square_count = 50
+square_side = side/square_count
+
 square1 = {(0, 0)}
 square2 = {(0, 0), (1, 0), (0, 1), (1, 1)}
 line2 = {(0, 0), (0, 1)}
@@ -88,6 +111,7 @@ shapes = [square1, square2,
           line2, line3, line4, line5,
           corner22, corner23, corner24, corner33,
           plus23, plus33]
+# shapes = [line2]
 
 all_shapes_rotatations = {0: [], 1: [], 2: [], 3: []}
 for shape in shapes:
@@ -95,31 +119,11 @@ for shape in shapes:
         all_shapes_rotatations[n].extend(all_corner_arrangements(shape, n))
 
 
-def draw_shape(shape, color):
-    fill(color)
-    for (x, y) in shape:
-        rect(x*square_side, y*square_side, square_side, square_side)
-
-
-def draw_board():
-    strokeWeight(side // 500 // 2 * 2 + 1)
-    stroke(0)
-    for rowcol in range(square_count+1):
-        line(0, square_side*rowcol, side, square_side*rowcol)
-        line(square_side*rowcol, 0, square_side*rowcol, side)
-
-
 def setup():
     size(side, side)
 
 
-n = 0
-
-
 def mouseClicked():
-    global n
-    n += 1
-    n %= 4
     redraw()
 
 
@@ -129,12 +133,33 @@ def draw():
     noLoop()
 
 
+def step(points, square_count):
+    next_origins = [(x, y, n)
+                    for (n, pts) in all_corners(points).items()
+                    for (x, y) in shift(pts, *rotation_direction(n-2))
+                    if is_point_valid(x, y, points, square_count)]
+
+    draw_shape({(x, y) for (x, y, _) in next_origins}, color(0, 0, 255, 100))
+    for _ in range(10):
+        while next_origins:
+            idx = random.randint(0, len(next_origins)-1)
+            x, y, n = next_origins.pop(idx)
+            candidates = [shift(shape, x, y)
+                          for shape in all_shapes_rotatations[(n-2) % 4]]
+            valids = list(filter(lambda shape: is_shape_valid(shape, points, square_count),
+                                 candidates))
+
+            if valids:
+                next = random.choice(valids)
+                draw_shape(next, color(255, 0, 0, 100))
+                points.update(next)
+                return True
+    return False
+
+
 def draw_():
     draw_board()
-    print n
-    dx, dy = rotation_direction(n-2)
-    for idx, pts in enumerate(all_shapes_rotatations[n]):
-        col, row = idx % 7, idx // 7
-        for (x, y) in pts:
-            draw_shape({(6+6*col+x, 6+6*row+y)}, color(0, 255, 0))
-            draw_shape({(6+6*col+dx, 6+6*row+dy)}, color(0, 0, 255))
+    points = {(0, 0)}
+    while step(points, square_count):
+        pass
+    draw_shape(points, color(0, 255, 0))
