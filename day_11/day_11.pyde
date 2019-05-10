@@ -220,7 +220,7 @@ class Game:
 
     def round(self):
         turns = [self.turn(player) for player in self.players]
-        return all(turns)
+        return any(turns)
 
     def add_points_to_player(self, points, player):
         player.add_points(points, self.square_count)
@@ -243,18 +243,25 @@ def is_point_in_bounds(pt, square_count):
 
 random.seed(2)
 
-seed = random.randint(1, 10000)
-print seed
-random.seed(seed)
+
+player_colors = [
+    color(0, 255, 0),
+    color(255, 0, 0),
+    color(0, 0, 255),
+    color(255, 255, 0)
+]
 
 
 def draw_():
+    seed = random.randint(1, 10000)
+    print seed
+    random.seed(seed)
 
     draw_board()
 
-    game = Game(2, square_count)
+    game = Game(4, square_count)
 
     while game.round():
         pass
-    draw_shape(game.players[1].points, color(255, 0, 0))
-    draw_shape(game.players[0].points, color(0, 255, 0))
+    for player, color in zip(game.players, player_colors):
+        draw_shape(player.points, color)
