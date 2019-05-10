@@ -91,7 +91,7 @@ def is_shape_valid(shape, taken_points, square_count):
 
 
 side = 500
-square_count = 50
+square_count = 20
 square_side = side/square_count
 
 square1 = {(0, 0)}
@@ -133,33 +133,37 @@ def draw():
     noLoop()
 
 
-def step(points, square_count):
+def step(points, all_points, square_count):
     next_origins = [(x, y, n)
                     for (n, pts) in all_corners(points).items()
-                    for (x, y) in shift(pts, *rotation_direction(n-2))
-                    if is_point_valid(x, y, points, square_count)]
+                    for (x, y) in shift(pts, *rotation_direction(n-2))]
 
-    draw_shape({(x, y) for (x, y, _) in next_origins}, color(0, 0, 255, 100))
     for _ in range(10):
         while next_origins:
             idx = random.randint(0, len(next_origins)-1)
             x, y, n = next_origins.pop(idx)
             candidates = [shift(shape, x, y)
                           for shape in all_shapes_rotatations[(n-2) % 4]]
-            valids = list(filter(lambda shape: is_shape_valid(shape, points, square_count),
+            valids = list(filter(lambda shape: is_shape_valid(shape, points, square_count) and not all_points.intersection(shape),
                                  candidates))
 
             if valids:
                 next = random.choice(valids)
-                draw_shape(next, color(255, 0, 0, 100))
                 points.update(next)
+                all_points.update(next)
                 return True
     return False
 
 
 def draw_():
     draw_board()
-    points = {(0, 0)}
-    while step(points, square_count):
-        pass
-    draw_shape(points, color(0, 255, 0))
+    red_points = {(0, 0)}
+    green_points = {(square_count-1, square_count-1)}
+    all_points = red_points.union(green_points)
+
+    green_step, red_step = True, True
+    while green_step and red_step:
+        green_step = step(green_points, all_points, square_count)
+        red_step = step(red_points, all_points, square_count)
+    draw_shape(red_points, color(255, 0, 0))
+    draw_shape(green_points, color(0, 255, 0))
