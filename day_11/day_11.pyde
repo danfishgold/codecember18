@@ -1,7 +1,6 @@
 # Day 11: Blokus
 from __future__ import division
 import scaffold
-from collections import defaultdict
 import random
 
 
@@ -15,30 +14,6 @@ def keyPressed():
 side = 500
 square_count = 50
 square_side = side/square_count
-
-
-def all_corners(points):
-    corners = defaultdict(set)
-    for n in range(4):
-        for pt in corners_at_direction(points, n):
-            corners[pt].add(n)
-    return dict(corners)
-
-
-def all_corner_arrangements(points, n0):
-    arrangements = {}
-    for (x0, y0), ns in all_corners(points).items():
-        for n in ns:
-            arrangements.add(tuple(sorted(rotate(points, n-n0, (x0, y0)))))
-    return [set(arr) for arr in arrangements]
-
-
-def corners_at_direction(points, n):
-    dx, dy = rotation_direction(-n)
-    shiftx = {(x+dx, y) for (x, y) in points}
-    shifty = {(x, y+dy) for (x, y) in points}
-    shiftxy = {(x+dx, y+dy) for (x, y) in points}
-    return points.difference(shiftx).difference(shifty).difference(shiftxy)
 
 
 def shift(points, dx, dy):
@@ -62,6 +37,30 @@ def rotate(points, n, new_origin=(0, 0)):
 
 def rotation_direction(n):
     return rotate({(1, 1)}, n).pop()
+
+
+def corners_at_direction(points, n):
+    dx, dy = rotation_direction(-n)
+    shiftx = {(x+dx, y) for (x, y) in points}
+    shifty = {(x, y+dy) for (x, y) in points}
+    shiftxy = {(x+dx, y+dy) for (x, y) in points}
+    return points.difference(shiftx).difference(shifty).difference(shiftxy)
+
+
+def all_corners(points):
+    corners = {0: set(), 1: set(), 2: set(), 3: set()}
+    for n in range(4):
+        for pt in corners_at_direction(points, n):
+            corners[n].add(pt)
+    return corners
+
+
+def all_corner_arrangements(points, n0):
+    arrangements = set()
+    for n, pts in all_corners(points).items():
+        for (x0, y0) in pts:
+            arrangements.add(tuple(sorted(rotate(points, n-n0, (x0, y0)))))
+    return [set(arr) for arr in arrangements]
 
 
 def forbidden_points(points):
@@ -133,8 +132,8 @@ def draw_():
     draw_shape(shifted_weird_shape, color(0, 255, 0))
     draw_shape(forbidden, color(255, 0, 0, 50))
 
-    for (x, y), directions in all_corners(shifted_weird_shape).items():
-        for n in directions:
+    for n, pts in all_corners(shifted_weird_shape).items():
+        for (x, y) in pts:
             dx, dy = rotation_direction(2-n)
             if (x+dx, y+dy) not in forbidden:
                 draw_shape({(x+dx, y+dy)}, color(0, 0, 255, 100))
