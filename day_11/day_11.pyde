@@ -102,10 +102,10 @@ def is_shape_valid(shape, taken_points, square_count):
 
 
 class Player:
-    def __init__(self, max_shape_uses=1):
+    def __init__(self, origin, max_shape_uses=1):
         self.points = set()
         self.forbidden_points = set()
-        self.next_origins = set()
+        self.next_origins = {origin}
         self.used_shapes = defaultdict(int)
         self.max_shape_uses = max_shape_uses
 
@@ -146,45 +146,27 @@ class Game:
         self.square_count = square_count
 
         if player_count == 1:
-            seeds = [(0, 0)]
+            seeds = [(0, 0, 2)]
 
         elif player_count == 2:
             seeds = [
-                (0, 0),
-                (square_count-1, square_count-1)
+                (0, 0, 2),
+                (square_count-1, square_count-1, 0)
             ]
 
         else:
-            # seeds = [
-            #     (0, 0),
-            #     (0, square_count-1),
-            #     (square_count-1, 0),
-            #     (square_count-1, square_count-1)
-            # ]
-            # middle = square_count//2
-            # seeds = [
-            #     (middle, middle),
-            #     (middle, middle + 1),
-            #     (middle+1, middle),
-            #     (middle+1, middle+1)
-            # ]
             seeds = [
-                (random.randint(0, square_count-1),
-                 random.randint(0, square_count-1)),
-                (random.randint(0, square_count-1),
-                 random.randint(0, square_count-1)),
-                (random.randint(0, square_count-1),
-                 random.randint(0, square_count-1)),
-                (random.randint(0, square_count-1),
-                 random.randint(0, square_count-1)),
+                (0, 0, 2),
+                (0, square_count-1, 1),
+                (square_count-1, square_count-1, 0),
+                (square_count-1, 0, 3)
             ]
 
         self.players = []
         self.all_points = set()
         for seed in seeds:
-            player = Player(max_shape_uses=max_shape_uses)
+            player = Player(seed, max_shape_uses=max_shape_uses)
             self.players.append(player)
-            self.add_points_to_player({seed}, player)
 
     def turn(self, player):
 
