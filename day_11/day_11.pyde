@@ -146,11 +146,28 @@ class Game:
             ]
 
         else:
+            # seeds = [
+            #     (0, 0),
+            #     (0, square_count-1),
+            #     (square_count-1, 0),
+            #     (square_count-1, square_count-1)
+            # ]
+            # middle = square_count//2
+            # seeds = [
+            #     (middle, middle),
+            #     (middle, middle + 1),
+            #     (middle+1, middle),
+            #     (middle+1, middle+1)
+            # ]
             seeds = [
-                (0, 0),
-                (0, square_count-1),
-                (square_count-1, 0),
-                (square_count-1, square_count-1)
+                (random.randint(0, square_count-1),
+                 random.randint(0, square_count-1)),
+                (random.randint(0, square_count-1),
+                 random.randint(0, square_count-1)),
+                (random.randint(0, square_count-1),
+                 random.randint(0, square_count-1)),
+                (random.randint(0, square_count-1),
+                 random.randint(0, square_count-1)),
             ]
 
         self.players = []
@@ -262,6 +279,13 @@ player_colors = [
     color(255, 0, 0),
     color(0, 0, 255),
     color(255, 255, 0)
+]
+
+player_colors = [
+    color(51, 12, 47),
+    color(240, 128, 60),
+    color(147, 22, 33),
+    color(89, 84, 87)
 ]
 
 
