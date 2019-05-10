@@ -171,6 +171,8 @@ class Game:
                     options.append(shift(candidate, x, y))
 
             if options:
+                max_size = max(map(len, options))
+                options = filter(lambda shape: len(shape) == max_size, options)
                 self.add_points_to_player(random.choice(options), player)
                 return True
         return False
