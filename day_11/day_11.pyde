@@ -2,6 +2,7 @@
 from __future__ import division
 import scaffold
 import random
+from collections import defaultdict
 
 
 def keyPressed():
@@ -101,10 +102,18 @@ def is_shape_valid(shape, taken_points, square_count):
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, max_shape_uses=1):
         self.points = set()
         self.forbidden_points = set()
         self.next_origins = set()
+        self.used_shapes = defaultdict(int)
+        self.max_shape_uses = max_shape_uses
+
+    def did_use_shape(self, shape_index):
+        return self.used_shapes[shape_index] == self.max_shape_uses
+
+    def mark_shape_as_used(self, shape_index):
+        self.used_shapes[shape_index] += 1
 
     def add_points(self, pts, square_count):
         self.points.update(pts)
@@ -133,7 +142,7 @@ class Player:
 
 
 class Game:
-    def __init__(self, player_count, square_count):
+    def __init__(self, player_count, square_count, max_shape_uses=1):
         self.square_count = square_count
 
         if player_count == 1:
@@ -173,7 +182,7 @@ class Game:
         self.players = []
         self.all_points = set()
         for seed in seeds:
-            player = Player()
+            player = Player(max_shape_uses=max_shape_uses)
             self.players.append(player)
             self.add_points_to_player({seed}, player)
 
@@ -183,14 +192,18 @@ class Game:
             x, y, n = player.pop_possible_origin()
 
             options = []
-            for candidate in all_shapes_rotatations[(n-2) % 4]:
-                if self.shape_fits(player, candidate, x, y):
-                    options.append(shift(candidate, x, y))
+            for shape_index, candidate in all_shapes_rotatations[(n-2) % 4]:
+                if not player.did_use_shape(shape_index) and self.shape_fits(player, candidate, x, y):
+                    options.append((shape_index, shift(candidate, x, y)))
 
             if options:
-                max_size = max(map(len, options))
-                options = filter(lambda shape: len(shape) == max_size, options)
-                self.add_points_to_player(random.choice(options), player)
+                max_size = max(map(lambda (_, shape): len(shape), options))
+                options = filter(
+                    lambda (_, shape): len(shape) == max_size,
+                    options)
+                shape_index, shape = random.choice(options)
+                self.add_points_to_player(shape, player)
+                player.mark_shape_as_used(shape_index)
                 return True
         return False
 
@@ -248,13 +261,11 @@ shapes = [square1, square2, square21,
           ]
 
 all_shapes_rotatations = [[], [], [], []]
-for shape in shapes:
+for shape_index, shape in enumerate(shapes):
     for n in range(4):
-        all_shapes_rotatations[n].extend(all_corner_arrangements(shape, n))
-
-side = 500
-square_count = 50
-square_side = side/square_count
+        arrangements = [(shape_index, arr)
+                        for arr in all_corner_arrangements(shape, n)]
+        all_shapes_rotatations[n].extend(arrangements)
 
 
 def setup():
@@ -289,6 +300,11 @@ player_colors = [
 ]
 
 
+side = 500
+square_count = 20
+square_side = side/square_count
+
+
 def draw_():
     seed = random.randint(1, 10000)
     print seed
@@ -297,7 +313,11 @@ def draw_():
     # draw_board()
     noStroke()
 
-    game = Game(4, square_count)
+    game = Game(
+        player_count=4,
+        square_count=square_count,
+        max_shape_uses=1
+    )
 
     while game.round():
         pass
