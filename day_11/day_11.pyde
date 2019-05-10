@@ -143,37 +143,118 @@ def draw():
     noLoop()
 
 
-def step(points, all_points, square_count):
-    next_origins = [(x, y, n)
-                    for (n, pts) in enumerate(all_corners(points))
-                    for (x, y) in shift(pts, *rotation_direction(n-2))]
+class Player:
+    def __init__(self):
+        self.points = set()
+        self.forbidden_points = set()
+        self.next_origins = set()
 
-    for _ in range(10):
-        while next_origins:
-            idx = random.randint(0, len(next_origins)-1)
-            x, y, n = next_origins.pop(idx)
-            candidates = [shift(shape, x, y)
-                          for shape in all_shapes_rotatations[(n-2) % 4]]
-            valids = list(filter(lambda shape: is_shape_valid(shape, points, square_count) and not all_points.intersection(shape),
-                                 candidates))
+    def add_points(self, pts, square_count):
+        self.points.update(pts)
+        self.next_origins.update(
+            Player.corner_origins_in_bounds(pts, square_count))
+        self.forbidden_points.update(pts)
+        self.forbidden_points.update(shift(pts, 1, 0))
+        self.forbidden_points.update(shift(pts, -1, 0))
+        self.forbidden_points.update(shift(pts, 0, 1))
+        self.forbidden_points.update(shift(pts, 0, -1))
 
-            if valids:
-                next = random.choice(valids)
-                points.update(next)
-                all_points.update(next)
+    def is_finished(self):
+        return len(self.next_origins) == 0
+
+    def pop_possible_origin(self):
+        origin = random.sample(self.next_origins, 1)[0]
+        self.next_origins.remove(origin)
+        return origin
+
+    @staticmethod
+    def corner_origins_in_bounds(points, square_count):
+        return {(x, y, n)
+                for (n, pts) in enumerate(all_corners(points))
+                for (x, y) in shift(pts, *rotation_direction(n-2))
+                if is_point_in_bounds((x, y), square_count)}
+
+
+class Game:
+    def __init__(self, player_count, square_count):
+        self.square_count = square_count
+
+        if player_count == 1:
+            seeds = [(0, 0)]
+
+        elif player_count == 2:
+            seeds = [
+                (0, 0),
+                (square_count-1, square_count-1)
+            ]
+
+        else:
+            seeds = [
+                (0, 0),
+                (0, square_count-1),
+                (square_count-1, 0),
+                (square_count-1, square_count-1)
+            ]
+
+        self.players = []
+        self.all_points = set()
+        for seed in seeds:
+            player = Player()
+            self.players.append(player)
+            self.add_points_to_player({seed}, player)
+
+    def turn(self, player):
+
+        while not player.is_finished():
+            x, y, n = player.pop_possible_origin()
+
+            options = []
+            for candidate in all_shapes_rotatations[(n-2) % 4]:
+                if self.shape_fits(player, candidate, x, y):
+                    options.append(shift(candidate, x, y))
+
+            if options:
+                self.add_points_to_player(random.choice(options), player)
                 return True
-    return False
+        return False
+
+    def round(self):
+        turns = [self.turn(player) for player in self.players]
+        return all(turns)
+
+    def add_points_to_player(self, points, player):
+        player.add_points(points, self.square_count)
+        self.all_points.update(points)
+
+    def shape_fits(self, player, shape, x0, y0):
+        return all((self.point_fits(player, x0+x, y0+y) for (x, y) in shape))
+
+    def point_fits(self, player, x, y):
+        return (
+            is_point_in_bounds((x, y), self.square_count)
+            and (x, y) not in self.all_points
+            and (x, y) not in player.forbidden_points
+        )
+
+
+def is_point_in_bounds(pt, square_count):
+    return (0 <= pt[0] < square_count) and (0 <= pt[1] < square_count)
+
+
+random.seed(2)
+
+seed = random.randint(1, 10000)
+print seed
+random.seed(seed)
 
 
 def draw_():
-    draw_board()
-    red_points = {(0, 0)}
-    green_points = {(square_count-1, square_count-1)}
-    all_points = red_points.union(green_points)
 
-    green_step, red_step = True, True
-    while green_step and red_step:
-        green_step = step(green_points, all_points, square_count)
-        red_step = step(red_points, all_points, square_count)
-    draw_shape(red_points, color(255, 0, 0))
-    draw_shape(green_points, color(0, 255, 0))
+    draw_board()
+
+    game = Game(2, square_count)
+
+    while game.round():
+        pass
+    draw_shape(game.players[1].points, color(255, 0, 0))
+    draw_shape(game.players[0].points, color(0, 255, 0))
