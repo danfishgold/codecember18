@@ -100,49 +100,6 @@ def is_shape_valid(shape, taken_points, square_count):
     return all((is_point_valid(x, y, taken_points, square_count) for (x, y) in shape))
 
 
-side = 500
-square_count = 20
-square_side = side/square_count
-
-square1 = {(0, 0)}
-square2 = {(0, 0), (1, 0), (0, 1), (1, 1)}
-line2 = {(0, 0), (0, 1)}
-line3 = {(0, 0), (0, 1), (0, 2)}
-line4 = {(0, 0), (0, 1), (0, 2), (0, 3)}
-line5 = {(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)}
-corner22 = {(0, 0), (1, 0), (0, 1)}
-corner23 = {(0, 0), (1, 0), (0, 1), (0, 2)}
-corner24 = {(0, 0), (1, 0), (0, 1), (0, 2), (0, 3)}
-corner33 = {(0, 0), (1, 0), (2, 0), (0, 1), (0, 2)}
-plus23 = {(0, 0), (0, 1), (0, 2), (1, 1)}
-plus33 = {(0, 0), (0, 1), (0, 2), (1, 1), (2, 1)}
-
-shapes = [square1, square2,
-          line2, line3, line4, line5,
-          corner22, corner23, corner24, corner33,
-          plus23, plus33]
-# shapes = [line2]
-
-all_shapes_rotatations = [[], [], [], []]
-for shape in shapes:
-    for n in range(4):
-        all_shapes_rotatations[n].extend(all_corner_arrangements(shape, n))
-
-
-def setup():
-    size(side, side)
-
-
-def mouseClicked():
-    redraw()
-
-
-def draw():
-    background(255)
-    draw_()
-    noLoop()
-
-
 class Player:
     def __init__(self):
         self.points = set()
@@ -241,6 +198,60 @@ def is_point_in_bounds(pt, square_count):
     return (0 <= pt[0] < square_count) and (0 <= pt[1] < square_count)
 
 
+square1 = {(0, 0)}
+square2 = {(0, 0), (1, 0), (0, 1), (1, 1)}
+square21 = {(0, 0), (1, 0), (0, 1), (1, 1), (0, 2)}
+line2 = {(0, 0), (0, 1)}
+line3 = {(0, 0), (0, 1), (0, 2)}
+line4 = {(0, 0), (0, 1), (0, 2), (0, 3)}
+line5 = {(0, 0), (0, 1), (0, 2), (0, 3), (0, 4)}
+corner22 = {(0, 0), (1, 0), (0, 1)}
+corner23 = {(0, 0), (1, 0), (0, 1), (0, 2)}
+corner24 = {(0, 0), (1, 0), (0, 1), (0, 2), (0, 3)}
+corner33 = {(0, 0), (1, 0), (2, 0), (0, 1), (0, 2)}
+kamatz23 = {(0, 0), (0, 1), (0, 2), (1, 1)}
+kamatz24 = {(0, 0), (0, 1), (0, 2), (0, 3), (1, 1)}
+kamatz33 = {(0, 0), (0, 1), (0, 2), (1, 1), (2, 1)}
+step222 = {(0, 0), (1, 0), (1, 1), (2, 1)}
+step232 = {(0, 0), (1, 0), (1, 1), (1, 2), (2, 2)}
+step223 = {(0, 0), (1, 0), (1, 1), (2, 1), (3, 1)}
+step2222 = {(0, 0), (1, 0), (1, 1), (2, 1), (2, 2)}
+kaf = {(0, 0), (1, 0), (0, 1), (0, 2), (1, 2)}
+plus = {(0, 0), (0, 1), (0, 2), (1, 1), (-1, 1)}
+weird_plus = {(0, 0), (0, 1), (0, 2), (-1, 1), (1, 2)}
+
+shapes = [square1, square2, square21,
+          line2, line3, line4, line5,
+          corner22, corner23, corner24, corner33,
+          kamatz23, kamatz24, kamatz33,
+          step222, step232, step223, step2222,
+          plus, weird_plus, kaf
+          ]
+
+all_shapes_rotatations = [[], [], [], []]
+for shape in shapes:
+    for n in range(4):
+        all_shapes_rotatations[n].extend(all_corner_arrangements(shape, n))
+
+side = 500
+square_count = 50
+square_side = side/square_count
+
+
+def setup():
+    size(side, side)
+
+
+def mouseClicked():
+    redraw()
+
+
+def draw():
+    background(255)
+    draw_()
+    noLoop()
+
+
 random.seed(2)
 
 
@@ -257,7 +268,8 @@ def draw_():
     print seed
     random.seed(seed)
 
-    draw_board()
+    # draw_board()
+    noStroke()
 
     game = Game(4, square_count)
 
