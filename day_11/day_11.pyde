@@ -31,28 +31,38 @@ def rotate(points, n, new_origin=(0, 0)):
 
 
 def rotation_direction(n):
-    return rotate({(1, 1)}, -n).pop()
-
-
-def corners_at_direction(points, n):
-    dx, dy = rotation_direction(n)
-    shiftx = {(x+dx, y) for (x, y) in points}
-    shifty = {(x, y+dy) for (x, y) in points}
-    shiftxy = {(x+dx, y+dy) for (x, y) in points}
-    return points.difference(shiftx).difference(shifty).difference(shiftxy)
+    return (
+        (1, 1),
+        (-1, 1),
+        (-1, -1),
+        (1, -1)
+    )[n]
 
 
 def all_corners(points):
-    corners = {0: set(), 1: set(), 2: set(), 3: set()}
+    shifts = dict()
+    for dx in (-1, 0, 1):
+        for dy in (-1, 0, 1):
+            if dx == dy == 0:
+                continue
+            else:
+                shifts[dx, dy] = {(x+dx, y+dy) for (x, y) in points}
+
+    corners = [None, None, None, None]
     for n in range(4):
-        for pt in corners_at_direction(points, n):
-            corners[n].add(pt)
+        dx, dy = rotation_direction(n)
+        corners[n] = (points
+                      .difference(shifts[dx, 0])
+                      .difference(shifts[0, dy])
+                      .difference(shifts[dx, dy])
+                      )
+
     return corners
 
 
 def all_corner_arrangements(points, n0):
     arrangements = set()
-    for n, pts in all_corners(points).items():
+    for n, pts in enumerate(all_corners(points)):
         for (x0, y0) in pts:
             arrangements.add(tuple(sorted(rotate(points, n-n0, (x0, y0)))))
     return [set(arr) for arr in arrangements]
@@ -113,7 +123,7 @@ shapes = [square1, square2,
           plus23, plus33]
 # shapes = [line2]
 
-all_shapes_rotatations = {0: [], 1: [], 2: [], 3: []}
+all_shapes_rotatations = [[], [], [], []]
 for shape in shapes:
     for n in range(4):
         all_shapes_rotatations[n].extend(all_corner_arrangements(shape, n))
@@ -135,7 +145,7 @@ def draw():
 
 def step(points, all_points, square_count):
     next_origins = [(x, y, n)
-                    for (n, pts) in all_corners(points).items()
+                    for (n, pts) in enumerate(all_corners(points))
                     for (x, y) in shift(pts, *rotation_direction(n-2))]
 
     for _ in range(10):
