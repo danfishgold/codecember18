@@ -33,21 +33,31 @@ shapes = [square1, square2,
           plus23, plus33]
 
 
-def rotate(shape, n):
+def rotate(shape, n, new_origin=(0, 0)):
+    x0, y0 = new_origin
     if n == 0:
-        def rotator((x, y)): return (x, y)
+        def rotator(x, y): return (x, y)
     elif n == 1:
-        def rotator((x, y)): return (y, -x)
+        def rotator(x, y): return (y, -x)
     elif n == 2:
-        def rotator((x, y)): return (-x, -y)
+        def rotator(x, y): return (-x, -y)
     elif n == 3:
-        def rotator((x, y)): return (-y, x)
+        def rotator(x, y): return (-y, x)
 
-    return {rotator(x, y) for (x, y) in shape}
+    return {rotator(x-x0, y-y0) for (x, y) in shape}
 
 
 def shift(shape, x0, y0):
     return {(x0+x, y0+y) for (x, y) in shape}
+
+
+def corners(shape, dirs):
+    shifts = [shift(shape, *sh)
+              for (dx, dy) in dirs
+              for sh in [(dx, 0), (0, dy)]
+              ]
+    shifted = set.union(*shifts)
+    return shape.difference(shifted)
 
 
 def draw_shape(shape, color):
@@ -84,4 +94,4 @@ def draw_():
         draw_shape(shift(shape,
                          2 + 4*(index % 4),
                          2 + 6*(index // 4)),
-                   color(120))
+                   color(0, 255, 0))
