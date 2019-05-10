@@ -274,6 +274,7 @@ player_colors = [
     color(255, 255, 0)
 ]
 
+# https://coolors.co/931621-330c2f-595457-f0803c-f0803c
 player_colors = [
     color(51, 12, 47),
     color(240, 128, 60),
