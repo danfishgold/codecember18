@@ -26,11 +26,11 @@ def all_corners(points):
 
 
 def all_corner_arrangements(points, n0):
-    arrangements = []
+    arrangements = {}
     for (x0, y0), ns in all_corners(points).items():
         for n in ns:
-            arrangements.append(rotate(points, n-n0, (x0, y0)))
-    return arrangements
+            arrangements.add(tuple(sorted(rotate(points, n-n0, (x0, y0)))))
+    return [set(arr) for arr in arrangements]
 
 
 def corners_at_direction(points, n):
@@ -62,6 +62,14 @@ def rotate(points, n, new_origin=(0, 0)):
 
 def rotation_direction(n):
     return rotate({(1, 1)}, n).pop()
+
+
+def forbidden_points(points):
+    return (points
+            .union(shift(points, 1, 0))
+            .union(shift(points, -1, 0))
+            .union(shift(points, 0, 1))
+            .union(shift(points, 0, -1)))
 
 
 square1 = {(0, 0)}
@@ -112,14 +120,21 @@ def draw():
 
 
 weird_shape = {(0, 0), (0, 1), (0, 2), (1, 0), (1, 2), (2, 0), (2, 1)}
+square = [(x, y) for x in range(10) for y in range(10)]
+weird_shape = set(random.sample(square, len(square) * 3//5))
 
 
 def draw_():
     draw_board()
-    for rowtation in range(4):
-        dx, dy = rotation_direction(2-rowtation)
-        for index, shape in enumerate(all_corner_arrangements(weird_shape, rowtation)):
-            x0 = 6 + 6*index
-            y0 = 6 + 8*rowtation
-            draw_shape(shift(shape, x0, y0), color(0, 255, 0))
-            draw_shape({(x0+dx, y0+dy)}, color(255, 0, 0))
+    x0, y0 = square_count//2, square_count//2
+    shifted_weird_shape = shift(weird_shape, x0, y0)
+    forbidden = forbidden_points(shifted_weird_shape)
+
+    draw_shape(shifted_weird_shape, color(0, 255, 0))
+    draw_shape(forbidden, color(255, 0, 0, 50))
+
+    for (x, y), directions in all_corners(shifted_weird_shape).items():
+        for n in directions:
+            dx, dy = rotation_direction(2-n)
+            if (x+dx, y+dy) not in forbidden:
+                draw_shape({(x+dx, y+dy)}, color(0, 0, 255, 100))
