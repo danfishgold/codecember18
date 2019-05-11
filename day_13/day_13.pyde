@@ -1,4 +1,4 @@
-# Day 13
+# Day 13: Topography
 from __future__ import division
 import scaffold
 import random
@@ -11,7 +11,7 @@ def keyPressed():
     )
 
 
-side = 1000
+side = 2000
 noise_scale = 0.02 / (side/500)
 
 
