@@ -72,6 +72,7 @@ def draw_():
     # ellipse(width/2, height/2, side*0.8, side*0.8)
     for x in range(0, side):
         for y in range(0, side):
-            noise_value = noise(x * noise_scale, y * noise_scale)
-            stroke(color_gradient(noise_value))
-            point(x, y)
+            if (x-width/2)**2 + (y-height/2)**2 <= (0.4*side)**2:
+                noise_value = noise(x * noise_scale, y * noise_scale)
+                stroke(color_gradient(noise_value))
+                point(x, y)
