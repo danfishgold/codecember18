@@ -183,7 +183,7 @@ random.seed(1)
 
 
 def draw_():
-    seed = random.randint(1, 100000)
+    seed = 9150  # random.randint(1, 100000)
     random.seed(seed)
     print 'seed', seed
     tile_count = 7
@@ -233,7 +233,7 @@ def draw_():
 
     all_paths = []
     for index, paths in enumerate(loops):
-        c = color((random.random() + index/len(loops)) % 1, 0.95, 0.65)
+        c = color((random.random() + index/len(loops)) % 1, 0.95, 0.8)
         for (row, col, i, j) in paths:
             all_paths.append((row, col, i, j, c))
 
