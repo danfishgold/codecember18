@@ -12,6 +12,16 @@ def keyPressed():
     )
 
 
+def mouseClicked():
+    redraw()
+
+
+def draw():
+    background(255)
+    draw_()
+    noLoop()
+
+
 def shift(points, dx, dy):
     return {(dx+x, dy+y) for (x, y) in points}
 
@@ -69,38 +79,6 @@ def all_corner_arrangements(points, n0):
     return [set(arr) for arr in arrangements]
 
 
-def forbidden_points(points):
-    return (points
-            .union(shift(points, 1, 0))
-            .union(shift(points, -1, 0))
-            .union(shift(points, 0, 1))
-            .union(shift(points, 0, -1)))
-
-
-def draw_shape(shape, color):
-    fill(color)
-    for (x, y) in shape:
-        rect(x*square_side, y*square_side, square_side, square_side)
-
-
-def draw_board():
-    strokeWeight(side // 500 // 2 * 2 + 1)
-    stroke(0)
-    for rowcol in range(square_count+1):
-        line(0, square_side*rowcol, side, square_side*rowcol)
-        line(square_side*rowcol, 0, square_side*rowcol, side)
-
-
-def is_point_valid(x, y, taken_points, square_count):
-    return ((0 <= x < square_count)
-            and (0 <= y < square_count)
-            and (x, y) not in forbidden_points(taken_points))
-
-
-def is_shape_valid(shape, taken_points, square_count):
-    return all((is_point_valid(x, y, taken_points, square_count) for (x, y) in shape))
-
-
 class Player:
     def __init__(self, origin, max_shape_uses=1):
         self.points = set()
@@ -139,6 +117,11 @@ class Player:
                 for (n, pts) in enumerate(all_corners(points))
                 for (x, y) in shift(pts, *rotation_direction(n-2))
                 if is_point_in_bounds((x, y), square_count)}
+
+    def draw(self, color, square_side):
+        fill(color)
+        for (x, y) in self.points:
+            rect(x*square_side, y*square_side, square_side, square_side)
 
 
 class Game:
@@ -207,6 +190,11 @@ class Game:
             and (x, y) not in player.forbidden_points
         )
 
+    def draw(self, colors, side):
+        square_side = side / self.square_count
+        for player, color in zip(self.players, colors):
+            player.draw(color, square_side)
+
 
 def is_point_in_bounds(pt, square_count):
     return (0 <= pt[0] < square_count) and (0 <= pt[1] < square_count)
@@ -250,23 +238,6 @@ for shape_index, shape in enumerate(shapes):
         all_shapes_rotatations[n].extend(arrangements)
 
 
-def setup():
-    size(side, side)
-
-
-def mouseClicked():
-    redraw()
-
-
-def draw():
-    background(255)
-    draw_()
-    noLoop()
-
-
-random.seed(2)
-
-
 player_colors = [
     color(0, 255, 0),
     color(255, 0, 0),
@@ -283,9 +254,13 @@ player_colors = [
 ]
 
 
-side = 500
-square_count = 20
-square_side = side/square_count
+side = 2000
+
+random.seed(2)
+
+
+def setup():
+    size(side, side)
 
 
 def draw_():
@@ -293,16 +268,16 @@ def draw_():
     print seed
     random.seed(seed)
 
-    # draw_board()
     noStroke()
 
+    scale = 1
     game = Game(
         player_count=4,
-        square_count=square_count,
-        max_shape_uses=1
+        square_count=20*scale,
+        max_shape_uses=1*scale*scale
     )
 
     while game.round():
         pass
-    for player, color in zip(game.players, player_colors):
-        draw_shape(player.points, color)
+
+    game.draw(player_colors, side)
