@@ -1,4 +1,4 @@
-# Day 12
+# Day 12: Terrain
 from __future__ import division
 import scaffold
 import colorsys
@@ -55,7 +55,7 @@ def biome(elevation, moisture, latitude, water):
             return lerpColor(desert_forest, SNOW, 0.5*elevation/min_elevation_for_ice)
 
 
-side = 500
+side = 2000
 
 
 def setup():
@@ -66,8 +66,9 @@ random.seed(1)
 
 
 def draw_():
-    seed = random.randint(1, 10000)
+    seed = 1160  # random.randint(1, 10000)
     noiseSeed(seed)
+    print 'seed', seed
     noise_scale = 0.02 / (side/500)
     noiseDetail(8, 0.65)
 
