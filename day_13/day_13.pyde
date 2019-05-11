@@ -2,6 +2,7 @@
 from __future__ import division
 import scaffold
 import random
+import collections
 
 
 def keyPressed():
@@ -15,11 +16,10 @@ side = 500
 noise_scale = 0.02
 
 
-def draw_array(array, array_side):
-    for x in range(array_side):
-        for y in range(array_side):
-            stroke(255*array[x][y])
-            point(x, y)
+def draw_array(array):
+    for (x, y), val in array.items():
+        stroke(255*val)
+        point(x, y)
 
 
 def setup():
@@ -37,7 +37,7 @@ def draw():
 
 
 def draw_():
-    array = [[noise(noise_scale*x, noise_scale*y)
-              for y in range(side)]
-             for x in range(side)]
-    draw_array(array, side)
+    array = {(x, y): noise(noise_scale*x, noise_scale*y)
+             for y in range(side)
+             for x in range(side)}
+    draw_array(array)
