@@ -15,12 +15,13 @@ side = 500
 noise_scale = 0.02
 
 
-def draw_array(array, scale):
+def draw_array(array, side):
     min_val = min(array.values())
     max_val = max(array.values())
     for (x, y), val in array.items():
-        stroke(255*ilerp(min_val, max_val, val))
-        point(scale*x, scale*y)
+        if is_in_circle(x, y, side):
+            stroke(255*ilerp(min_val, max_val, val))
+            point(x, y)
 
 
 def setup():
@@ -35,6 +36,10 @@ def draw():
     background(255)
     draw_()
     noLoop()
+
+
+def is_in_circle(x, y, side):
+    return sqrt((x-side/2)**2 + (y-side/2)**2) < 0.4*side
 
 
 def find_contours(array, side, thresholds):
@@ -89,18 +94,19 @@ def draw_():
     noiseSeed(random.randint(1, 1000))
     array = {(x, y):
              noise(noise_scale*x, noise_scale*y)
-             if sqrt((x-side/2) ** 2 + (y-side/2)**2) <= 0.4*side
-             else 1
+             #  if sqrt((x-side/2) ** 2 + (y-side/2)**2) <= 0.4*side
+             #  else 1
              for y in range(side)
              for x in range(side)
              }
 
     # array = {(x, y): f(x, y) for y in range(side) for x in range(side)}
-    draw_array(array, 1)
+    draw_array(array, side)
 
     contour_lines = find_contours(
         array, side, [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
     for segments in contour_lines.values():
         for (p1, p2) in segments:
-            stroke(0)
-            line(*(p1+p2))
+            if is_in_circle(p1[0], p1[1], side) and is_in_circle(p2[0], p2[1], side):
+                stroke(0)
+                line(*(p1+p2))
