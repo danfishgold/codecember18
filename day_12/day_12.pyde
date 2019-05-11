@@ -24,34 +24,68 @@ def draw():
 
 def color_from_hex(hex):
     r, g, b = scaffold.hex_to_rgb(hex)
-    h, s, v = colorsys.rgb_to_hsv(r/255, g/255, b/255)
-    r2, g2, b2 = colorsys.hsv_to_rgb(h, s+0.3, v+0.1)
-    return color(r2*255, g2*255, b2*255)
+    # h, s, v = colorsys.rgb_to_hsv(r/255, g/255, b/255)
+    # r2, g2, b2 = colorsys.hsv_to_rgb(h, s+0.3, v+0.1)
+    # return color(r2*255, g2*255, b2*255)
+    return color(r, g, b)
 
 
-# https://www.astellescolors.com/2016/11/26/steep-coast/
-# https://colorzilla.com/gradient-editor/#002c59+0,005f84+32,299f94+37,809f55+40,3a8235+56,2e723c+70,b3ae77+78,cfb59f+100
-terrain_gradient = [
-    (0, color_from_hex("002C59")),
-    (0.30, color_from_hex("005F84")),
-    (0.37, color_from_hex("299f94")),
-    (0.40, color_from_hex("809f55")),
-    (0.56, color_from_hex("3a8235")),
-    (0.70, color_from_hex("2e723c")),
-    (0.78, color_from_hex("b3ae77")),
-    (1, color_from_hex("cfb59f")),
-]
+# https://www.redblobgames.com/maps/terrain-from-noise/
+OCEAN = color_from_hex("43437A")
+BEACH = color_from_hex("9E8F77")
+SCORCHED = color_from_hex("555555")
+BARE = color_from_hex("888888")
+TUNDRA = color_from_hex("BCBCAB")
+SNOW = color_from_hex("DEDEE5")
+TEMPERATE_DESERT = color_from_hex("C9D29B")
+SHRUBLAND = color_from_hex("889977")
+TAIGA = color_from_hex("99AB77")
+GRASSLAND = color_from_hex("88AB55")
+TEMPERATE_DECIDUOUS_FOREST = color_from_hex("679359")
+TEMPERATE_RAIN_FOREST = color_from_hex("438855")
+SUBTROPICAL_DESERT = color_from_hex("D2B98B")
+TROPICAL_SEASONAL_FOREST = color_from_hex("569944")
+TROPICAL_RAIN_FOREST = color_from_hex("337755")
 
 
-def color_gradient(f):
-    index = 0
-    f = min(1, max(0, f))
-    while f > terrain_gradient[index+1][0]:
-        index += 1
-    f1, c1 = terrain_gradient[index]
-    f2, c2 = terrain_gradient[index+1]
-    ff = (f-f1) / (f2-f1)
-    return lerpColor(c1, c2, ff)
+def biome(temperature, moisture):
+    if temperature < 0.1:
+        return OCEAN
+    if temperature < 0.12:
+        return BEACH
+
+    if temperature > 0.8:
+        if moisture < 0.1:
+            return SCORCHED
+        if moisture < 0.2:
+            return BARE
+        if moisture < 0.5:
+            return TUNDRA
+        return SNOW
+
+    if temperature > 0.6:
+        if moisture < 0.33:
+            return TEMPERATE_DESERT
+        if moisture < 0.66:
+            return SHRUBLAND
+        return TAIGA
+
+    if temperature > 0.3:
+        if moisture < 0.16:
+            return TEMPERATE_DESERT
+        if moisture < 0.50:
+            return GRASSLAND
+        if moisture < 0.83:
+            return TEMPERATE_DECIDUOUS_FOREST
+        return TEMPERATE_RAIN_FOREST
+
+    if moisture < 0.16:
+        return SUBTROPICAL_DESERT
+    if moisture < 0.33:
+        return GRASSLAND
+    if moisture < 0.66:
+        return TROPICAL_SEASONAL_FOREST
+    return TROPICAL_RAIN_FOREST
 
 
 side = 500
@@ -66,13 +100,20 @@ random.seed(1)
 
 def draw_():
     noiseSeed(random.randint(1, 10000))
-    noise_scale = 0.02
-    noiseDetail(4, 0.5)
+    noise_scale = 0.01 / (side/500)
+    noiseDetail(8, 0.5)
 
-    # ellipse(width/2, height/2, side*0.8, side*0.8)
-    for x in range(0, side):
-        for y in range(0, side):
-            if (x-width/2)**2 + (y-height/2)**2 <= (0.4*side)**2:
-                noise_value = noise(x * noise_scale, y * noise_scale)
-                stroke(color_gradient(noise_value))
-                point(x, y)
+    elevation = [[noise(x * noise_scale, y * noise_scale)
+                  for y in range(side)]
+                 for x in range(side)]
+
+    moisture = [[noise(1000000 + x * noise_scale, 1000000 + y * noise_scale)
+                 for y in range(side)]
+                for x in range(side)]
+
+    for x in range(side):
+        for y in range(side):
+            # if (x-width/2)**2 + (y-height/2)**2 <= (0.4*side)**2:
+            e, m = elevation[x][y], moisture[x][y]
+            stroke(biome(e**2, m**2))
+            point(x, y)
