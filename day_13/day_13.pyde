@@ -90,8 +90,13 @@ def f(x, y):
     return 3*sin(TWO_PI*r*2) + 4*sin(theta)
 
 
+random.seed(1)
+
+
 def draw_():
-    noiseSeed(random.randint(1, 1000))
+    seed = random.randint(1, 1000)
+    print 'seed', seed
+    noiseSeed(seed)
     array = {(x, y):
              noise(noise_scale*x, noise_scale*y)
              #  if sqrt((x-side/2) ** 2 + (y-side/2)**2) <= 0.4*side
@@ -103,8 +108,10 @@ def draw_():
     # array = {(x, y): f(x, y) for y in range(side) for x in range(side)}
     draw_array(array, side)
 
-    contour_lines = find_contours(
-        array, side, [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+    contour_count = 7
+    thresholds = [(index+1)/(contour_count+2)
+                  for index in range(contour_count)]
+    contour_lines = find_contours(array, side, thresholds)
     for segments in contour_lines.values():
         for (p1, p2) in segments:
             if is_in_circle(p1[0], p1[1], side) and is_in_circle(p2[0], p2[1], side):
