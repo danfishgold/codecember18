@@ -11,8 +11,8 @@ def keyPressed():
     )
 
 
-side = 500
-noise_scale = 0.02
+side = 1000
+noise_scale = 0.02 / (side/500)
 
 
 def draw_array(array, side):
@@ -26,6 +26,7 @@ def draw_array(array, side):
 
 def setup():
     size(side, side)
+    strokeWeight(side // 500)
 
 
 def mouseClicked():
@@ -42,13 +43,15 @@ def is_in_circle(x, y, side):
     return sqrt((x-side/2)**2 + (y-side/2)**2) < 0.4*side
 
 
-def find_contours(array, side, thresholds):
+def find_contours(array, side, thresholds, spacing=1):
     # https://blog.bruce-hill.com/meandering-triangles
+
     triangles = []
-    for x in range(side-1):
-        for y in range(side-1):
-            triangles.append(((x, y), (x+1, y), (x, y+1)))
-            triangles.append(((x+1, y), (x, y+1), (x+1, y+1)))
+    for x in range(0, side-spacing, spacing):
+        for y in range(0, side-spacing, spacing):
+            triangles.append(((x, y), (x+spacing, y), (x, y+spacing)))
+            triangles.append(
+                ((x+spacing, y), (x, y+spacing), (x+spacing, y+spacing)))
 
     contour_segments = dict()
     for threshold in thresholds:
@@ -84,12 +87,6 @@ def ilerp(a, b, x):
     return (x-a) / (b-a)
 
 
-def f(x, y):
-    r = sqrt((x-side/2) ** 2 + (y-side/2)**2) / (side/2)
-    theta = atan2(y, x)
-    return 3*sin(TWO_PI*r*2) + 4*sin(theta)
-
-
 random.seed(1)
 
 
@@ -99,19 +96,16 @@ def draw_():
     noiseSeed(seed)
     array = {(x, y):
              noise(noise_scale*x, noise_scale*y)
-             #  if sqrt((x-side/2) ** 2 + (y-side/2)**2) <= 0.4*side
-             #  else 1
              for y in range(side)
              for x in range(side)
              }
-
-    # array = {(x, y): f(x, y) for y in range(side) for x in range(side)}
     draw_array(array, side)
 
     contour_count = 7
     thresholds = [(index+1)/(contour_count+2)
                   for index in range(contour_count)]
-    contour_lines = find_contours(array, side, thresholds)
+
+    contour_lines = find_contours(array, side, thresholds, spacing=side//500)
     for segments in contour_lines.values():
         for (p1, p2) in segments:
             if is_in_circle(p1[0], p1[1], side) and is_in_circle(p2[0], p2[1], side):
