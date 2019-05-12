@@ -66,23 +66,34 @@ def make_line(point_count, max_x, max_y, distance_threshold):
     return line_points
 
 
+def draw_line(p1, p2, clr, scale=1):
+    x1, y1 = p1
+    x2, y2 = p2
+
+    stroke(color(255))
+    strokeWeight(9)
+    strokeCap(PROJECT)
+    line(x1*scale, y1*scale, x2*scale, y2*scale)
+    stroke(clr)
+    strokeWeight(5)
+    strokeCap(PROJECT)
+    line(x1*scale, y1*scale, x2*scale, y2*scale)
+
+
 def draw_():
     seed = random.randint(1, 10000)
     random.seed(seed)
     print 'seed', seed
 
     background(255)
-    line_points = make_line(
-        point_count=20,
-        max_x=side,
-        max_y=side,
-        distance_threshold=20
-    )
-    line_color = color(255, 0, 0)
-    for p1, p2 in zip(line_points, line_points[1:]):
-        for weight, clr, cap in [(9, color(255), SQUARE), (5, line_color, PROJECT)]:
-            stroke(clr)
-            strokeWeight(weight)
-            strokeCap(cap)
-            noFill()
-            line(p1[0], p1[1], p2[0], p2[1])
+    lines = [make_line(point_count=5,
+                       max_x=side,
+                       max_y=side,
+                       distance_threshold=20)
+             for _ in range(5)]
+    colors = [color(255, 0, 0), color(0, 255, 0), color(
+        0, 0, 255), color(255, 255, 0), color(255, 0, 255)]
+
+    for line_points, line_color in zip(lines, colors):
+        for p1, p2 in zip(line_points, line_points[1:]):
+            draw_line(p1, p2, line_color)
