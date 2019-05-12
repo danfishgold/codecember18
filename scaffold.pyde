@@ -1,6 +1,7 @@
 # Day ##
 from __future__ import division
 import scaffold
+import random
 
 
 def keyPressed():
@@ -15,7 +16,6 @@ side = 500
 
 def setup():
     size(side, side)
-    strokeWeight(ceil(side/500))
 
 
 def mouseClicked():
@@ -23,10 +23,17 @@ def mouseClicked():
 
 
 def draw():
-    background(255)
     draw_()
     noLoop()
 
 
+random.seed(1)
+
+
 def draw_():
+    seed = random.randint(1, 10000)
+    random.seed(seed)
+    print 'seed', seed
+
+    background(255)
     ellipse(width/2, height/2, side*0.8, side*0.8)
