@@ -92,10 +92,15 @@ def draw_line(p1, p2, clr, scale=1):
     x1, y1 = p1
     x2, y2 = p2
 
-    stroke(color(255))
-    strokeWeight(9)
-    strokeCap(PROJECT)
-    line(x1*scale, y1*scale, x2*scale, y2*scale)
+    xdir = 0 if abs(x1 - x2) < 20/scale else (1 if x2 > x1 else -1)
+    ydir = 0 if abs(y1 - y2) < 20/scale else (1 if y2 > y1 else -1)
+
+    if xdir or ydir:
+        stroke(color(255))
+        strokeWeight(9)
+        strokeCap(PROJECT)
+        line(x1*scale+xdir*10, y1*scale+ydir*10,
+             x2*scale-xdir*10, y2*scale-ydir*10)
     stroke(clr)
     strokeWeight(5)
     strokeCap(PROJECT)
