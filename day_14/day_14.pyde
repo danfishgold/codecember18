@@ -27,41 +27,63 @@ def draw():
     noLoop()
 
 
-random.seed(1)
+def random_choice(aset):
+    return random.choice(list(aset))
 
 
-def too_close(x, xs, threshold):
-    return any((abs(x-xx) < threshold for xx in xs))
-
-
-def make_line(point_count, max_x, max_y, distance_threshold):
-    x0, y0 = random.randint(0, max_x), 0
+def make_line(point_count, forbidden_points, n):
+    is_vertical = random.randint(0, 1) == 1
+    inner_range = list(range(1, n-2))
+    if is_vertical:
+        x0, y0 = random_choice({(x, y)
+                                for x in [0, n-1]
+                                for y in inner_range
+                                if (x, y) not in forbidden_points})
+    else:
+        x0, y0 = random_choice({(x, y)
+                                for x in inner_range
+                                for y in [0, n-1]
+                                if (x, y) not in forbidden_points})
     line_points = [(x0, y0)]
-    previous_xs = {0, x0, max_x}
-    previous_ys = {0, y0, max_y}
-
-    is_vertical = True
+    is_vertical = not is_vertical
     for _ in range(point_count):
         prev_x, prev_y = line_points[-1]
         if is_vertical:
-            new_y = prev_y
-            while too_close(new_y, previous_ys, threshold=distance_threshold):
-                new_y = random.randint(0, max_y)
-            line_points.append((prev_x, new_y))
-            previous_ys.add(new_y)
-        else:
             new_x = prev_x
-            while too_close(new_x, previous_xs, threshold=distance_threshold):
-                new_x = random.randint(0, max_x)
-            line_points.append((new_x, prev_y))
-            previous_xs.add(new_x)
+            new_y = random_choice(
+                filter(lambda y: (new_x, y) not in forbidden_points, inner_range))
+        else:
+            new_y = prev_y
+            new_x = random_choice(
+                filter(lambda x: (x, new_y) not in forbidden_points, inner_range))
+
+        for x in range(min(prev_x, new_x), max(prev_x, new_x)+1):
+            for y in range(min(prev_y, new_y), max(prev_y, new_y)+1):
+                forbidden_points.add((x, y))
+
+        line_points.append((new_x, new_y))
+
         is_vertical = not is_vertical
 
     penultimate_x, penultimate_y = line_points[-1]
     if is_vertical:
-        line_points.append((penultimate_x, max_y))
+        last_x = penultimate_x
+        last_y = random_choice({
+            y
+            for y in [0, n-1]
+            if (last_x, y) not in forbidden_points
+        })
     else:
-        line_points.append((max_x, penultimate_y))
+        last_y = penultimate_y
+        last_x = random_choice({
+            x
+            for x in [0, n-1]
+            if (x, last_y) not in forbidden_points
+        })
+    line_points.append((last_x, last_y))
+    for x in range(min(penultimate_x, last_x), max(penultimate_x, last_x)+1):
+        for y in range(min(penultimate_y, last_y), max(penultimate_y, last_y)+1):
+            forbidden_points.add((x, y))
 
     return line_points
 
@@ -80,20 +102,27 @@ def draw_line(p1, p2, clr, scale=1):
     line(x1*scale, y1*scale, x2*scale, y2*scale)
 
 
+random.seed(1)
+
+
 def draw_():
     seed = random.randint(1, 10000)
     random.seed(seed)
     print 'seed', seed
 
-    background(255)
-    lines = [make_line(point_count=5,
-                       max_x=side,
-                       max_y=side,
-                       distance_threshold=20)
-             for _ in range(5)]
-    colors = [color(255, 0, 0), color(0, 255, 0), color(
-        0, 0, 255), color(255, 255, 0), color(255, 0, 255)]
+    n = 50
 
-    for line_points, line_color in zip(lines, colors):
+    background(255)
+
+    forbidden_points = set()
+    lines_and_colors = []
+    for idx in range(10):
+        line = make_line(
+            point_count=5,
+            forbidden_points=forbidden_points,
+            n=n)
+        lines_and_colors.append((line, color(255*idx/10, 0, 0)))
+
+    for line_points, line_color in lines_and_colors:
         for p1, p2 in zip(line_points, line_points[1:]):
-            draw_line(p1, p2, line_color)
+            draw_line(p1, p2, line_color, scale=side/(n-1))
