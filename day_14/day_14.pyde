@@ -110,17 +110,22 @@ def draw_():
     random.seed(seed)
     print 'seed', seed
 
-    n = 50
+    n = 40
 
     background(255)
 
     forbidden_points = set()
     lines_and_colors = []
     for idx in range(10):
-        line = make_line(
-            point_count=5,
-            forbidden_points=forbidden_points,
-            n=n)
+        line = None
+        while not line:
+            try:
+                line = make_line(
+                    point_count=5,
+                    forbidden_points=forbidden_points,
+                    n=n)
+            except IndexError:
+                print 'Failed: board was too full'
         lines_and_colors.append((line, color(255*idx/10, 0, 0)))
 
     for line_points, line_color in lines_and_colors:
