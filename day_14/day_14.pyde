@@ -11,7 +11,7 @@ def keyPressed():
     )
 
 
-side = 500
+side = 2000
 
 
 def setup():
@@ -140,7 +140,7 @@ def random_xs(n, side, min_dist):
 
 
 def draw_():
-    seed = random.randint(1, 10000)
+    seed = 9285  # random.randint(1, 10000)
     random.seed(seed)
     print 'seed', seed
 
