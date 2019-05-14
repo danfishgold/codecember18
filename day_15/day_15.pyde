@@ -12,6 +12,8 @@ def keyPressed():
 
 
 def pixel(x, y, clr):
+    # if (x*scale-side/2)**2 + (y*scale-side/2)**2 > (0.4*side)**2:
+    #     return
     fill(clr)
     noStroke()
     return square(x*scale, y*scale, scale)
@@ -37,7 +39,7 @@ tile_size = n//5
 random.seed(1)
 
 
-def random_pattern(tile_size):
+def random_pattern_part(tile_size):
     clr = color(
         random.randint(0, 255),
         random.randint(0, 255),
@@ -49,6 +51,15 @@ def random_pattern(tile_size):
 
     symmetry = 8
     return (clr, offset_x, offset_y, symmetry)
+
+
+def random_pattern(tile_size):
+    pattern = [random_pattern_part(tile_size) for _ in range(tile_size*3)]
+    pixels = []
+    for clr, offset_x, offset_y, symmetry in pattern:
+        for x, y in copies(offset_x, offset_y, tile_size, symmetry=symmetry):
+            pixels.append((x, y, clr))
+    return pixels
 
 
 def copies(x, y, s, symmetry=8):
@@ -67,11 +78,8 @@ def draw_():
     random.seed(seed)
     print 'seed', seed
 
-    patterns = [random_pattern(tile_size) for _ in range(tile_size*3)]
-
     background(255)
-    for clr, offset_x, offset_y, symmetry in patterns:
+    for dx, dy, clr in random_pattern(tile_size):
         for x0 in range(0, n, tile_size):
             for y0 in range(0, n, tile_size):
-                for dx, dy in copies(offset_x, offset_y, tile_size, symmetry=symmetry):
-                    pixel(x0+dx, y0+dy, clr)
+                pixel(x0+dx, y0+dy, clr)
