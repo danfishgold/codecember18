@@ -33,7 +33,7 @@ def draw():
 side = 500
 n = 100
 scale = side//(n-1)
-tile_size = 15
+tile_size = n//5
 random.seed(1)
 
 
@@ -67,7 +67,7 @@ def draw_():
     random.seed(seed)
     print 'seed', seed
 
-    patterns = [random_pattern(tile_size) for _ in range(40)]
+    patterns = [random_pattern(tile_size) for _ in range(tile_size*3)]
 
     background(255)
     for clr, offset_x, offset_y, symmetry in patterns:
