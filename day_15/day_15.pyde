@@ -49,6 +49,12 @@ def random_pattern(tile_size):
     return (clr, offset_x, offset_y)
 
 
+def copies(x, y, s, symmetry=8):
+    return ((x, y), (s-x, y), (x, s-y), (s-x, s-y),
+            (y, x), (s-y, x), (y, s-x), (s-y, s-x)
+            )
+
+
 def draw_():
     seed = random.randint(1, 10000)
     random.seed(seed)
@@ -60,5 +66,5 @@ def draw_():
     for clr, offset_x, offset_y in patterns:
         for x0 in range(0, n, tile_size):
             for y0 in range(0, n, tile_size):
-                pixel(x0+offset_x, y0+offset_y, clr)
-                pixel(x0+tile_size-offset_x, y0+tile_size-offset_y, clr)
+                for dx, dy in copies(offset_x, offset_y, tile_size):
+                    pixel(x0+dx, y0+dy, clr)
