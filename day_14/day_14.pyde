@@ -1,4 +1,4 @@
-# Day 14
+# Day 14: Pipes
 from __future__ import division
 import scaffold
 import random
@@ -41,13 +41,16 @@ def cool_range(x1, x2):
 
 def cool_2d_range(x1, y1, x2, y2):
     assert x1 == x2 or y1 == y2
-    return ((x, y) for x in cool_range(x1, x2) for y in cool_range(y1, y2))
+    return [(x, y) for x in cool_range(x1, x2) for y in cool_range(y1, y2)]
 
 
 def is_line_ok(x1, y1, x2, y2, orientation, allowed_orientations):
-    return all((allowed_orientations.get((x, y), orientation) is orientation
-                for x, y in cool_2d_range(x1, y1, x2, y2)
-                ))
+    return (
+        all((allowed_orientations.get((x, y), orientation) is orientation
+             for x, y in cool_2d_range(x1, y1, x2, y2)[1:-1]
+             ))
+        and (x2, y2) not in allowed_orientations
+    )
 
 
 def other_orientation(orientation):
@@ -61,11 +64,11 @@ def pick_next_point(prev_x, prev_y, orientation, allowed_orientations, options):
     if orientation is VERTICAL:
         new_x = prev_x
         new_y = random_choice(
-            filter(lambda y: is_line_ok(prev_x, prev_y, new_x, y, orientation, allowed_orientations), options))
+            filter(lambda y: is_line_ok(prev_x, prev_y, new_x, y, orientation, allowed_orientations) and y != prev_y, options))
     else:
         new_y = prev_y
         new_x = random_choice(
-            filter(lambda x: is_line_ok(prev_x, prev_y, x, new_y, orientation, allowed_orientations), options))
+            filter(lambda x: is_line_ok(prev_x, prev_y, x, new_y, orientation, allowed_orientations) and x != prev_x, options))
 
     return (new_x, new_y)
 
@@ -104,26 +107,26 @@ def make_line(point_count, allowed_orientations, n):
     return line_points
 
 
-def draw_line(p1, p2, clr, xs, ys):
+def draw_pipe(pipe, clr, xs, ys):
+    mult = side//500//2*2+1
+    draw_line(pipe[0], pipe[1], xs, ys, color(255), mult*9)
+    for (p1, p2, p3) in zip(pipe, pipe[1:], pipe[2:]):
+        draw_line(p2, p3, xs, ys, color(255), mult*9)
+        draw_line(p1, p2, xs, ys, clr, mult*5)
+        draw_line(p2, p3, xs, ys, clr, mult*5)
+
+
+def draw_line(p1, p2, xs, ys, clr, stroke_weight):
     x1, y1 = xs[p1[0]], ys[p1[1]]
     x2, y2 = xs[p2[0]], ys[p2[1]]
 
-    xdir = 0 if abs(x1 - x2) < 20 else (1 if x2 > x1 else -1)
-    ydir = 0 if abs(y1 - y2) < 20 else (1 if y2 > y1 else -1)
-
-    if xdir or ydir:
-        stroke(color(255))
-        strokeWeight(9)
-        strokeCap(PROJECT)
-        line(x1+xdir*10, y1+ydir*10,
-             x2-xdir*10, y2-ydir*10)
     stroke(clr)
-    strokeWeight(5)
+    strokeWeight(stroke_weight)
     strokeCap(ROUND)
     line(x1, y1, x2, y2)
 
 
-random.seed(1)
+random.seed(2)
 
 
 def random_xs(n, side, min_dist):
@@ -141,7 +144,7 @@ def draw_():
     random.seed(seed)
     print 'seed', seed
 
-    n = 30
+    n = 40
     line_count = 10
 
     background(255)
@@ -166,8 +169,4 @@ def draw_():
     ys = random_xs(n, side, 5)
 
     for line_points, line_color in lines_and_colors:
-        for p1, p2 in zip(line_points, line_points[1:]):
-            draw_line(
-                p1, p2, line_color,
-                xs, ys
-            )
+        draw_pipe(line_points, line_color, xs, ys)
