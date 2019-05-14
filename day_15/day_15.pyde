@@ -79,7 +79,7 @@ def draw_():
     print 'seed', seed
 
     background(255)
-    for x0 in range(0, n, tile_size):
-        for y0 in range(0, n, tile_size):
-            for dx, dy, clr in random_pattern(tile_size, pattern_count=2*tile_size):
+    for dx, dy, clr in random_pattern(tile_size, pattern_count=2*tile_size):
+        for x0 in range(0, n, tile_size):
+            for y0 in range(0, n, tile_size):
                 pixel(x0+dx, y0+dy, clr)
