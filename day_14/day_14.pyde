@@ -31,59 +31,84 @@ def random_choice(aset):
     return random.choice(list(aset))
 
 
-def make_line(point_count, forbidden_points, n):
-    is_vertical = random.randint(0, 1) == 1
+HORIZONTAL = 1
+VERTICAL = 2
+
+
+def cool_range(x1, x2):
+    return range(min(x1, x2), max(x1, x2)+1)
+
+
+def cool_2d_range(x1, y1, x2, y2):
+    assert x1 == x2 or y1 == y2
+    return ((x, y) for x in cool_range(x1, x2) for y in cool_range(y1, y2))
+
+
+def is_line_ok(x1, y1, x2, y2, orientation, allowed_orientations):
+    return all((allowed_orientations.get((x, y), orientation) is orientation
+                for x, y in cool_2d_range(x1, y1, x2, y2)
+                ))
+
+
+def other_orientation(orientation):
+    if orientation == VERTICAL:
+        return HORIZONTAL
+    else:
+        return VERTICAL
+
+
+def make_line(point_count, allowed_orientations, n):
+    orientation = random.choice((HORIZONTAL, VERTICAL))
+
     inner_range = list(range(1, n-2))
-    if is_vertical:
+    if orientation is VERTICAL:
         x0, y0 = random_choice({(x, y)
                                 for x in [0, n-1]
                                 for y in inner_range
-                                if (x, y) not in forbidden_points})
+                                if (x, y) not in allowed_orientations})
     else:
         x0, y0 = random_choice({(x, y)
                                 for x in inner_range
                                 for y in [0, n-1]
-                                if (x, y) not in forbidden_points})
+                                if (x, y) not in allowed_orientations})
     line_points = [(x0, y0)]
-    is_vertical = not is_vertical
+    orientation = other_orientation(orientation)
     for _ in range(point_count):
         prev_x, prev_y = line_points[-1]
-        if is_vertical:
+        if orientation is VERTICAL:
             new_x = prev_x
             new_y = random_choice(
-                filter(lambda y: (new_x, y) not in forbidden_points, inner_range))
+                filter(lambda y: is_line_ok(prev_x, prev_y, new_x, y, orientation, allowed_orientations), inner_range))
         else:
             new_y = prev_y
             new_x = random_choice(
-                filter(lambda x: (x, new_y) not in forbidden_points, inner_range))
+                filter(lambda x: is_line_ok(prev_x, prev_y, x, new_y, orientation, allowed_orientations), inner_range))
 
-        for x in range(min(prev_x, new_x), max(prev_x, new_x)+1):
-            for y in range(min(prev_y, new_y), max(prev_y, new_y)+1):
-                forbidden_points.add((x, y))
+        for x, y in cool_2d_range(prev_x, prev_y, new_x, new_y):
+            allowed_orientations[x, y] = other_orientation(orientation)
 
         line_points.append((new_x, new_y))
 
-        is_vertical = not is_vertical
+        orientation = other_orientation(orientation)
 
     penultimate_x, penultimate_y = line_points[-1]
-    if is_vertical:
+    if orientation is VERTICAL:
         last_x = penultimate_x
         last_y = random_choice({
             y
             for y in [0, n-1]
-            if (last_x, y) not in forbidden_points
+            if is_line_ok(penultimate_x, penultimate_y, last_x, y, orientation, allowed_orientations)
         })
     else:
         last_y = penultimate_y
         last_x = random_choice({
             x
             for x in [0, n-1]
-            if (x, last_y) not in forbidden_points
+            if is_line_ok(penultimate_x, penultimate_y, x, last_y, orientation, allowed_orientations)
         })
     line_points.append((last_x, last_y))
-    for x in range(min(penultimate_x, last_x), max(penultimate_x, last_x)+1):
-        for y in range(min(penultimate_y, last_y), max(penultimate_y, last_y)+1):
-            forbidden_points.add((x, y))
+    for x, y in cool_2d_range(penultimate_x, penultimate_y, last_x, last_y):
+        allowed_orientations[x, y] = other_orientation(orientation)
 
     return line_points
 
@@ -103,7 +128,7 @@ def draw_line(p1, p2, clr, scale=1):
              x2*scale-xdir*10, y2*scale-ydir*10)
     stroke(clr)
     strokeWeight(5)
-    strokeCap(PROJECT)
+    strokeCap(ROUND)
     line(x1*scale, y1*scale, x2*scale, y2*scale)
 
 
@@ -116,23 +141,25 @@ def draw_():
     print 'seed', seed
 
     n = 40
+    line_count = 10
 
     background(255)
 
-    forbidden_points = set()
+    allowed_orientations = dict()
     lines_and_colors = []
-    for idx in range(10):
+    for idx in range(line_count):
         line = None
         while not line:
             try:
                 line = make_line(
                     point_count=5,
-                    forbidden_points=forbidden_points,
+                    allowed_orientations=allowed_orientations,
                     n=n)
             except IndexError:
                 print 'Failed: board was too full'
-        lines_and_colors.append((line, color(255*idx/10, 0, 0)))
+        lines_and_colors.append((line, color(255*idx/line_count, 0, 0)))
 
+    random.shuffle(lines_and_colors)
     for line_points, line_color in lines_and_colors:
         for p1, p2 in zip(line_points, line_points[1:]):
             draw_line(p1, p2, line_color, scale=side/(n-1))
