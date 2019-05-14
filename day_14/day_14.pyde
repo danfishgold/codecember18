@@ -77,13 +77,13 @@ def make_line(point_count, allowed_orientations, n):
     outer_range = [0, n-1]
     if orientation is HORIZONTAL:
         x0, y0 = random_choice({(x, y)
-                                for x in [0, n-1]
+                                for x in outer_range
                                 for y in inner_range
                                 if (x, y) not in allowed_orientations})
     else:
         x0, y0 = random_choice({(x, y)
                                 for x in inner_range
-                                for y in [0, n-1]
+                                for y in outer_range
                                 if (x, y) not in allowed_orientations})
     line_points = [(x0, y0)]
     for idx in range(point_count+1):
@@ -126,11 +126,13 @@ def draw_line(p1, p2, clr, xs, ys):
 random.seed(1)
 
 
-def random_xs(n, side):
-    xs = [0] + [random.randint(0, side) for _ in range(n-2)] + [side]
-    while len(xs) != len(set(xs)):
-        xs = [0] + [random.randint(0, side) for _ in range(n-2)] + [side]
-    xs.sort()
+def random_xs(n, side, min_dist):
+
+    xs = [min_dist * idx for idx in range(n)]
+    while xs[-1] < side:
+        idx0 = random.randint(1, n-1)
+        for idx in range(idx0, n):
+            xs[idx] += 1
     return xs
 
 
@@ -141,7 +143,6 @@ def draw_():
 
     n = 30
     line_count = 10
-    xs = [idx/(n-1) * side for idx in range(n)]
 
     background(255)
 
@@ -161,10 +162,12 @@ def draw_():
 
     random.shuffle(lines_and_colors)
 
+    xs = random_xs(n, side, 5)
+    ys = random_xs(n, side, 5)
+
     for line_points, line_color in lines_and_colors:
         for p1, p2 in zip(line_points, line_points[1:]):
             draw_line(
                 p1, p2, line_color,
-                random_xs(n, side),
-                random_xs(n, side)
+                xs, ys
             )
