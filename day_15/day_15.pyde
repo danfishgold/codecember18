@@ -46,13 +46,20 @@ def random_pattern(tile_size):
     )
     offset_x = random.randint(0, tile_size-1)
     offset_y = random.randint(0, tile_size-1)
-    return (clr, offset_x, offset_y)
+
+    symmetry = 8
+    return (clr, offset_x, offset_y, symmetry)
 
 
 def copies(x, y, s, symmetry=8):
-    return ((x, y), (s-x, y), (x, s-y), (s-x, s-y),
-            (y, x), (s-y, x), (y, s-x), (s-y, s-x)
-            )
+    if symmetry == 8:
+        return ((x, y), (s-x, y), (x, s-y), (s-x, s-y),
+                (y, x), (s-y, x), (y, s-x), (s-y, s-x)
+                )
+    if symmetry == 4:
+        return ((x, y), (s-x, y), (x, s-y), (s-x, s-y))
+    if symmetry == 2:
+        return ((x, y), (s-x, s-y))
 
 
 def draw_():
@@ -60,11 +67,11 @@ def draw_():
     random.seed(seed)
     print 'seed', seed
 
-    patterns = [random_pattern(tile_size) for _ in range(60)]
+    patterns = [random_pattern(tile_size) for _ in range(40)]
 
     background(255)
-    for clr, offset_x, offset_y in patterns:
+    for clr, offset_x, offset_y, symmetry in patterns:
         for x0 in range(0, n, tile_size):
             for y0 in range(0, n, tile_size):
-                for dx, dy in copies(offset_x, offset_y, tile_size):
+                for dx, dy in copies(offset_x, offset_y, tile_size, symmetry=symmetry):
                     pixel(x0+dx, y0+dy, clr)
