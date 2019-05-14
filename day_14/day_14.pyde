@@ -104,26 +104,34 @@ def make_line(point_count, allowed_orientations, n):
     return line_points
 
 
-def draw_line(p1, p2, clr, scale=1):
-    x1, y1 = p1
-    x2, y2 = p2
+def draw_line(p1, p2, clr, xs, ys):
+    x1, y1 = xs[p1[0]], ys[p1[1]]
+    x2, y2 = xs[p2[0]], ys[p2[1]]
 
-    xdir = 0 if abs(x1 - x2) < 20/scale else (1 if x2 > x1 else -1)
-    ydir = 0 if abs(y1 - y2) < 20/scale else (1 if y2 > y1 else -1)
+    xdir = 0 if abs(x1 - x2) < 20 else (1 if x2 > x1 else -1)
+    ydir = 0 if abs(y1 - y2) < 20 else (1 if y2 > y1 else -1)
 
     if xdir or ydir:
         stroke(color(255))
         strokeWeight(9)
         strokeCap(PROJECT)
-        line(x1*scale+xdir*10, y1*scale+ydir*10,
-             x2*scale-xdir*10, y2*scale-ydir*10)
+        line(x1+xdir*10, y1+ydir*10,
+             x2-xdir*10, y2-ydir*10)
     stroke(clr)
     strokeWeight(5)
     strokeCap(ROUND)
-    line(x1*scale, y1*scale, x2*scale, y2*scale)
+    line(x1, y1, x2, y2)
 
 
 random.seed(1)
+
+
+def random_xs(n, side):
+    xs = [0] + [random.randint(0, side) for _ in range(n-2)] + [side]
+    while len(xs) != len(set(xs)):
+        xs = [0] + [random.randint(0, side) for _ in range(n-2)] + [side]
+    xs.sort()
+    return xs
 
 
 def draw_():
@@ -131,8 +139,9 @@ def draw_():
     random.seed(seed)
     print 'seed', seed
 
-    n = 40
+    n = 30
     line_count = 10
+    xs = [idx/(n-1) * side for idx in range(n)]
 
     background(255)
 
@@ -151,6 +160,11 @@ def draw_():
         lines_and_colors.append((line, color(255*idx/line_count, 0, 0)))
 
     random.shuffle(lines_and_colors)
+
     for line_points, line_color in lines_and_colors:
         for p1, p2 in zip(line_points, line_points[1:]):
-            draw_line(p1, p2, line_color, scale=side/(n-1))
+            draw_line(
+                p1, p2, line_color,
+                random_xs(n, side),
+                random_xs(n, side)
+            )
