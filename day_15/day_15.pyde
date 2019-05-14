@@ -33,19 +33,20 @@ def draw():
 side = 500
 n = 100
 scale = side//(n-1)
+tile_size = 15
 random.seed(1)
 
 
-def random_pattern():
+def random_pattern(tile_size):
     clr = color(
         random.randint(0, 255),
         random.randint(0, 255),
         random.randint(0, 255),
         100
     )
-    step = random.randint(5, 15)
-    offset = random.randint(0, step-1)
-    return (clr, step, offset)
+    offset_x = random.randint(0, tile_size-1)
+    offset_y = random.randint(0, tile_size-1)
+    return (clr, offset_x, offset_y)
 
 
 def draw_():
@@ -53,10 +54,11 @@ def draw_():
     random.seed(seed)
     print 'seed', seed
 
-    patterns = [random_pattern() for _ in range(10)]
+    patterns = [random_pattern(tile_size) for _ in range(60)]
 
     background(255)
-    for clr, step, offset in patterns:
-        for x in range(offset, n, step):
-            for y in range(offset, n, step):
-                pixel(x, y, clr)
+    for clr, offset_x, offset_y in patterns:
+        for x0 in range(0, n, tile_size):
+            for y0 in range(0, n, tile_size):
+                pixel(x0+offset_x, y0+offset_y, clr)
+                pixel(x0+tile_size-offset_x, y0+tile_size-offset_y, clr)
