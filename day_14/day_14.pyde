@@ -57,11 +57,25 @@ def other_orientation(orientation):
         return VERTICAL
 
 
+def pick_next_point(prev_x, prev_y, orientation, allowed_orientations, options):
+    if orientation is VERTICAL:
+        new_x = prev_x
+        new_y = random_choice(
+            filter(lambda y: is_line_ok(prev_x, prev_y, new_x, y, orientation, allowed_orientations), options))
+    else:
+        new_y = prev_y
+        new_x = random_choice(
+            filter(lambda x: is_line_ok(prev_x, prev_y, x, new_y, orientation, allowed_orientations), options))
+
+    return (new_x, new_y)
+
+
 def make_line(point_count, allowed_orientations, n):
     orientation = random.choice((HORIZONTAL, VERTICAL))
 
     inner_range = list(range(1, n-2))
-    if orientation is VERTICAL:
+    outer_range = [0, n-1]
+    if orientation is HORIZONTAL:
         x0, y0 = random_choice({(x, y)
                                 for x in [0, n-1]
                                 for y in inner_range
@@ -72,43 +86,20 @@ def make_line(point_count, allowed_orientations, n):
                                 for y in [0, n-1]
                                 if (x, y) not in allowed_orientations})
     line_points = [(x0, y0)]
-    orientation = other_orientation(orientation)
-    for _ in range(point_count):
+    for idx in range(point_count+1):
         prev_x, prev_y = line_points[-1]
-        if orientation is VERTICAL:
-            new_x = prev_x
-            new_y = random_choice(
-                filter(lambda y: is_line_ok(prev_x, prev_y, new_x, y, orientation, allowed_orientations), inner_range))
-        else:
-            new_y = prev_y
-            new_x = random_choice(
-                filter(lambda x: is_line_ok(prev_x, prev_y, x, new_y, orientation, allowed_orientations), inner_range))
-
+        new_x, new_y = pick_next_point(
+            prev_x, prev_y,
+            orientation, allowed_orientations,
+            options=outer_range if idx == point_count else inner_range
+        )
+        next_orientation = other_orientation(orientation)
         for x, y in cool_2d_range(prev_x, prev_y, new_x, new_y):
-            allowed_orientations[x, y] = other_orientation(orientation)
+            allowed_orientations[x, y] = next_orientation
 
         line_points.append((new_x, new_y))
 
-        orientation = other_orientation(orientation)
-
-    penultimate_x, penultimate_y = line_points[-1]
-    if orientation is VERTICAL:
-        last_x = penultimate_x
-        last_y = random_choice({
-            y
-            for y in [0, n-1]
-            if is_line_ok(penultimate_x, penultimate_y, last_x, y, orientation, allowed_orientations)
-        })
-    else:
-        last_y = penultimate_y
-        last_x = random_choice({
-            x
-            for x in [0, n-1]
-            if is_line_ok(penultimate_x, penultimate_y, x, last_y, orientation, allowed_orientations)
-        })
-    line_points.append((last_x, last_y))
-    for x, y in cool_2d_range(penultimate_x, penultimate_y, last_x, last_y):
-        allowed_orientations[x, y] = other_orientation(orientation)
+        orientation = next_orientation
 
     return line_points
 
