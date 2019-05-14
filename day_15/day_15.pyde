@@ -53,8 +53,8 @@ def random_pattern_part(tile_size):
     return (clr, offset_x, offset_y, symmetry)
 
 
-def random_pattern(tile_size):
-    pattern = [random_pattern_part(tile_size) for _ in range(tile_size*3)]
+def random_pattern(tile_size, pattern_count):
+    pattern = [random_pattern_part(tile_size) for _ in range(pattern_count)]
     pixels = []
     for clr, offset_x, offset_y, symmetry in pattern:
         for x, y in copies(offset_x, offset_y, tile_size, symmetry=symmetry):
@@ -79,7 +79,7 @@ def draw_():
     print 'seed', seed
 
     background(255)
-    for dx, dy, clr in random_pattern(tile_size):
-        for x0 in range(0, n, tile_size):
-            for y0 in range(0, n, tile_size):
+    for x0 in range(0, n, tile_size):
+        for y0 in range(0, n, tile_size):
+            for dx, dy, clr in random_pattern(tile_size, pattern_count=2*tile_size):
                 pixel(x0+dx, y0+dy, clr)
