@@ -1,4 +1,4 @@
-# Day 15
+# Day 15: Pattern
 from __future__ import division
 import scaffold
 import random
@@ -32,7 +32,7 @@ def draw():
     noLoop()
 
 
-side = 500
+side = 2000
 n = 100
 scale = side//(n-1)
 tile_size = n//5
