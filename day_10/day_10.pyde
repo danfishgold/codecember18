@@ -179,6 +179,20 @@ def draw():
     noLoop()
 
 
+# http://tools.medialab.sciences-po.fr/iwanthue/
+colors = [
+    color(208, 71, 153),
+    color(97, 184, 94),
+    color(169, 95, 201),
+    color(183, 171, 65),
+    color(113, 121, 203),
+    color(198, 123, 66),
+    color(77, 180, 192),
+    color(205, 73, 73),
+    color(97, 127, 63),
+    color(190, 106, 141),
+]
+
 random.seed(1)
 
 
@@ -232,8 +246,9 @@ def draw_():
         return
 
     all_paths = []
-    for index, paths in enumerate(loops):
-        c = color((random.random() + index/len(loops)) % 1, 0.95, 0.8)
+    random.shuffle(colors)
+    for paths, c in zip(loops, colors):
+        # c = color((random.random() + index/len(loops)) % 1, 0.95, 0.8)
         for (row, col, i, j) in paths:
             all_paths.append((row, col, i, j, c))
 
