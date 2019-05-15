@@ -55,11 +55,10 @@ def draw():
 
 
 def random_color():
-    return color(
-        random.randint(0, 255),
-        random.randint(0, 255),
-        random.randint(0, 255),
-    )
+    # return color(
+    #     random.randint(0, 255),
+    # )
+    return color(0)
 
 
 def generate_pattern(rows, cols):
@@ -97,3 +96,10 @@ def draw_():
                     (copy_index*pixels_per_copy + col+1) * dtheta,
                     pattern[row][col]
                 )
+
+    # for row in range(rows):
+    #     for col in range(pixels_per_copy):
+    #         if pattern[row][col]:
+    #             noStroke()
+    #             fill(pattern[row][col])
+    #             square(col*20, row*20, 20)
