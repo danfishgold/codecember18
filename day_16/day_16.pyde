@@ -11,7 +11,7 @@ def keyPressed():
     )
 
 
-side = 1000
+side = 2000
 
 
 def ring(r1, r2, clr=color(0)):
@@ -105,7 +105,7 @@ random.seed(1)
 
 
 def draw_():
-    seed = random.randint(1, 10000)
+    seed = 1848  # random.randint(1, 10000)
     random.seed(seed)
     print 'seed', seed
     copies = random.randint(5, 15)
