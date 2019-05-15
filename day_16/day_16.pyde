@@ -54,8 +54,19 @@ def draw():
     noLoop()
 
 
+def random_color():
+    return color(
+        random.randint(0, 255),
+        random.randint(0, 255),
+        random.randint(0, 255),
+    )
+
+
 def generate_pattern(rows, cols):
-    return [[random.randint(0, 1) for _ in range(cols)] for _ in range(rows)]
+    return [[
+        random_color() if random.randint(0, 1) else color(255)
+        for _ in range(cols)]
+        for _ in range(rows)]
 
 
 random.seed(1)
@@ -79,10 +90,10 @@ def draw_():
     for copy_index in range(copies):
         for row in range(rows):
             for col in range(pixels_per_copy):
-                if pattern[row][col]:
-                    marc(
-                        rads[row],
-                        rads[row+1],
-                        (copy_index*pixels_per_copy + col)*dtheta,
-                        (copy_index*pixels_per_copy + col+1)*dtheta
-                    )
+                marc(
+                    rads[row],
+                    rads[row+1],
+                    (copy_index*pixels_per_copy + col)*dtheta,
+                    (copy_index*pixels_per_copy + col+1) * dtheta,
+                    pattern[row][col]
+                )
