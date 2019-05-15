@@ -54,6 +54,10 @@ def draw():
     noLoop()
 
 
+def generate_pattern(rows, cols):
+    return [[random.randint(0, 1) for _ in range(cols)] for _ in range(rows)]
+
+
 random.seed(1)
 
 
@@ -61,34 +65,24 @@ def draw_():
     seed = random.randint(1, 10000)
     random.seed(seed)
     print 'seed', seed
-    copies = 14
+    copies = random.randint(5, 15)
     pixels_per_copy = 4
+    rows = 15
     pixel_count = pixels_per_copy*copies
-    pattern = [
-        [1, 1, 1, 1],
-        [1, 0, 1, 0],
-        [0, 0, 0, 0],
-        [0, 1, 0, 1],
-        [1, 1, 1, 1],
-        [1, 0, 0, 0],
-        [1, 1, 1, 0],
-        [1, 0, 1, 0],
-        [1, 1, 1, 1],
-        [0, 1, 0, 1]
-    ]
+    pattern = generate_pattern(rows, pixels_per_copy)
     dtheta = TWO_PI/pixel_count
     background(255)
     noFill()
 
-    rads = rs(side*0.4, pixels=pixel_count, r_count=len(pattern)+1)
+    rads = rs(side*0.4, pixels=pixel_count, r_count=rows+1)
 
     for copy_index in range(copies):
-        for row_index, row in enumerate(pattern):
-            for col_index, col in enumerate(row):
-                if col:
+        for row in range(rows):
+            for col in range(pixels_per_copy):
+                if pattern[row][col]:
                     marc(
-                        rads[row_index],
-                        rads[row_index+1],
-                        (copy_index*pixels_per_copy + col_index)*dtheta,
-                        (copy_index*pixels_per_copy + col_index+1)*dtheta
+                        rads[row],
+                        rads[row+1],
+                        (copy_index*pixels_per_copy + col)*dtheta,
+                        (copy_index*pixels_per_copy + col+1)*dtheta
                     )
