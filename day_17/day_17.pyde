@@ -11,30 +11,24 @@ def keyPressed():
     )
 
 
-side = 500
+side = 750
 
 
 def setup():
     size(side, side)
+    randomize()
 
 
 def mouseClicked():
-    redraw()
+    seed = 6859  # random.randint(1, 10000)
+    randomize(seed)
+    loop()
 
 
-def draw():
-    draw_()
-    noLoop()
-
-
-random.seed(1)
-
-
-def draw_():
-    seed = random.randint(1, 10000)
+def randomize(seed=None):
     random.seed(seed)
     print 'seed', seed
-
+    global phase0, phase1, phase2, vel1, vel2, vel3, vel4
     phase0 = 0
     phase1 = random.uniform(2, TWO_PI)
     phase2 = random.uniform(2, TWO_PI)
@@ -42,10 +36,26 @@ def draw_():
     vel2 = random.uniform(0.5, 0.8)
     vel3 = random.uniform(0.7, 1.4)
     vel4 = random.uniform(0.7, 1.4)
+
+
+def draw():
+    draw_()
+    global phase0
+    phase0 += TWO_PI/150
+    if phase0 >= TWO_PI:
+        noLoop()
+
+
+random.seed(1)
+
+
+def draw_():
+
     count = floor(100 * max([vel1, vel2]))
 
     background(255)
     stroke(0, 0, 0, 200)
+    strokeWeight(side/500)
     noFill()
 
     thetas = [TWO_PI*idx/count for idx in range(count)]
