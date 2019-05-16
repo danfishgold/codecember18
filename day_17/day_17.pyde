@@ -1,4 +1,4 @@
-# Day 17
+# Day 17: Sheaf
 from __future__ import division
 import scaffold
 import random
@@ -16,11 +16,11 @@ side = 750
 
 def setup():
     size(side, side)
-    randomize()
+    randomize(6859)
 
 
 def mouseClicked():
-    seed = 6859  # random.randint(1, 10000)
+    seed = random.randint(1, 10000)
     randomize(seed)
     loop()
 
@@ -39,8 +39,9 @@ def randomize(seed=None):
 
 
 def draw():
-    draw_()
     global phase0
+    draw_(phase0)
+    saveFrame("gif/frame_###.gif")
     phase0 += TWO_PI/150
     if phase0 >= TWO_PI:
         noLoop()
@@ -49,7 +50,7 @@ def draw():
 random.seed(1)
 
 
-def draw_():
+def draw_(phase0):
 
     count = floor(100 * max([vel1, vel2]))
 
