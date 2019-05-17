@@ -21,10 +21,13 @@ def mouseClicked():
 
 random.seed(1)
 
+seed = 1329
+
 
 def draw():
-    seed = random.randint(1, 10000)
+    global seed
     draw_(seed)
+    seed = random.randint(1, 10000)
     noLoop()
 
 
@@ -57,6 +60,10 @@ def random_barcode(colors, min_width, max_width, total_width):
 
 
 side = 500
+# https://visme.co/blog/color-combinations/
+# Ornamental reds and yellows
+c1 = color(*scaffold.hex_to_rgb('720017', alpha=180))
+c2 = color(*scaffold.hex_to_rgb('d9ac2a', alpha=180))
 
 
 def draw_(seed):
@@ -64,15 +71,18 @@ def draw_(seed):
     print 'seed', seed
     background(255)
 
-    for main_color in [color(0, 0, 0, 255), color(255, 0, 0, 125)]:
+    for main_color in [c1, c2]:
         random_rotate()
-        barcode = random_barcode([main_color, None], 0.005, 0.02, 1)
+        barcode = random_barcode([main_color, None], 0.002, 0.01, 1)
         for (x0, wd, clr) in barcode:
             if clr is not None:
-                fill(clr)
+                # strokeWeight(1)
+                # stroke(clr)
+                # noFill()
                 noStroke()
+                fill(clr)
                 # rect(floor(x0*side), 0, floor(wd*side), height)
-                project(x0, wd, side, side*2, center=width/2)
+                project(x0, wd, side, side*3, center=width/2)
     hide_outside_circle()
 
 
