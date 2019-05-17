@@ -11,9 +11,6 @@ def keyPressed():
     )
 
 
-side = 500
-
-
 def setup():
     size(side, side)
 
@@ -22,18 +19,20 @@ def mouseClicked():
     redraw()
 
 
-def draw():
-    draw_()
-    noLoop()
-
-
 random.seed(1)
 
 
-def draw_():
+def draw():
     seed = random.randint(1, 10000)
+    draw_(seed)
+    noLoop()
+
+
+side = 500
+
+
+def draw_(seed=None):
     random.seed(seed)
     print 'seed', seed
-
     background(255)
     ellipse(width/2, height/2, side*0.8, side*0.8)
