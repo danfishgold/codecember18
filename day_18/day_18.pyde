@@ -60,10 +60,16 @@ def random_barcode(colors, min_width, max_width, total_width):
 
 
 side = 500
-# https://visme.co/blog/color-combinations/
-# Ornamental reds and yellows
-c1 = color(*scaffold.hex_to_rgb('720017', alpha=180))
-c2 = color(*scaffold.hex_to_rgb('d9ac2a', alpha=180))
+
+# https://www.color-hex.com/color-palette/78245
+clrs = [
+    color(240, 209, 113),
+    color(212, 136, 73),
+    color(189, 69, 69),
+    color(109, 25, 80),
+    color(32, 7, 58),
+    None
+]
 
 
 def draw_(seed):
@@ -71,18 +77,13 @@ def draw_(seed):
     print 'seed', seed
     background(255)
 
-    for main_color in [c1, c2]:
-        random_rotate()
-        barcode = random_barcode([main_color, None], 0.002, 0.01, 1)
-        for (x0, wd, clr) in barcode:
-            if clr is not None:
-                # strokeWeight(1)
-                # stroke(clr)
-                # noFill()
-                noStroke()
-                fill(clr)
-                # rect(floor(x0*side), 0, floor(wd*side), height)
-                project(x0, wd, side, side*3, center=width/2)
+    random_rotate()
+    barcode = random_barcode(clrs, 0.002, 0.01, 1)
+    for (x0, wd, clr) in barcode:
+        if clr is not None:
+            noStroke()
+            fill(clr)
+            project(x0, wd, side, side*3, center=width/2)
     hide_outside_circle()
 
 
