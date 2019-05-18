@@ -49,7 +49,7 @@ stroke_weight = (5 * (side//500)) // 2 * 2 + 1
 max_inset = 3
 square_side = (max_inset+1) * 2 * stroke_weight
 num_squares = side // square_side
-side = square_side * num_squares
+inner_side = square_side * num_squares
 stroke_middle = (stroke_weight // 4)*2 + 1
 
 
@@ -73,11 +73,12 @@ random.seed(1)
 
 
 def draw_():
-    seed = random.randint(0, 10000)
+    seed = 4172  # random.randint(0, 10000)
     print "seed:", seed
     random.seed(seed)
     strokeWeight(stroke_weight)
 
+    translate((side-inner_side)/2, (side-inner_side)/2)
     for x in range(num_squares):
         for y in range(num_squares):
             if random.random() < 0.2:
