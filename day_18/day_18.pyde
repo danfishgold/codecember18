@@ -1,4 +1,4 @@
-# Day 18
+# Day 18: Rays
 from __future__ import division
 import scaffold
 import random
@@ -21,7 +21,7 @@ def mouseClicked():
 
 random.seed(1)
 
-seed = 1329
+seed = 632
 
 
 def draw():
@@ -59,7 +59,7 @@ def random_barcode(colors, min_width, max_width, total_width):
     return barcode
 
 
-side = 500
+side = 2000
 
 # https://www.color-hex.com/color-palette/78245
 clrs = [
@@ -92,8 +92,8 @@ def project(x, wd, f1, f2, center):
     beginShape()
     vertex(center + floor(x0*f1), 0)
     vertex(center + floor(x0*f2), height)
-    vertex(center + floor((x0+wd)*f2), height)
-    vertex(center + floor((x0+wd)*f1), 0)
+    vertex(center + ceil((x0+wd)*f2), height)
+    vertex(center + ceil((x0+wd)*f1), 0)
     endShape(CLOSE)
 
 
