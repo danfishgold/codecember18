@@ -19,21 +19,21 @@ def mouseClicked():
     redraw()
 
 
-def generate_lines(line_length, line_count, shift, is_positive):
+def generate_lines(line_length, line_count, shift):
 
     first_line = [0 for _ in range(line_length)]
     lines = [first_line]
     for _ in range(line_count-1):
-        new_line = generate_line(lines[-1], shift, is_positive)
+        new_line = generate_line(lines[-1], shift)
         lines.append(new_line)
 
     return lines
 
 
-def generate_line(prev_line, shift, is_positive=True):
+def generate_line(prev_line, shift):
     padded = [prev_line[0]] + prev_line + [prev_line[-1]]
     triplets = zip(padded, padded[1:], padded[2:])
-    if is_positive:
+    if shift > 0:
         line = map(max, triplets)
     else:
         line = map(min, triplets)
@@ -78,12 +78,18 @@ def draw_(line_length, line_count, seed=None):
     strokeWeight(3)
     noFill()
 
-    lines = generate_lines(
+    positive_lines = generate_lines(
         line_length,
-        line_count,
+        line_count//2,
         shift=height/line_length,
-        is_positive=True
     )
+    negative_lines = generate_lines(
+        line_length,
+        line_count//2,
+        shift=-height/line_length,
+    )
+
+    lines = negative_lines[:0:-1] + positive_lines
     dx = width / line_count
     for idx, line in enumerate(lines):
         draw_line(line, (idx+1)*dx, height)
