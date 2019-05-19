@@ -1,4 +1,4 @@
-# Day 20
+# Day 20: Dashes
 from __future__ import division
 import scaffold
 import random
@@ -32,7 +32,7 @@ def draw():
 random.seed(1)
 seed = random.randint(1, 10000)
 
-side = 1000
+side = 2000
 
 # # https://www.color-hex.com/color-palette/78339
 # colors = [
