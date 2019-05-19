@@ -19,14 +19,15 @@ def mouseClicked():
     redraw()
 
 
-random.seed(1)
-
-
 def draw():
-    seed = random.randint(1, 10000)
+    global seed
     draw_(seed)
+    seed = random.randint(1, 10000)
     noLoop()
 
+
+random.seed(1)
+seed = random.randint(1, 10000)
 
 side = 500
 
