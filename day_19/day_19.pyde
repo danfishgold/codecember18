@@ -38,9 +38,10 @@ def generate_line(prev_line, shift):
     else:
         line = map(min, triplets)
 
-    range_start = random.randint(0, len(prev_line)-2)
-    range_end = random.randint(range_start+1, len(prev_line)-1)
-    for idx in range(range_start, range_end+1):
+    range_length = random.randint(4, 5)
+    start = random.randint(0, len(prev_line)-range_length)
+    end = start+range_length
+    for idx in range(start, end):
         line[idx] += shift
     return line
 
@@ -92,4 +93,8 @@ def draw_(line_length, line_count, seed=None):
     lines = negative_lines[:0:-1] + positive_lines
     dx = width / line_count
     for idx, line in enumerate(lines):
-        draw_line(line, (idx+1)*dx, height)
+        x = (idx+1)*dx
+        draw_line(line, x, height)
+
+
+    scaffold.hide_outside_circle()
