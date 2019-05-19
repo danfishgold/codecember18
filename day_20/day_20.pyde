@@ -44,12 +44,21 @@ colors = [
     color(249, 226, 197),
 ]
 
+# pastels on http://tools.medialab.sciences-po.fr/iwanthue/
+colors = [
+    color(214, 216, 180),
+    color(209, 187, 223),
+    color(170, 210, 191),
+    color(230, 184, 179),
+    color(163, 204, 226),
+]
+
 
 def draw_(seed, padding, stroke_weight):
     random.seed(seed)
     print 'seed', seed
     background(255)
-    min_width, max_width = padding//3, padding*3
+    min_width, max_width = 0, padding*2
     strokeWeight(stroke_weight)
     strokeCap(ROUND)
     for y in scaffold.distribute(padding, side-padding, shift=padding):
