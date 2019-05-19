@@ -1,4 +1,4 @@
-# Day 19
+# Day 19: Bar
 from __future__ import division
 import scaffold
 import random
@@ -56,18 +56,20 @@ def draw_line(line, x0, height):
 
 
 random.seed(1)
+seed = 4418
 
 
 def draw():
-    seed = random.randint(1, 10000)
+    global seed
     draw_(
         line_length=50,
         line_count=50,
         seed=seed)
+    seed = random.randint(1, 10000)
     noLoop()
 
 
-side = 500
+side = 2000
 
 
 def draw_(line_length, line_count, seed=None):
@@ -76,7 +78,7 @@ def draw_(line_length, line_count, seed=None):
     background(255)
 
     stroke(0)
-    strokeWeight(3)
+    strokeWeight(3*side/500 // 2 * 2+1)
     noFill()
 
     positive_lines = generate_lines(
@@ -95,6 +97,5 @@ def draw_(line_length, line_count, seed=None):
     for idx, line in enumerate(lines):
         x = (idx+1)*dx
         draw_line(line, x, height)
-
 
     scaffold.hide_outside_circle()
