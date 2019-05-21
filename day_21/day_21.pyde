@@ -1,4 +1,5 @@
-# Day 21
+# Day 21: Carpet
+# Inspired by the carpet in my grandparents' living room
 from __future__ import division
 import scaffold
 import random
@@ -38,9 +39,10 @@ def draw():
 
 
 random.seed(1)
-seed = random.randint(1, 10000)
+seed = 3369  # random.randint(1, 10000)
 
-side = 500
+side = 2000
+
 # https://www.color-hex.com/color-palette/73465
 colors = [
     color(240, 133, 133),
