@@ -41,6 +41,14 @@ random.seed(1)
 seed = random.randint(1, 10000)
 
 side = 500
+# https://www.color-hex.com/color-palette/73465
+colors = [
+    color(240, 133, 133),
+    color(255, 173, 152),
+    color(255, 216, 156),
+    color(159, 204, 173),
+    color(65, 93, 133),
+]
 
 
 def draw_(seed=None):
@@ -51,13 +59,18 @@ def draw_(seed=None):
     background(255)
 
     shapes = []
-    shape_count = 10
+    shape_count = 15
     for idx in range(shape_count):
         f = idx / shape_count
-        shape = [(-0.2 + 1.4*f)*height + height/6 * sin(x + scaffold.cubic_ease(f)*2*TWO_PI)
+        dy = (-0.2 + random.uniform(-1, 1)*0.05 + 1.4*f)*height
+        amplitude = lerp(height/5, height/6, f)
+        phase = lerp(1.8*PI, 0*PI, f)
+        velocity = 1 - 0.4*(0.5 + 0.5 * (2*abs(f-0.5))**2)
+        shape = [dy + amplitude * sin(velocity*x + phase)
                  for x in scaffold.distribute(0, TWO_PI, 100)]
-        shapes.append((shape, color(f*255)))
+        shapes.append((shape, random.choice(colors)))
     noStroke()
     for shape, clr in shapes[::-1]:
         fill(clr)
         draw_shape(shape)
+    scaffold.hide_outside_circle()
