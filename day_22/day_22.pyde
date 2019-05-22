@@ -3,6 +3,7 @@ from __future__ import division
 import scaffold
 import random
 from delaunay import Triangulation
+import poisson_disc
 
 
 def keyPressed():
@@ -22,7 +23,7 @@ def mouseClicked():
 
 def draw():
     global seed
-    draw_(seed, 50, 20)
+    draw_(seed, point_distance=0.1)
     seed = random.randint(1, 10000)
     noLoop()
 
@@ -45,7 +46,8 @@ colors = [
 
 def draw_triangulation(triangulation):
     for (x1, y1), (x2, y2), (x3, y3) in triangulation.triangles():
-        clr = random.choice(colors)
+        # clr = random.choice(colors)
+        clr = lerpColor(colors[0], colors[-1], random.uniform(0, 1))
         stroke(clr)
         fill(clr)
         triangle(width*x1, height*y1, width*x2, height*y2, width*x3, height*y3)
@@ -54,21 +56,22 @@ def draw_triangulation(triangulation):
 triangulation = Triangulation(((0, 0), (0, 4), (4, 0)))
 
 
-def draw_(seed, point_count, perimiter_count):
+def draw_(seed, point_distance):
     global triangulation
     random.seed(seed)
     print 'seed', seed
     background(255)
     triangulation = Triangulation(((0, 0), (0, 4), (4, 0)))
 
+    theta = acos(1 - point_distance**2 / (2*0.4*0.4))
+    perimiter_count = floor(TWO_PI/theta)
+
+    perimiter = []
     for idx in range(perimiter_count):
         theta = idx / perimiter_count * TWO_PI
         x, y = 0.5 + 0.4*cos(theta), 0.5 + 0.4*sin(theta)
-        triangulation.add_point((x, y))
+        perimiter.append((x, y))
 
-    for _ in range(point_count):
-        x, y = 1, 1
-        while (x-0.5)**2 + (y-0.5)**2 > 0.4**2:
-            x, y = random.uniform(0, 1), random.uniform(0, 1)
+    for (x, y) in poisson_disc.sample(initial_set=perimiter, r=point_distance):
         triangulation.add_point((x, y))
     draw_triangulation(triangulation)
