@@ -31,7 +31,7 @@ def draw():
 random.seed(1)
 seed = random.randint(1, 10000)
 
-side = 500
+side = 2000
 
 
 # https://www.color-hex.com/color-palette/78498
@@ -46,9 +46,9 @@ colors = [
 
 def draw_triangulation(triangulation):
     for (x1, y1), (x2, y2), (x3, y3) in triangulation.triangles():
-        # clr = random.choice(colors)
         clr = lerpColor(colors[0], colors[-1], random.uniform(0, 1))
-        stroke(clr)
+        stroke(255)
+        strokeWeight(side // 500 // 2 * 2 + 1)
         fill(clr)
         triangle(width*x1, height*y1, width*x2, height*y2, width*x3, height*y3)
 
