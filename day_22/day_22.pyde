@@ -1,4 +1,4 @@
-# Day 22
+# Day 22: Triangulation
 from __future__ import division
 import scaffold
 import random
