@@ -37,7 +37,7 @@ class RadialLine:
         self.max_drad = max_drad
         self.min_break_distance = min_break_distance
 
-    def add_step(self):
+    def add_step(self, adjacent_line):
         self.delta = (self.delta
                       .rotate(random.uniform(-1, 1)*self.dangle)
                       .setMag(random.uniform(self.min_drad, self.max_drad)))
@@ -59,6 +59,17 @@ class RadialLine:
         else:
             return None
 
+    def should_stop(self, prev_line, next_line):
+        return self.should_stop_1(prev_line) or self.should_stop_1(next_line)
+
+    def should_stop_1(self, adjacent_line):
+        if len(adjacent_line.points) > 5:
+            distance_to_next_line = min(
+                self.points[-1].dist(adjacent_line.points[-idx]) for idx in range(1, 4))
+            if distance_to_next_line < self.max_drad:
+                return True
+        return False
+
     def should_add_break(self):
         return self.points[-1].dist(self.points[self.last_break_index]) > self.min_break_distance
 
@@ -67,14 +78,24 @@ class RadialLine:
         self.last_break_index = len(self.points) - 1
         self.breaks.append(break_line)
 
-    def draw(self, width, height):
+    def draw(self, clr, width, height):
+        stroke(clr)
         for p1, p2 in zip(self.points, self.points[1:]):
             line(width*p1.x, height*p1.y, width*p2.x, height*p2.y)
+        stroke(0)
         for p1, p2 in self.breaks:
             line(width*p1.x, height*p1.y, width*p2.x, height*p2.y)
 
-    def heading(self):
-        return (self.points[-1] - self.points[0]).heading()
+    def heading(self, center):
+        return (self.points[-1] - center).heading()
+
+
+def random_color():
+    return color(
+        random.randint(0, 255),
+        random.randint(0, 255),
+        random.randint(0, 255),
+    )
 
 
 lines = []
@@ -83,30 +104,6 @@ lines = []
 def setup():
     global lines
     size(side, side)
-
-    center = PVector(0.5, 0.5)
-    break_point = (
-        center
-        + PVector
-        .fromAngle(random.uniform(0, TWO_PI))
-        .setMag(random.uniform(0, 0.3))
-    )
-
-    initial_line_count = 5
-
-    lines = []
-    for angle_idx in range(initial_line_count):
-        angle = TWO_PI * (angle_idx + random.uniform(0, 0.7)
-                          ) / initial_line_count
-        line = RadialLine(
-            break_point,
-            angle,
-            dangle=0.002,
-            min_drad=0.0015,
-            max_drad=0.003,
-            min_break_distance=0.025
-        )
-        lines.append(line)
 
 
 def mouseClicked():
@@ -126,23 +123,54 @@ def draw_(seed):
     print 'seed', seed
     background(255)
 
-    for _ in range(30):
+    center = PVector(0.5, 0.5)
+    # break_point = (
+    #     center
+    #     + PVector
+    #     .fromAngle(random.uniform(0, TWO_PI))
+    #     .setMag(random.uniform(0, 0.3))
+    # )
+    break_point = center
 
+    initial_line_count = 5
+
+    active_lines = []
+    for angle_idx in range(initial_line_count):
+        angle = TWO_PI * (angle_idx + random.uniform(0, 0.7)
+                          ) / initial_line_count
+        line = RadialLine(
+            break_point,
+            angle,
+            dangle=0.04,
+            min_drad=0.0015,
+            max_drad=0.0025,
+            min_break_distance=0.025
+        )
+        active_lines.append(line)
+
+    stopped_lines = []
+    while not all(line.points[-1].dist(center) > 0.4 for line in active_lines):
         new_lines = []
-        for idx, line in enumerate(lines):
-            line.add_step()
+        for idx, line in enumerate(active_lines):
+            if line.should_stop(
+                active_lines[idx - 1],
+                active_lines[(idx + 1) % len(active_lines)]
+            ):
+                stopped_lines.append(line)
+                continue
+            line.add_step(active_lines[idx-1])
             if line.should_add_break():
-                line.add_break(lines[idx-1])
-            maybe_split = line.maybe_split(lines[idx-1])
+                line.add_break(active_lines[idx-1])
+            maybe_split = line.maybe_split(active_lines[idx-1])
             if maybe_split:
                 new_lines.append(maybe_split)
             new_lines.append(line)
 
-        lines = new_lines
+        active_lines = sorted(new_lines, key=lambda line: line.heading(center))
 
     stroke(0)
     strokeWeight(1)
-    for line in lines:
-        line.draw(width, height)
+    for line in active_lines+stopped_lines:
+        line.draw(0, width, height)
 
     scaffold.hide_outside_circle()
