@@ -1,4 +1,4 @@
-# Day 23
+# Day 23: Glass
 from __future__ import division
 import scaffold
 import random
@@ -12,9 +12,9 @@ def keyPressed():
 
 
 random.seed(1)
-seed = random.randint(1, 10000)
+seed = 6514  # random.randint(1, 10000)
 
-side = 1000
+side = 2000
 
 
 def mid_angle(angle1, angle2):
@@ -169,7 +169,7 @@ def draw_(seed):
         active_lines = sorted(new_lines, key=lambda line: line.heading(center))
 
     stroke(0)
-    strokeWeight(1)
+    strokeWeight(side // 500 // 2 * 2 + 1)
     for line in active_lines+stopped_lines:
         line.draw(0, width, height)
 
