@@ -32,7 +32,7 @@ seed = random.randint(1, 10000)
 side = 500
 
 
-def draw_(seed=None):
+def draw_(seed):
     random.seed(seed)
     print 'seed', seed
     background(255)
