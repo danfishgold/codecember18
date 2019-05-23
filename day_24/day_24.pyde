@@ -1,4 +1,4 @@
-# Day 24
+# Day 24: Mountains
 from __future__ import division
 import scaffold
 import random
@@ -29,7 +29,7 @@ def draw():
 random.seed(1)
 seed = random.randint(1, 10000)
 
-side = 1000
+side = 2000
 
 
 def draw_line(ys, y0):
@@ -58,9 +58,11 @@ def draw_(seed, line_count, line_length):
 
     lines = []
     for y0 in scaffold.distribute(0, 1, line_count+2)[1:-1]:
-        ys = [-0.4*wrapper(x)*(noise(noise_scale*x, noise_scale*y0)-0.5)
+        ys = [-0.05-0.4*wrapper(x)*(noise(noise_scale*x, noise_scale*y0)-0.5)
               for x in scaffold.distribute(0, 1, count=line_length)]
         lines.append(ys)
+        fill(255)
+        stroke(0)
         draw_line(ys, y0)
 
     scaffold.hide_outside_circle()
