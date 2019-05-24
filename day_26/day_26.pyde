@@ -52,29 +52,29 @@ class Circle:
     def draw(self):
         circle(side*self.c.x, side*self.c.y, 2*side*self.r)
 
+    def pack(self, max_radius_fraction, min_radius_fraction):
+        inner_circles = []
+        radius_fraction = max_radius_fraction
+        while radius_fraction > min_radius_fraction:
+            rad = radius_fraction*self.r
+            new_circle = Circle.random_nonintersecting(
+                rad,
+                other_circles=inner_circles,
+                outer_circle=self,
+                max_tries=2000
+            )
+            if new_circle:
+                inner_circles.append(new_circle)
+            else:
+                radius_fraction /= 2
+        return inner_circles
+
 
 def setup():
     size(side, side)
 
 
-min_rad = 0.1
-big_circle = Circle(center, 0.4)
-circles = []
-
-
 def mouseClicked():
-    global circles, min_rad
-    new_circ = Circle.random_nonintersecting(
-        min_rad,
-        other_circles=circles,
-        outer_circle=big_circle,
-        max_tries=2000
-    )
-    if new_circ:
-        circles.append(new_circ)
-    else:
-        min_rad /= 2
-
     redraw()
 
 
@@ -95,7 +95,16 @@ def draw_(seed):
     random.seed(seed)
     print 'seed', seed
     background(255)
+    big_circle = Circle(center, 0.4)
     big_circle.draw()
 
-    for circ in circles:
+    smaller_pack_count = 5
+
+    big_pack = big_circle.pack(0.2, 0.01)
+    smaller_packs = []
+    for smaller in big_pack[:smaller_pack_count]:
+        smaller_packs.extend(smaller.pack(
+            0.2, 0.01 * big_circle.r / smaller.r))
+
+    for circ in big_pack + smaller_packs:
         circ.draw()
