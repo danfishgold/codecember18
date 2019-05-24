@@ -1,4 +1,4 @@
-# Day 26
+# Day 26: Packing
 from __future__ import division
 import scaffold
 import random
@@ -86,9 +86,19 @@ def draw():
 
 
 random.seed(1)
-seed = random.randint(1, 10000)
+seed = 4549  # random.randint(1, 10000)
 
-side = 500
+side = 2000
+
+
+# https://www.color-hex.com/color-palette/78496
+colors = [
+    color(255, 191, 144),
+    color(221, 68, 51),
+    color(0, 153, 153),
+    color(207, 121, 46),
+    color(103, 0, 51),
+]
 
 
 def draw_(seed):
@@ -96,15 +106,10 @@ def draw_(seed):
     print 'seed', seed
     background(255)
     big_circle = Circle(center, 0.4)
-    big_circle.draw()
 
-    smaller_pack_count = 5
+    pack = big_circle.pack(0.1, 0.01)
 
-    big_pack = big_circle.pack(0.2, 0.01)
-    smaller_packs = []
-    for smaller in big_pack[:smaller_pack_count]:
-        smaller_packs.extend(smaller.pack(
-            0.2, 0.01 * big_circle.r / smaller.r))
-
-    for circ in big_pack + smaller_packs:
+    for circ in pack:
+        fill(random.choice(colors))
+        noStroke()
         circ.draw()
