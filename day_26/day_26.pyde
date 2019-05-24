@@ -68,15 +68,18 @@ def setup():
     size(side, side)
 
 
+min_rad = 0.1
+
+
 def mouseClicked():
-    global circles
+    global circles, min_rad
     # pt = PVector(mouseX/width, mouseY/height)
     # new_circ = Circle.add_nonintersecting(pt, circles)
-    new_circ = Circle.random_nonintersecting(0.01, circles, 1000)
+    new_circ = Circle.random_nonintersecting(min_rad, circles, 1000)
     if new_circ:
         circles.append(new_circ)
     else:
-        print 'failed'
+        min_rad /= 2
 
     redraw()
 
