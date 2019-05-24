@@ -1,7 +1,6 @@
-# Day 25
+# Day 25: Cubes
 from __future__ import division
 import scaffold
-import random
 
 
 def keyPressed():
@@ -65,38 +64,33 @@ def mouseClicked():
 
 
 def draw():
-    global seed
-    draw_(seed)
-    seed = random.randint(1, 10000)
+    draw_()
     noLoop()
 
 
-random.seed(1)
-seed = random.randint(1, 10000)
-
-side = 1000
+side = 2000
 
 
-def draw_(seed):
-    random.seed(seed)
-    print 'seed', seed
+def draw_():
     background(255)
-
+    strokeWeight(side // 1000 // 2 * 2 + 1)
     boxes = []
     box_distance = 0.1
     box_side = box_distance*0.5
     box_side_count = 10
-    offset = 0.5 * (1 - box_side_count*box_distance +
-                    box_distance - box_side)
+    inner_offset = 0.5 * (-box_side_count*box_distance +
+                          box_distance - box_side)
+    outer_offset = 0.5 * (1 - box_side_count*box_distance +
+                          box_distance - box_side)
     for x in range(box_side_count):
         for y in range(box_side_count):
             box = Box(
-                x0=box_distance*x,
-                y0=box_distance*y,
+                x0=inner_offset + box_distance*x,
+                y0=inner_offset + box_distance*y,
                 z0=1,
                 wd=box_side,
                 ht=box_side,
-                dp=box_side*0.5
+                dp=box_side
             )
             boxes.append(box)
 
@@ -106,4 +100,5 @@ def draw_(seed):
         (0, 0, 1),
     )
     for box in boxes:
-        box.draw(offset*width, offset*height, transformation)
+        box.draw(0.5+(outer_offset-inner_offset)*width,
+                 0.5+(outer_offset-inner_offset)*height, transformation)
