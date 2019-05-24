@@ -14,30 +14,28 @@ def keyPressed():
 center = PVector(0.5, 0.5)
 
 
-def distance_to_edge(pt):
-    return 0.4 - pt.dist(center)
-
-
 class Circle:
     def __init__(self, c, r):
         self.c = c
         self.r = r
 
     @classmethod
-    def random_nonintersecting(cls, min_radius, other_circles, max_tries):
+    def random_nonintersecting(cls, min_radius, other_circles, outer_circle, max_tries):
         for _ in range(max_tries):
             pt = PVector(
-                random.uniform(0.1, 0.9),
-                random.uniform(0.1, 0.9)
+                random.uniform(outer_circle.c.x-outer_circle.r,
+                               outer_circle.c.x+outer_circle.r),
+                random.uniform(outer_circle.c.y-outer_circle.r,
+                               outer_circle.c.y+outer_circle.r)
             )
-            circ = cls.add_nonintersecting(pt, other_circles)
+            circ = cls.add_nonintersecting(pt, other_circles, outer_circle)
             if circ and circ.r > min_radius:
                 return circ
         return None
 
     @classmethod
-    def add_nonintersecting(cls, pt, other_circles):
-        max_rad = distance_to_edge(pt)
+    def add_nonintersecting(cls, pt, other_circles, outer_circle):
+        max_rad = outer_circle.r - outer_circle.distance_to_point(pt)
         if max_rad <= 0:
             return None
         for circ in other_circles:
@@ -51,17 +49,8 @@ class Circle:
     def distance_to_point(self, pt):
         return self.c.dist(pt)
 
-    def contains(self, pt):
-        self.distance_to_point(pt) <= self.r
-
-    def reached_edge(self):
-        return distance_to_edge(self.c) <= self.r
-
     def draw(self):
         circle(side*self.c.x, side*self.c.y, 2*side*self.r)
-
-
-circles = []
 
 
 def setup():
@@ -69,13 +58,18 @@ def setup():
 
 
 min_rad = 0.1
+big_circle = Circle(center, 0.4)
+circles = []
 
 
 def mouseClicked():
     global circles, min_rad
-    # pt = PVector(mouseX/width, mouseY/height)
-    # new_circ = Circle.add_nonintersecting(pt, circles)
-    new_circ = Circle.random_nonintersecting(min_rad, circles, 1000)
+    new_circ = Circle.random_nonintersecting(
+        min_rad,
+        other_circles=circles,
+        outer_circle=big_circle,
+        max_tries=2000
+    )
     if new_circ:
         circles.append(new_circ)
     else:
@@ -101,8 +95,7 @@ def draw_(seed):
     random.seed(seed)
     print 'seed', seed
     background(255)
-    circ = Circle(center, 0.4)
-    circ.draw()
+    big_circle.draw()
 
     for circ in circles:
         circ.draw()
