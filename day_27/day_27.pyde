@@ -11,6 +11,54 @@ def keyPressed():
     )
 
 
+qtr_arcs = [
+    (-1, -1, 0, PI/2),
+    (+1, -1, PI/2, PI),
+    (+1, +1, PI, 3*PI/2),
+    (-1, +1, 3*PI/2, 2*PI),
+]
+
+half_arcs = [
+    (0, -1, 0, PI),
+    (+1, 0, PI/2, 3*PI/2),
+    (0, +1, PI, 2*PI),
+    (-1, 0, 3*PI/2, 5*PI/2),
+]
+
+
+def qtr_circle(x, y, r, direction):
+    dx, dy, theta1, theta2 = qtr_arcs[direction]
+    arc(x+r/2*dx, y+r/2*dy, 2*r, 2*r, theta1-0.01, theta2+0.01)
+
+
+def half_circle(x, y, r, direction):
+    dx, dy, theta1, theta2 = half_arcs[direction]
+    arc(x+r/2*dx, y+r/2*dy, r, r, theta1-0.01, theta2+0.01)
+
+
+triangle_pts = [
+    (+1, +1),
+    (-1, +1),
+    (-1, -1),
+    (+1, -1),
+]
+
+
+def a_triangle(x, y, r, direction):
+    pts = [
+        (x+r/2, y+r/2),
+        (x-r/2, y+r/2),
+        (x-r/2, y-r/2),
+        (x+r/2, y-r/2),
+    ]
+    ignored_index = direction
+    triangle = triangle_pts[:ignored_index] + triangle_pts[ignored_index+1:]
+    beginShape()
+    for (dx, dy) in triangle:
+        vertex(x+r/2*dx, y+r/2*dy)
+    endShape(CLOSE)
+
+
 def setup():
     size(side, side)
 
@@ -30,33 +78,6 @@ random.seed(1)
 seed = random.randint(1, 10000)
 
 side = 500
-
-# https://www.color-hex.com/color-palette/78648
-colors = [
-    color(230, 230, 250),
-    color(211, 222, 229),
-    color(192, 213, 208),
-    color(173, 205, 187),
-    color(153, 196, 167),
-]
-
-# https://www.color-hex.com/color-palette/78642
-colors = [
-    color(102, 44, 65),
-    color(136, 68, 83),
-    color(157, 101, 119),
-    color(183, 133, 131),
-    color(239, 228, 189),
-]
-
-# https://www.color-hex.com/color-palette/5540
-colors = [
-    color(94, 122, 99),
-    color(244, 164, 42),
-    color(235, 238, 191),
-    color(229, 136, 136),
-    color(135, 54, 54),
-]
 
 # https://www.color-hex.com/color-palette/72854
 colors = [
@@ -80,33 +101,56 @@ def draw_(seed):
     noiseSeed(seed)
     for x in xs:
         for y in ys:
-            shape = random.choice((0, 1, 2, 3))
+            shape = random.choice((
+                'nothing',
+                'circle',
+                'square',
+                'triangle',
+                'qtr circle',
+                'half circle',
+                # 'circle complement',
+                'qtr circle complement',
+                'half circle complement'
+            ))
             clr = random.choice(colors)
-            fill(clr)
-            stroke(clr)
-            if shape == 0:
+            if shape == 'circle':
+                fill(clr)
+                stroke(clr)
                 circle(x, y, r)
-            if shape == 1:
+            if shape == 'square':
+                fill(clr)
+                stroke(clr)
                 square(x-r/2, y-r/2, r)
-            if shape == 2:
-                pts = [
-                    (x-r/2, y-r/2),
-                    (x+r/2, y-r/2),
-                    (x-r/2, y+r/2),
-                    (x+r/2, y+r/2),
-                ]
-                ignored_index = random.randint(0, 3)
-                triangle = pts[:ignored_index] + pts[ignored_index+1:]
-                beginShape()
-                for pt in triangle:
-                    vertex(*pt)
-                endShape(CLOSE)
-            if shape == 3:
-                arcs = [
-                    (x-r/2, y-r/2, 0, PI/2),
-                    (x+r/2, y-r/2, PI/2, PI),
-                    (x+r/2, y+r/2, PI, 3*PI/2),
-                    (x-r/2, y+r/2, 3*PI/2, 2*PI),
-                ]
-                xc, yc, theta1, theta2 = random.choice(arcs)
-                arc(xc, yc, 2*r, 2*r, theta1, theta2)
+            if shape == 'triangle':
+                fill(clr)
+                stroke(clr)
+                a_triangle(x, y, r, direction=random.randint(0, 3))
+            if shape == 'qtr circle':
+                fill(clr)
+                stroke(clr)
+                qtr_circle(x, y, r, direction=random.randint(0, 3))
+            if shape == 'circle complement':
+                fill(clr)
+                noStroke()
+                square(x-r/2, y-r/2, r)
+                fill(255)
+                stroke(255)
+                circle(x, y, r)
+            if shape == 'qtr circle complement':
+                fill(clr)
+                noStroke()
+                square(x-r/2, y-r/2, r)
+                fill(255)
+                stroke(255)
+                qtr_circle(x, y, r, direction=random.randint(0, 3))
+            if shape == 'half circle':
+                fill(clr)
+                stroke(clr)
+                half_circle(x, y, r, direction=random.randint(0, 3))
+            if shape == 'half circle complement':
+                fill(clr)
+                noStroke()
+                square(x-r/2, y-r/2, r)
+                fill(255)
+                stroke(255)
+                half_circle(x, y, r, direction=random.randint(0, 3))
