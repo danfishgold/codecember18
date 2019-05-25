@@ -1,4 +1,4 @@
-# Day 27
+# Day 27: Blocks
 from __future__ import division
 import scaffold
 import random
@@ -20,10 +20,10 @@ qtr_arcs = [
 ]
 
 half_arcs = [
-    (0, -1.05, 0, PI),
-    (+1.05, 0, PI/2, 3*PI/2),
-    (0, +1.05, PI, 2*PI),
-    (-1.05, 0, 3*PI/2, 5*PI/2),
+    (0, -1.02, 0, PI),
+    (+1.02, 0, PI/2, 3*PI/2),
+    (0, +1.02, PI, 2*PI),
+    (-1.02, 0, 3*PI/2, 5*PI/2),
 ]
 
 
@@ -100,10 +100,11 @@ def random_shape():
         'nothing',
         'square',
         'triangle',
+        'triangle',
         'circle',
         'qtr circle',
         'half circle',
-        'circle complement',
+        # 'circle complement',
         'qtr circle complement',
         'half circle complement',
     ))
@@ -171,9 +172,9 @@ def draw():
 
 
 random.seed(1)
-seed = random.randint(1, 10000)
+seed = 4457  # random.randint(1, 10000)
 
-side = 1000
+side = 5000
 
 # https://www.color-hex.com/color-palette/72854
 colors = [
@@ -200,5 +201,5 @@ def draw_(seed):
     for x in xs:
         for y in ys:
             shape, direction = random_shape()
-            strokeWeight(0)
+            strokeWeight(1)
             draw_shape(x, y, r, shape, direction, random.choice(colors))
