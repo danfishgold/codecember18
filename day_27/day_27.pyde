@@ -173,7 +173,7 @@ def draw_(seed):
     random.seed(seed)
     print 'seed', seed
     background(255)
-    side_count = 25
+    side_count = 20
     noise_scale = 5 / side_count
     noiseSeed(seed)
 
@@ -185,14 +185,10 @@ def draw_(seed):
     for x_idx in range(side_count):
         for y_idx in range(side_count):
             val = noise(noise_scale*x_idx, noise_scale*y_idx)
-            filled[x_idx, y_idx] = val > 0.45
+            filled[x_idx, y_idx] = random.random() > 0.45
 
     for x_idx, x in enumerate(xs):
         for y_idx, y in enumerate(ys):
-            # if filled[x_idx, y_idx]:
-            #     noStroke()
-            #     fill(0, 0, 0, 40)
-            #     square(x-r/2, y-r/2, r)
 
             if filled[x_idx, y_idx]:
                 connections = []
@@ -206,6 +202,5 @@ def draw_(seed):
                     connections.append(3)
             else:
                 connections = []
-            print connections
             shape, params = random_shape_with_connections(connections)
             draw_shape(x, y, r, shape, params, random.choice(colors))
