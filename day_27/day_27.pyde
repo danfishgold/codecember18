@@ -40,6 +40,33 @@ colors = [
     color(153, 196, 167),
 ]
 
+# https://www.color-hex.com/color-palette/78642
+colors = [
+    color(102, 44, 65),
+    color(136, 68, 83),
+    color(157, 101, 119),
+    color(183, 133, 131),
+    color(239, 228, 189),
+]
+
+# https://www.color-hex.com/color-palette/5540
+colors = [
+    color(94, 122, 99),
+    color(244, 164, 42),
+    color(235, 238, 191),
+    color(229, 136, 136),
+    color(135, 54, 54),
+]
+
+# https://www.color-hex.com/color-palette/72854
+colors = [
+    color(205, 89, 95),
+    color(214, 114, 93),
+    color(222, 147, 96),
+    color(231, 183, 100),
+    # color(240, 221, 103),
+]
+
 
 def draw_(seed):
     random.seed(seed)
