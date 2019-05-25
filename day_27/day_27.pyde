@@ -20,10 +20,10 @@ qtr_arcs = [
 ]
 
 half_arcs = [
-    (0, -1, 0, PI),
-    (+1, 0, PI/2, 3*PI/2),
-    (0, +1, PI, 2*PI),
-    (-1, 0, 3*PI/2, 5*PI/2),
+    (0, -1.05, 0, PI),
+    (+1.05, 0, PI/2, 3*PI/2),
+    (0, +1.05, PI, 2*PI),
+    (-1.05, 0, 3*PI/2, 5*PI/2),
 ]
 
 
@@ -60,42 +60,58 @@ def a_triangle(x, y, r, direction):
     endShape(CLOSE)
 
 
+def a_square(x, y, r):
+    square(x-r/2, y-r/2, r)
+
+
 def random_shape_with_connections(connections):
     connections = set(connections)
+    direction = 0
     if len(connections) == 4:
         # shape = random.choice(('square', 'circle complement'))
         shape = 'square'
-        params = []
     if len(connections) == 0:
         # shape = random.choice(('nothing', 'circle'))
         shape = 'nothing'
-        params = []
     if len(connections) == 3:
         direction = set(range(4)).difference(connections).pop()
         # shape = 'half circle complement'
         shape = 'square'
-        params = [direction]
     if len(connections) == 1:
         direction = connections.pop()
         shape = 'half circle'
-        params = [direction]
     if len(connections) == 2:
         dir1, dir2 = tuple(connections)
         if abs(dir1-dir2) == 2:
             # there are no shapes with only opposite connections
             return random_shape_with_connections(range(4))
         if abs(dir1-dir2) == 3:
-            direction = max(dir1, dir2)
+            direction = (max(dir1, dir2) + 1) % 4
         else:
-            direction = min(dir1, dir2)
+            direction = (min(dir1, dir2) + 1) % 4
         shape = random.choice(
             ('qtr circle', 'qtr circle complement', 'triangle'))
-        params = [(direction+1) % 4]
 
-    return shape, params
+    return shape, direction
 
 
-def draw_shape(x, y, r, shape, params, clr):
+def random_shape():
+    shape = random.choice((
+        'nothing',
+        'square',
+        'triangle',
+        'circle',
+        'qtr circle',
+        'half circle',
+        'circle complement',
+        'qtr circle complement',
+        'half circle complement',
+    ))
+    direction = random.randint(0, 3)
+    return shape, direction
+
+
+def draw_shape(x, y, r, shape, direction, clr):
     if shape == 'circle':
         fill(clr)
         stroke(clr)
@@ -103,40 +119,40 @@ def draw_shape(x, y, r, shape, params, clr):
     if shape == 'square':
         fill(clr)
         stroke(clr)
-        square(x-r/2, y-r/2, r)
+        a_square(x, y, r)
     if shape == 'triangle':
         fill(clr)
         stroke(clr)
-        a_triangle(x, y, r, direction=params[0])
+        a_triangle(x, y, r, direction=direction)
     if shape == 'qtr circle':
         fill(clr)
         stroke(clr)
-        qtr_circle(x, y, r, direction=params[0])
+        qtr_circle(x, y, r, direction=direction)
+    if shape == 'half circle':
+        fill(clr)
+        stroke(clr)
+        half_circle(x, y, r, direction=direction)
     if shape == 'circle complement':
         fill(clr)
-        noStroke()
-        square(x-r/2, y-r/2, r)
+        stroke(clr)
+        a_square(x, y, r)
         fill(255)
         stroke(255)
         circle(x, y, r)
     if shape == 'qtr circle complement':
         fill(clr)
-        noStroke()
-        a_triangle(x, y, r, params[0])
+        stroke(clr)
+        a_triangle(x, y, r, direction)
         fill(255)
         stroke(255)
-        qtr_circle(x, y, r, direction=(params[0]+2) % 4)
-    if shape == 'half circle':
-        fill(clr)
-        stroke(clr)
-        half_circle(x, y, r, direction=params[0])
+        qtr_circle(x, y, r, direction=(direction+2) % 4)
     if shape == 'half circle complement':
         fill(clr)
-        noStroke()
-        square(x-r/2, y-r/2, r)
+        stroke(clr)
+        a_square(x, y, r)
         fill(255)
         stroke(255)
-        half_circle(x, y, r, direction=params[0])
+        half_circle(x, y, r, direction=direction)
 
 
 def setup():
@@ -157,7 +173,7 @@ def draw():
 random.seed(1)
 seed = random.randint(1, 10000)
 
-side = 500
+side = 1000
 
 # https://www.color-hex.com/color-palette/72854
 colors = [
@@ -173,7 +189,7 @@ def draw_(seed):
     random.seed(seed)
     print 'seed', seed
     background(255)
-    side_count = 20
+    side_count = 15
     noise_scale = 5 / side_count
     noiseSeed(seed)
 
@@ -181,26 +197,8 @@ def draw_(seed):
     xs = scaffold.distribute(0, width, side_count+2)[1:-1]
     ys = scaffold.distribute(0, height, side_count+2)[1:-1]
 
-    filled = defaultdict(bool)
-    for x_idx in range(side_count):
-        for y_idx in range(side_count):
-            val = noise(noise_scale*x_idx, noise_scale*y_idx)
-            filled[x_idx, y_idx] = random.random() > 0.45
-
-    for x_idx, x in enumerate(xs):
-        for y_idx, y in enumerate(ys):
-
-            if filled[x_idx, y_idx]:
-                connections = []
-                if filled[x_idx, y_idx-1]:
-                    connections.append(0)
-                if filled[x_idx+1, y_idx]:
-                    connections.append(1)
-                if filled[x_idx, y_idx+1]:
-                    connections.append(2)
-                if filled[x_idx-1, y_idx]:
-                    connections.append(3)
-            else:
-                connections = []
-            shape, params = random_shape_with_connections(connections)
-            draw_shape(x, y, r, shape, params, random.choice(colors))
+    for x in xs:
+        for y in ys:
+            shape, direction = random_shape()
+            strokeWeight(0)
+            draw_shape(x, y, r, shape, direction, random.choice(colors))
