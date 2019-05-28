@@ -27,9 +27,9 @@ def draw():
 
 
 random.seed(1)
-seed = random.randint(1, 10000)
+seed = 4092  # random.randint(1, 10000)
 
-side = 500
+side = 2000
 
 
 def draw_(seed):
@@ -37,9 +37,9 @@ def draw_(seed):
     print 'seed', seed
     background(255)
     circle_count = 5
-    point_count = 300
-    min_rad_factor = 0.6
-    max_rad_factor = 0.8
+    point_count = 400
+    min_rad_factor = 0.4
+    max_rad_factor = 0.9
     outer_radius = 0.4*side
     circles = []
     for _ in range(circle_count):
@@ -51,7 +51,7 @@ def draw_(seed):
         circles.append((side/2 + x, side/2 + y, rad, phase))
 
     noStroke()
-    fill(0, 0, 0, 4)
+    fill(0, 0, 0, 3)
     for point_idx in range(point_count):
         theta = TWO_PI * point_idx / point_count
         translate(side/2, side/2)
