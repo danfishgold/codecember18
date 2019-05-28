@@ -36,20 +36,20 @@ def draw_(seed):
     random.seed(seed)
     print 'seed', seed
     background(255)
-    line_count = random.randint(5, 100)
+    line_count = random.randint(20, 70)
     center_count = 2
-    print line_count, center_count
-    center_radius_fraction = 0.5
-    center_phase = 0  # random.uniform(0, TWO_PI)
+    center_radius_fraction = 0.3
+    print line_count
     # for center_idx in range(center_count):
-    #     theta = TWO_PI * center_idx/center_count + center_phase
+    #     theta = TWO_PI * center_idx/center_count
     #     for x1, y1, x2, y2 in lines_from_center(theta, center_radius_fraction, line_count, 0.4*side):
     #         line(x1, y1, x2, y2)
     intersections = all_intersections(
         0, PI, center_radius_fraction, line_count, 0.4*side)
     polygons = intersection_polygons(intersections, line_count, 0.4*side)
     for pts in polygons.values():
-        fill(random.randint(0, 255))
+        fill(random.randint(50, 255))
+        # noStroke()
         beginShape()
         for pt in pts:
             vertex(*pt)
