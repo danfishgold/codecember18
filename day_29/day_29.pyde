@@ -37,21 +37,24 @@ def draw_(seed):
     print 'seed', seed
     background(255)
     line_width = 10
+    all_lines = []
     for _ in range(3):
         polygon = random_polygon_in_circle(side/2, side/2, side*0.4, n=3)
         lines = polygon_lines(polygon, random.uniform(0, TWO_PI), line_width)
-        stroke(random_color())
+        clr = random_color()
+        all_lines.extend((ln, clr) for ln in lines)
+
+    random.shuffle(all_lines)
+    for ln, clr in all_lines:
+        stroke(clr)
         strokeWeight(line_width/2)
-        for ln in lines:
-            if len(ln) == 2:
-                (x1, y1), (x2, y2) = ln
-                line(x1, y1, x2, y2)
-            elif len(ln) == 1:
-                point(*ln[0])
-            else:
-                raise IndexError("Weird number of points on line")
-        noFill()
-        # draw_polygon(polygon)
+        if len(ln) == 2:
+            (x1, y1), (x2, y2) = ln
+            line(x1, y1, x2, y2)
+        elif len(ln) == 1:
+            point(*ln[0])
+        else:
+            raise IndexError("Weird number of points on line")
 
 
 def polygon_lines(pts, angle, line_width):
