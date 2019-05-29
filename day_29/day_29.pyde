@@ -29,17 +29,26 @@ def draw():
 random.seed(1)
 seed = random.randint(1, 10000)
 
-side = 500
+side = 1000
 
 
 def draw_(seed):
     random.seed(seed)
     print 'seed', seed
     background(255)
-    line_width = 10
+    line_width = 10 * side // 500
     all_lines = []
-    for _ in range(3):
-        polygon = random_polygon_in_circle(side/2, side/2, side*0.4, n=3)
+    polygons = [random_polygon_in_circle(
+        side/2, side/2, side*0.4, n=3) for _ in range(3)]
+    polygons = [
+        regular_polygon_in_circle(side/2, side/2, side*0.4,
+                                  n=3, theta0=random.uniform(0, TWO_PI)),
+        regular_polygon_in_circle(side/2, side/2, side*0.4,
+                                  n=4, theta0=random.uniform(0, TWO_PI)),
+        regular_polygon_in_circle(side/2, side/2, side*0.4,
+                                  n=5, theta0=random.uniform(0, TWO_PI)),
+    ]
+    for polygon in polygons:
         lines = polygon_lines(polygon, random.uniform(0, TWO_PI), line_width)
         clr = random_color()
         all_lines.extend((ln, clr) for ln in lines)
@@ -100,8 +109,19 @@ def random_point():
 def random_polygon_in_circle(x, y, r, n=None):
     thetas = sorted(random.uniform(0, TWO_PI)
                     for _ in range(n or random.randint(3, 6)))
-    if min((t2-t1) % TWO_PI for (t1, t2) in zip(thetas, thetas[1:]+thetas[0:1])) < PI*0.2:
-        return random_polygon_in_circle(x, y, r, n)
+    while min((t2-t1) % TWO_PI for (t1, t2) in zip(thetas, thetas[1:]+thetas[0:1])) < PI*0.2:
+        thetas = sorted(random.uniform(0, TWO_PI)
+                        for _ in range(n or random.randint(3, 6)))
+    return polygon_in_circle(x, y, r, thetas)
+
+
+def regular_polygon_in_circle(x, y, r, n=None, theta0=0):
+    n = n or 3
+    thetas = (theta0 + TWO_PI*idx/n for idx in range(n))
+    return polygon_in_circle(x, y, r, thetas)
+
+
+def polygon_in_circle(x, y, r, thetas):
     return tuple((x+r*cos(theta), y+r*sin(theta)) for theta in thetas)
 
 
