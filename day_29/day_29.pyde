@@ -1,4 +1,4 @@
-# Day 29
+# Day 29: Polygon Lines
 from __future__ import division
 import scaffold
 import random
@@ -27,14 +27,15 @@ def draw():
 
 
 random.seed(1)
-seed = random.randint(1, 10000)
+seed = 7667  # random.randint(1, 10000)
 
-side = 1000
+side = 2000
 
 # https://www.color-hex.com/color-palette/78728
 colors = [
     color(61, 61, 93),
-    color(238, 25, 45)
+    color(255, 191, 67),
+    color(238, 25, 45),
 ]
 
 
@@ -51,17 +52,16 @@ def draw_(seed):
                                   n=4, theta0=random.uniform(0, TWO_PI)),
         regular_polygon_in_circle(side/2, side/2, side*0.4,
                                   n=3, theta0=random.uniform(0, TWO_PI)),
-        # regular_polygon_in_circle(side/2, side/2, side*0.4,
-        #                           n=5, theta0=random.uniform(0, TWO_PI)),
+        regular_polygon_in_circle(side/2, side/2, side*0.3,
+                                  n=4, theta0=random.uniform(0, TWO_PI)),
     ]
     base_angle = random.uniform(0, TWO_PI)
     angles = [base_angle + angle +
-              random.uniform(-1, 1)*0.2*PI for angle in (0, PI/2)]
+              random.uniform(-1, 1)*0.1*PI for angle in (0, 1/3*TWO_PI, 2/3*TWO_PI)]
     for polygon, angle, clr in zip(polygons, angles, colors):
         lines = polygon_lines(polygon, angle, line_width)
         all_lines.append([(ln, clr) for ln in lines])
 
-    random.shuffle(all_lines)
     for ln, clr in interlace(all_lines):
         stroke(clr)
         strokeWeight(line_width/2)
