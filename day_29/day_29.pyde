@@ -31,6 +31,12 @@ seed = random.randint(1, 10000)
 
 side = 1000
 
+# https://www.color-hex.com/color-palette/78728
+colors = [
+    color(61, 61, 93),
+    color(238, 25, 45)
+]
+
 
 def draw_(seed):
     random.seed(seed)
@@ -42,19 +48,21 @@ def draw_(seed):
         side/2, side/2, side*0.4, n=3) for _ in range(3)]
     polygons = [
         regular_polygon_in_circle(side/2, side/2, side*0.4,
-                                  n=3, theta0=random.uniform(0, TWO_PI)),
-        regular_polygon_in_circle(side/2, side/2, side*0.4,
                                   n=4, theta0=random.uniform(0, TWO_PI)),
         regular_polygon_in_circle(side/2, side/2, side*0.4,
-                                  n=5, theta0=random.uniform(0, TWO_PI)),
+                                  n=3, theta0=random.uniform(0, TWO_PI)),
+        # regular_polygon_in_circle(side/2, side/2, side*0.4,
+        #                           n=5, theta0=random.uniform(0, TWO_PI)),
     ]
-    for polygon in polygons:
-        lines = polygon_lines(polygon, random.uniform(0, TWO_PI), line_width)
-        clr = random_color()
-        all_lines.extend((ln, clr) for ln in lines)
+    base_angle = random.uniform(0, TWO_PI)
+    angles = [base_angle + angle +
+              random.uniform(-1, 1)*0.2*PI for angle in (0, PI/2)]
+    for polygon, angle, clr in zip(polygons, angles, colors):
+        lines = polygon_lines(polygon, angle, line_width)
+        all_lines.append([(ln, clr) for ln in lines])
 
     random.shuffle(all_lines)
-    for ln, clr in all_lines:
+    for ln, clr in interlace(all_lines):
         stroke(clr)
         strokeWeight(line_width/2)
         if len(ln) == 2:
@@ -73,13 +81,13 @@ def polygon_lines(pts, angle, line_width):
     nmax = max(ns)
     dn = nmax - nmin
     diameter = dn * abs(cos(angle))
-    line_count = (floor(diameter / line_width) + 1) // 2 * 2
-    n0 = nmin  # - (line_count*line_width - diameter) / 2
-
+    line_count = floor(diameter / line_width)+1
+    pad = (diameter - line_count*line_width)/2
+    npad = pad / abs(cos(angle))
     intersection_lines = []
     for line_idx in range(line_count):
         intersections = []
-        n = n0 + dn * line_idx / line_count
+        n = nmin + npad + line_idx*line_width/abs(cos(angle))
         stroke(100)
         # line(-50, -50*m+n+5, 700, 700*m+n+5)
         for line_idx in range(len(pts)):
@@ -138,3 +146,22 @@ def random_color():
         random.randint(0, 255),
         random.randint(0, 255),
     )
+
+
+def random_circle(min_rad):
+    max_rad = min_rad
+    while not max_rad > min_rad:
+        r = random.uniform(0, side*0.4)
+        theta = random.uniform(0, TWO_PI)
+        x, y = side/2+r*cos(theta), side/2+r*sin(theta)
+        max_rad = side*0.4 - r
+    rad = random.uniform(min_rad, max_rad)
+    return (x, y, rad)
+
+
+def interlace(lists):
+    max_len = max(len(lst) for lst in lists)
+    for idx in range(max_len):
+        for lst in lists:
+            if idx < len(lst):
+                yield lst[idx]
