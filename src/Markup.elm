@@ -8,8 +8,9 @@ import Mark.Error as Error exposing (Error)
 
 type alias Day msg =
     { day : Int
-    , title : String
-    , images : List Image
+    , name : String
+    , currentImage : Image
+    , otherImages : List Image
     , description : Element msg
     }
 
@@ -50,12 +51,36 @@ document =
 dayBlock : Mark.Block (Day msg)
 dayBlock =
     Mark.record "Day"
-        Day
+        (\day name ( firstImage, otherImages ) description ->
+            { day = day
+            , name = name
+            , currentImage = firstImage
+            , otherImages = otherImages
+            , description = description
+            }
+        )
         |> Mark.field "day" Mark.int
         |> Mark.field "name" Mark.string
-        |> Mark.field "images" (Mark.manyOf [ image ])
+        |> Mark.field "images" (nonemptyList image)
         |> Mark.field "description" descriptionBlock
         |> Mark.toBlock
+
+
+nonemptyList : Mark.Block data -> Mark.Block ( data, List data )
+nonemptyList block =
+    Mark.manyOf [ block ]
+        |> Mark.verify
+            (\dataList ->
+                case dataList of
+                    hd :: tl ->
+                        Ok ( hd, tl )
+
+                    [] ->
+                        Err
+                            { title = "Empty List"
+                            , message = [ "I was trying to parse a nonempty list" ]
+                            }
+            )
 
 
 image : Mark.Block Image

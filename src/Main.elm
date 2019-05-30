@@ -111,22 +111,22 @@ dayElement : Layout -> Day Msg -> Element Msg
 dayElement layout day =
     let
         title_ =
-            dayTitle day.day day.title
+            dayTitle day.day day.name
 
-        content =
-            List.map image day.images
+        image_ =
+            image day.currentImage
     in
     case layout of
         Narrow ->
             Element.column []
                 [ title_
                 , day.description
-                , Element.column [] content
+                , image_
                 ]
 
         Wide ->
             Element.row []
-                [ Element.column [] content
+                [ image_
                 , Element.column []
                     [ title_
                     , day.description
