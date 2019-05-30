@@ -1,4 +1,4 @@
-# Day 30
+# Day 30: Bye
 from __future__ import division
 import scaffold
 import random
