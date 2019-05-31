@@ -10,6 +10,7 @@ import Element.Keyed as Keyed
 import Html exposing (Html)
 import Mark.Error
 import Markup exposing (Day)
+import NetworkMarkup exposing (Error(..), Fetched(..))
 import Task
 
 
@@ -29,7 +30,7 @@ main =
 
 type alias Model =
     { size : WindowSize
-    , days : Result (List Mark.Error.Error) (Array Day)
+    , days : Fetched (Array Day)
     }
 
 
@@ -41,13 +42,13 @@ type alias WindowSize =
 
 type alias Flags =
     { size : WindowSize
-    , markup : String
     }
 
 
 type Msg
     = SetSize WindowSize
     | AdvanceImages Int
+    | FetchedDays (Fetched (Array Day))
 
 
 
@@ -55,12 +56,19 @@ type Msg
 
 
 init : Flags -> ( Model, Cmd Msg )
-init { size, markup } =
+init { size } =
     ( { size = size
-      , days = Markup.parseDocument markup |> Result.map Array.fromList
+      , days = Loading
       }
-    , Cmd.none
+    , fetchDays
     )
+
+
+fetchDays : Cmd Msg
+fetchDays =
+    NetworkMarkup.get "/codecember.emu"
+        Markup.document
+        (NetworkMarkup.mapSuccess Array.fromList >> FetchedDays)
 
 
 
@@ -75,13 +83,16 @@ update msg model =
 
         AdvanceImages dayIndex ->
             case model.days of
-                Ok days ->
-                    ( { model | days = Ok (arrayUpdate dayIndex advanceImages days) }
+                Success days ->
+                    ( { model | days = Success (arrayUpdate dayIndex advanceImages days) }
                     , Cmd.none
                     )
 
-                Err _ ->
+                _ ->
                     ( model, Cmd.none )
+
+        FetchedDays days ->
+            ( { model | days = days }, Cmd.none )
 
 
 arrayUpdate : Int -> (a -> a) -> Array a -> Array a
@@ -143,27 +154,40 @@ body model =
                 Narrow
     in
     case model.days of
-        Ok days ->
-            column [ centerX ]
+        Success days ->
+            column [ centerX, width fill ]
                 [ el
-                    [ Font.size 48
+                    [ if model.size.width > 500 then
+                        Font.size 48
+
+                      else if model.size.width > 360 then
+                        Font.size 36
+
+                      else
+                        Font.size 30
                     , Font.bold
                     , centerX
                     , paddingXY 0 50
                     ]
                     (text "CODECEMBER 2018")
-                , paragraph []
+                , paragraph [ padding 10 ]
                     [ text "This year blah blah blah"
                     ]
                 , column [ centerX ]
                     (List.indexedMap (dayElement layout model.size) (Array.toList days))
                 ]
 
-        Err [] ->
+        Failure (MarkErrors []) ->
             text "There were errors but there are no errors..."
 
-        Err (firstError :: _) ->
+        Failure (MarkErrors (firstError :: _)) ->
             html (Mark.Error.toHtml Mark.Error.Light firstError)
+
+        Failure (HttpError err) ->
+            text "HTTP error :("
+
+        Loading ->
+            text "Loading..."
 
 
 dayElement : Layout -> WindowSize -> Int -> Day -> Element Msg

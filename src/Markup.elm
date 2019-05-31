@@ -1,4 +1,4 @@
-module Markup exposing (Day, document, parseDocument)
+module Markup exposing (Day, document)
 
 import Element exposing (Element)
 import Element.Font as Font

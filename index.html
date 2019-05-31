@@ -9,15 +9,8 @@
   </head>
   <body>
     <script>
-      // https://stackoverflow.com/a/196510
-      const client = new XMLHttpRequest();
-      client.open("GET", "/codecember.emu");
-      client.onreadystatechange = function() {
-        const size = { width: window.innerWidth, height: window.innerHeight };
-        console.log(size);
-        Elm.Main.init({ flags: { size, markup: client.responseText } });
-      };
-      client.send();
+      const size = { width: window.innerWidth, height: window.innerHeight };
+      Elm.Main.init({ flags: { size } });
     </script>
   </body>
 </html>
