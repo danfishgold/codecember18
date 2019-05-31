@@ -6,12 +6,11 @@ import Mark exposing (Record)
 import Mark.Error as Error exposing (Error)
 
 
-type alias Day msg =
+type alias Day =
     { day : Int
     , name : String
-    , currentImage : Image
-    , otherImages : List Image
-    , description : Element msg
+    , images : ( List Image, Image, List Image )
+    , description : Element Never
     }
 
 
@@ -19,7 +18,7 @@ type alias Image =
     String
 
 
-parseDocument : String -> Result (List Error) (List (Day msg))
+parseDocument : String -> Result (List Error) (List Day)
 parseDocument string =
     case Mark.compile document string of
         Mark.Success days ->
@@ -42,20 +41,19 @@ errorsElement errors =
             Element.text "ERRORS BUT NO ERRORS???"
 
 
-document : Mark.Document (List (Day msg))
+document : Mark.Document (List Day)
 document =
     Mark.document identity <|
         Mark.manyOf [ dayBlock ]
 
 
-dayBlock : Mark.Block (Day msg)
+dayBlock : Mark.Block Day
 dayBlock =
     Mark.record "Day"
         (\day name ( firstImage, otherImages ) description ->
             { day = day
             , name = name
-            , currentImage = firstImage
-            , otherImages = otherImages
+            , images = ( [], firstImage, otherImages )
             , description = description
             }
         )

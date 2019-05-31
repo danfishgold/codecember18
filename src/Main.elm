@@ -1,8 +1,10 @@
 module Main exposing (main)
 
+import Array exposing (Array)
 import Browser exposing (document)
 import Browser.Events
 import Element exposing (..)
+import Element.Events
 import Element.Font as Font
 import Element.Keyed as Keyed
 import Html exposing (Html)
@@ -27,7 +29,7 @@ main =
 
 type alias Model =
     { size : WindowSize
-    , markup : String
+    , days : Result (List Mark.Error.Error) (Array Day)
     }
 
 
@@ -45,6 +47,7 @@ type alias Flags =
 
 type Msg
     = SetSize WindowSize
+    | AdvanceImages Int
 
 
 
@@ -54,7 +57,7 @@ type Msg
 init : Flags -> ( Model, Cmd Msg )
 init { size, markup } =
     ( { size = size
-      , markup = markup
+      , days = Markup.parseDocument markup |> Result.map Array.fromList
       }
     , Cmd.none
     )
@@ -69,6 +72,48 @@ update msg model =
     case msg of
         SetSize size ->
             ( { model | size = size }, Cmd.none )
+
+        AdvanceImages dayIndex ->
+            case model.days of
+                Ok days ->
+                    ( { model | days = Ok (arrayUpdate dayIndex advanceImages days) }
+                    , Cmd.none
+                    )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+
+arrayUpdate : Int -> (a -> a) -> Array a -> Array a
+arrayUpdate idx upd arr =
+    case Array.get idx arr of
+        Nothing ->
+            arr
+
+        Just val ->
+            Array.set idx (upd val) arr
+
+
+advanceImages : Day -> Day
+advanceImages day =
+    let
+        ( prev, curr, next ) =
+            day.images
+
+        newImages =
+            case next of
+                upNext :: future ->
+                    ( prev ++ [ curr ], upNext, future )
+
+                [] ->
+                    case prev of
+                        upNext :: future ->
+                            ( [ curr ], upNext, future )
+
+                        [] ->
+                            ( [], curr, [] )
+    in
+    { day | images = newImages }
 
 
 
@@ -97,7 +142,7 @@ body model =
             else
                 Narrow
     in
-    case Markup.parseDocument model.markup of
+    case model.days of
         Ok days ->
             column [ centerX ]
                 [ el
@@ -107,8 +152,11 @@ body model =
                     , paddingXY 0 50
                     ]
                     (text "CODECEMBER 2018")
+                , paragraph []
+                    [ text "This year blah blah blah"
+                    ]
                 , column [ centerX ]
-                    (List.map (dayElement layout model.size) days)
+                    (List.indexedMap (dayElement layout model.size) (Array.toList days))
                 ]
 
         Err [] ->
@@ -118,8 +166,8 @@ body model =
             html (Mark.Error.toHtml Mark.Error.Light firstError)
 
 
-dayElement : Layout -> WindowSize -> Day Msg -> Element Msg
-dayElement layout size day =
+dayElement : Layout -> WindowSize -> Int -> Day -> Element Msg
+dayElement layout size dayIndex day =
     let
         side =
             min size.width size.height
@@ -127,23 +175,26 @@ dayElement layout size day =
         title_ =
             el [ paddingXY 0 15 ] (dayTitle day.day day.name)
 
-        currentImage =
-            el [ centerX ] (image_ side day.currentImage)
+        ( _, currentImage, _ ) =
+            day.images
+
+        currentImageElement =
+            el [ centerX, Element.Events.onClick (AdvanceImages dayIndex) ] (image_ side currentImage)
 
         content =
             column [ width fill, padding 100 ]
                 [ title_
-                , day.description
+                , Element.map never day.description
                 ]
     in
     case layout of
         Narrow ->
             column [ width fill ]
-                [ content, currentImage ]
+                [ content, currentImageElement ]
 
         Wide ->
             row [ width fill ]
-                [ currentImage, content ]
+                [ currentImageElement, content ]
 
 
 dayTitle : Int -> String -> Element Msg
