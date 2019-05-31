@@ -2,8 +2,9 @@ module Main exposing (main)
 
 import Browser exposing (document)
 import Browser.Events
-import Element exposing (Element, column, el, height, px, text, width)
+import Element exposing (..)
 import Element.Font as Font
+import Element.Keyed as Keyed
 import Html exposing (Html)
 import Mark.Error
 import Markup exposing (Day)
@@ -77,7 +78,7 @@ update msg model =
 view : Model -> Browser.Document Msg
 view model =
     { title = ""
-    , body = [ Element.layout [] (body model) ]
+    , body = [ layout [] (body model) ]
     }
 
 
@@ -98,45 +99,59 @@ body model =
     in
     case Markup.parseDocument model.markup of
         Ok days ->
-            column [ Element.centerX ] (List.map (dayElement layout) days)
+            column [ centerX ]
+                [ el
+                    [ Font.size 48
+                    , Font.bold
+                    , centerX
+                    , paddingXY 0 50
+                    ]
+                    (text "CODECEMBER 2018")
+                , column [ centerX ]
+                    (List.map (dayElement layout model.size) days)
+                ]
 
         Err [] ->
-            Element.text "There were errors but there are no errors..."
+            text "There were errors but there are no errors..."
 
         Err (firstError :: _) ->
-            Element.text (Debug.toString <| Mark.Error.toDetails firstError)
+            html (Mark.Error.toHtml Mark.Error.Light firstError)
 
 
-dayElement : Layout -> Day Msg -> Element Msg
-dayElement layout day =
+dayElement : Layout -> WindowSize -> Day Msg -> Element Msg
+dayElement layout size day =
     let
-        title_ =
-            dayTitle day.day day.name
+        side =
+            min size.width size.height
 
-        image_ =
-            image day.currentImage
+        title_ =
+            el [ paddingXY 0 15 ] (dayTitle day.day day.name)
+
+        currentImage =
+            el [ centerX ] (image_ side day.currentImage)
+
+        content =
+            column [ width fill, padding 100 ]
+                [ title_
+                , day.description
+                ]
     in
     case layout of
         Narrow ->
-            Element.column []
-                [ title_
-                , day.description
-                , image_
-                ]
+            column [ width fill ]
+                [ content, currentImage ]
 
         Wide ->
-            Element.row []
-                [ image_
-                , Element.column []
-                    [ title_
-                    , day.description
-                    ]
-                ]
+            row [ width fill ]
+                [ currentImage, content ]
 
 
 dayTitle : Int -> String -> Element Msg
 dayTitle day title_ =
-    el [ Element.onLeft (title (String.fromInt day ++ ". ")) ] (title title_)
+    el
+        [ onLeft (title (String.fromInt day ++ ". "))
+        ]
+        (title title_)
 
 
 title : String -> Element Msg
@@ -144,9 +159,9 @@ title string =
     el [ Font.size 24, Font.bold ] (text string)
 
 
-image : String -> Element Msg
-image src =
-    Element.image [ width (px 500), height (px 500) ]
+image_ : Int -> String -> Element Msg
+image_ side src =
+    image [ height (px side) ]
         { src = src, description = "" }
 
 
