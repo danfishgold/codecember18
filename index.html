@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codecember 2018: Processing</title>
+    <script src="lazyload.iife.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+      }
+      header {
+        width: 100vw;
+        min-height: calc(100vh + 1px);
+        display: grid;
+        grid-template-columns: 1fr 6fr;
+        grid-template-rows: 100vh 1fr;
+        align-items: center;
+        background: #011936;
+        margin-bottom: 100px;
+      }
+
+      .description-container,
+      .title-container {
+        width: calc(100% - 20vmin);
+        height: calc(100% - 12vmin);
+        padding: 6vmin 10vmin;
+        display: flex;
+        align-items: center;
+      }
+
+      .title-container {
+        grid-row: 1;
+      }
+
+      .description-container {
+        background: #f7f3e3;
+        grid-row: 1 / 3;
+        display: flex;
+        flex-direction: row;
+      }
+
+      @media screen and (max-width: 1000px) {
+        header {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+        }
+
+        .description-container,
+        .title-container {
+          width: calc(100% - 20vmin);
+          height: calc(100% - 12vmin);
+          padding: 6vmin 10vmin;
+        }
+
+        .title-container {
+          grid-row: 1;
+          text-align: center;
+        }
+
+        .description-container {
+          grid-row: 2 / span 1;
+        }
+      }
+
+      .description {
+        max-width: 700px;
+        font-size: 1.1rem;
+        line-height: 1.4;
+        margin: 0 auto;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .description ul {
+        padding-inline-start: 22px;
+        margin-top: 0;
+      }
+
+      .spacer {
+        flex-grow: 1;
+      }
+
+      .description footer {
+        font-size: 1rem;
+        margin: 0 auto;
+        width: 95%;
+      }
+
+      .description footer ol {
+        padding-inline-start: 22px;
+      }
+
+      .description footer hr {
+        border: 0;
+        border-bottom: 1px solid black;
+        margin: 20px auto;
+      }
+
+      h1 {
+        font-size: 2.4rem;
+        width: 100%;
+        color: white;
+      }
+
+      p {
+        width: 100%;
+        margin: 0.4em 0;
+      }
+
+      a {
+        color: black;
+      }
+
+      sup {
+        font-size: 0.8em;
+        margin-left: 0.05em;
+      }
+
+      main {
+        display: grid;
+        width: 100%;
+        max-width: 2000px;
+        margin: 0 auto;
+        height: 100%;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 40px;
+      }
+
+      @media screen and (max-width: 500px) {
+        main {
+          grid-template-columns: repeat(auto-fit, minmax(100vw, 1fr));
+        }
+      }
+
+      #day16 {
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      img {
+        width: 100%;
+      }
+
+      span.heart {
+        color: #011936;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="title-container">
+        <h1>Codecember 2018: Processing</h1>
+      </div>
+      <div class="description-container">
+        <div class="description">
+          <p>
+            This is the third entry in a recurring project (called Codecember)
+            where every year during the month of December<sup>1</sup> I work on
+            something code-related every day<sup>3</sup>.
+          </p>
+          <p>
+            In May 2019 I decided to have some fun with
+            <a href="https://processing.org">Processing</a> and this is what I
+            ended up with. It was cool and fun and I drew inspiration from some
+            weird places<sup>4</sup> and some very ordinary places<sup>5</sup>.
+          </p>
+          <p>
+            I mainly have three things I wish I would have done differently:
+          </p>
+          <ul>
+            <li>
+              I made this using
+              <a href="https://py.processing.org">Processing.py</a> because I
+              didn't want to learn Java. I should have used
+              <a href="https://p5js.org">p5.js</a>, given the fact that this is
+              meant to be displayed on a website.
+            </li>
+            <li>
+              I should have stuck with the circle format. It would have made it
+              a lot more uniform and <em>aesthetic</em>.
+            </li>
+            <li>
+              I should have used more colors. A majority of these are either
+              black or black and red. I should have made this a lot more
+              colorful.
+            </li>
+          </ul>
+          <p>
+            Somewhat unsurprisingly,
+            <a href="https://codecember19.danfishgold.com">Codecember 2019</a>
+            improves on these exact points!
+          </p>
+          <div class="spacer"></div>
+          <footer>
+            <hr />
+            <ol>
+              <li>It's never<sup>2</sup> in December.</li>
+              <li>Except for Codecember 2016, which was in December 2016.</li>
+              <li>Sometimes I cheat.</li>
+              <li>
+                Like the pattern on the wall of a bathroom at a bar, a board
+                game or two, and my grandparents' rug.
+              </li>
+              <li>
+                Like
+                <a href="https://en.wikipedia.org/wiki/Voronoi_diagram"
+                  >Voronoi diagrams</a
+                >
+                and
+                <a href="https://en.wikipedia.org/wiki/Circle_packing"
+                  >circle packing</a
+                >, which are pretty cliché.
+              </li>
+            </ol>
+            <hr />
+            <p>
+              <a href="https://github.com/danfishgold/codecember18">Made</a>
+              with <span class="heart">♥︎</span> by
+              <a href="https://danfishgold.com">Dan Fishgold</a>
+            </p>
+          </footer>
+        </div>
+      </div>
+    </header>
+    <main>
+      <img
+        class="lazy"
+        src="placeholders/circle_1.svg"
+        data-srcset="img/@500/day_01.jpg 1x, img/@1000/day_01.jpg 2x, img/@1500/day_01.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_2.svg"
+        data-srcset="img/@500/day_02.jpg 1x, img/@1000/day_02.jpg 2x, img/@1500/day_02.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_3.svg"
+        data-srcset="img/@500/day_03.jpg 1x, img/@1000/day_03.jpg 2x, img/@1500/day_03.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_4.svg"
+        data-srcset="img/@500/day_04.jpg 1x, img/@1000/day_04.jpg 2x, img/@1500/day_04.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_5.svg"
+        data-src="img/day_05.mp4"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_1.svg"
+        data-srcset="img/@500/day_06.jpg 1x, img/@1000/day_06.jpg 2x, img/@1500/day_06.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_2.svg"
+        data-srcset="img/@500/day_07.jpg 1x, img/@1000/day_07.jpg 2x, img/@1500/day_07.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_3.svg"
+        data-srcset="img/@500/day_08.jpg 1x, img/@1000/day_08.jpg 2x, img/@1500/day_08.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_4.svg"
+        data-srcset="img/@500/day_09.jpg 1x, img/@1000/day_09.jpg 2x, img/@1500/day_09.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_5.svg"
+        data-srcset="img/@500/day_10.jpg 1x, img/@1000/day_10.jpg 2x, img/@1500/day_10.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_1.svg"
+        data-srcset="img/@500/day_11.jpg 1x, img/@1000/day_11.jpg 2x, img/@1500/day_11.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_2.svg"
+        data-srcset="img/@500/day_12.jpg 1x, img/@1000/day_12.jpg 2x, img/@1500/day_12.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_3.svg"
+        data-srcset="img/@500/day_13.jpg 1x, img/@1000/day_13.jpg 2x, img/@1500/day_13.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_4.svg"
+        data-srcset="img/@500/day_14.jpg 1x, img/@1000/day_14.jpg 2x, img/@1500/day_14.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_5.svg"
+        data-srcset="img/@500/day_15_1538.jpg 1x, img/@1000/day_15_1538.jpg 2x, img/@1500/day_15_1538.jpg 3x"
+      />
+      <!-- <img
+        class="lazy"
+        src="placeholders/circle_1.svg"
+        data-srcset="img/@500/day_15_1887.jpg 1x, img/@1000/day_15_1887.jpg 2x, img/@1500/day_15_1887.jpg 3x"
+      /> -->
+      <!-- <img
+        class="lazy"
+        src="placeholders/circle_1.svg"
+        data-srcset="img/@500/day_15_3109.jpg 1x, img/@1000/day_15_3109.jpg 2x, img/@1500/day_15_3109.jpg 3x"
+      /> -->
+      <div id="day16">
+        <img
+          class="lazy"
+          src="placeholders/circle_1.svg"
+          data-srcset="img/@500/day_16.jpg 1x, img/@1000/day_16.jpg 2x, img/@1500/day_16.jpg 3x"
+        />
+        <!-- <img
+          class="lazy"
+          src="placeholders/circle_1.svg"
+          data-srcset="img/@500/day_16_5.jpg 1x, img/@1000/day_16_5.jpg 2x, img/@1500/day_16_5.jpg 3x"
+        /> -->
+        <img
+          class="lazy"
+          src="placeholders/circle_2.svg"
+          data-srcset="img/@500/day_16_2255.jpg 1x, img/@1000/day_16_2255.jpg 2x, img/@1500/day_16_2255.jpg 3x"
+        />
+        <img
+          class="lazy"
+          src="placeholders/circle_3.svg"
+          data-srcset="img/@500/day_16_5699.jpg 1x, img/@1000/day_16_5699.jpg 2x, img/@1500/day_16_5699.jpg 3x"
+        />
+        <img
+          class="lazy"
+          src="placeholders/circle_4.svg"
+          data-srcset="img/@500/day_16_8385.jpg 1x, img/@1000/day_16_8385.jpg 2x, img/@1500/day_16_8385.jpg 3x"
+        />
+      </div>
+      <img
+        class="lazy"
+        src="placeholders/circle_5.svg"
+        data-src="img/day_17.mp4"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_1.svg"
+        data-srcset="img/@500/day_18.jpg 1x, img/@1000/day_18.jpg 2x, img/@1500/day_18.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_2.svg"
+        data-srcset="img/@500/day_19.jpg 1x, img/@1000/day_19.jpg 2x, img/@1500/day_19.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_3.svg"
+        data-srcset="img/@500/day_20.jpg 1x, img/@1000/day_20.jpg 2x, img/@1500/day_20.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_4.svg"
+        data-srcset="img/@500/day_21.jpg 1x, img/@1000/day_21.jpg 2x, img/@1500/day_21.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_5.svg"
+        data-srcset="img/@500/day_22.jpg 1x, img/@1000/day_22.jpg 2x, img/@1500/day_22.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_1.svg"
+        data-srcset="img/@500/day_23.jpg 1x, img/@1000/day_23.jpg 2x, img/@1500/day_23.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_2.svg"
+        data-srcset="img/@500/day_24.jpg 1x, img/@1000/day_24.jpg 2x, img/@1500/day_24.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_3.svg"
+        data-srcset="img/@500/day_25.jpg 1x, img/@1000/day_25.jpg 2x, img/@1500/day_25.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_4.svg"
+        data-srcset="img/@500/day_26.jpg 1x, img/@1000/day_26.jpg 2x, img/@1500/day_26.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_5.svg"
+        data-srcset="img/@500/day_27.jpg 1x, img/@1000/day_27.jpg 2x, img/@1500/day_27.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_1.svg"
+        data-srcset="img/@500/day_28.jpg 1x, img/@1000/day_28.jpg 2x, img/@1500/day_28.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_2.svg"
+        data-srcset="img/@500/day_29.jpg 1x, img/@1000/day_29.jpg 2x, img/@1500/day_29.jpg 3x"
+      />
+      <img
+        class="lazy"
+        src="placeholders/circle_3.svg"
+        data-srcset="img/@500/day_30.jpg 1x, img/@1000/day_30.jpg 2x, img/@1500/day_30.jpg 3x"
+      />
+    </main>
+    <script>
+      var lazyLoadInstance = new LazyLoad({})
+    </script>
+  </body>
+</html>
